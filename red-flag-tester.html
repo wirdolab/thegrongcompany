@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheGrongMatch — Red Flag Tester™ · TheGrongCo.</title>
+<style>
+  :root{
+    --red:#FF3B30; --dark:#111111; --cream:#FFF6EC; --yellow:#FFD60A; --green:#34C759;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--cream); color:var(--dark);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  }
+  .tape{
+    width:100%; background:repeating-linear-gradient(45deg,var(--red) 0 24px,var(--dark) 24px 48px);
+    height:14px; flex-shrink:0;
+  }
+  header{
+    width:100%; max-width:680px; padding:28px 20px 8px; text-align:center;
+  }
+  .logo{
+    font-weight:900; font-size:1.05rem; letter-spacing:.18em; text-transform:uppercase;
+  }
+  .logo span{color:var(--red);}
+  .cert{font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; opacity:.55; margin-top:4px;}
+  main{width:100%; max-width:680px; padding:16px 20px 60px; flex:1;}
+  .card{
+    background:#fff; border:3px solid var(--dark); border-radius:18px;
+    box-shadow:8px 8px 0 var(--dark); padding:34px 28px; margin-top:18px;
+    animation:pop .25s ease;
+  }
+  @keyframes pop{from{transform:scale(.97);opacity:.4}to{transform:scale(1);opacity:1}}
+  h1{font-size:clamp(2rem,7vw,3.2rem); font-weight:900; line-height:1.02; letter-spacing:-.02em;}
+  h1 .flag{display:inline-block; animation:wave 1.6s ease-in-out infinite; transform-origin:bottom left;}
+  @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+  .sub{margin-top:14px; font-size:1.05rem; line-height:1.5; opacity:.85;}
+  .fine{margin-top:18px; font-size:.7rem; opacity:.5; line-height:1.5;}
+  button.primary{
+    margin-top:26px; width:100%; padding:18px; font-size:1.1rem; font-weight:900;
+    text-transform:uppercase; letter-spacing:.08em; color:#fff; background:var(--red);
+    border:3px solid var(--dark); border-radius:14px; box-shadow:5px 5px 0 var(--dark);
+    cursor:pointer; transition:transform .08s, box-shadow .08s;
+  }
+  button.primary:active{transform:translate(4px,4px); box-shadow:1px 1px 0 var(--dark);}
+  .progress{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .bar{flex:1; height:12px; background:#eee2d4; border:2px solid var(--dark); border-radius:99px; overflow:hidden;}
+  .bar i{display:block; height:100%; background:var(--red); width:0%; transition:width .3s;}
+  .qnum{font-weight:900; font-size:.8rem; white-space:nowrap;}
+  .qtext{font-size:1.3rem; font-weight:900; line-height:1.25; margin-bottom:20px;}
+  .opt{
+    display:block; width:100%; text-align:left; margin-top:12px; padding:15px 16px;
+    font-size:1rem; font-weight:600; background:var(--cream); border:2.5px solid var(--dark);
+    border-radius:12px; cursor:pointer; transition:transform .08s, background .08s;
+  }
+  .opt:hover{background:var(--yellow); transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--dark);}
+  .loading{text-align:center; padding:50px 10px;}
+  .bigflag{font-size:4rem; animation:spin 1.1s linear infinite; display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loadmsg{margin-top:18px; font-weight:700; font-size:1.05rem; min-height:1.5em;}
+  .stamp{
+    display:inline-block; border:3px solid var(--red); color:var(--red); border-radius:8px;
+    padding:4px 12px; font-weight:900; font-size:.75rem; letter-spacing:.15em; text-transform:uppercase;
+    transform:rotate(-4deg); margin-bottom:14px;
+  }
+  .score-line{display:flex; align-items:baseline; gap:10px; margin:10px 0 2px;}
+  .score-big{font-size:4.4rem; font-weight:900; line-height:1; color:var(--red);}
+  .score-cap{font-weight:700; opacity:.6;}
+  .arch{font-size:1.7rem; font-weight:900; margin-top:16px; line-height:1.15;}
+  .roast{margin-top:10px; font-size:1.02rem; line-height:1.55;}
+  .divider{border:none; border-top:2px dashed var(--dark); opacity:.25; margin:26px 0;}
+  .sec-title{font-size:.72rem; font-weight:900; letter-spacing:.2em; text-transform:uppercase; opacity:.55; margin-bottom:12px;}
+  .flagrow{display:flex; gap:10px; margin-top:10px; align-items:flex-start;}
+  .flagrow .pct{font-weight:900; min-width:52px; color:var(--red);}
+  .flagrow .nm{font-weight:800;}
+  .flagrow .ds{font-size:.88rem; opacity:.75; line-height:1.4;}
+  .compat{margin-top:12px;}
+  .compat .cname{display:flex; justify-content:space-between; font-weight:700; font-size:.95rem; margin-bottom:4px;}
+  .cbar{height:14px; border:2px solid var(--dark); border-radius:99px; overflow:hidden; background:#eee2d4;}
+  .cbar i{display:block; height:100%; transition:width .8s ease;}
+  .btnrow{display:flex; gap:12px; margin-top:26px;}
+  .btnrow button{flex:1;}
+  button.ghostbtn{
+    margin-top:26px; padding:18px; font-size:1rem; font-weight:900; text-transform:uppercase;
+    letter-spacing:.06em; background:#fff; border:3px solid var(--dark); border-radius:14px;
+    box-shadow:5px 5px 0 var(--dark); cursor:pointer;
+  }
+  button.ghostbtn:active{transform:translate(4px,4px); box-shadow:1px 1px 0 var(--dark);}
+  footer{padding:18px; font-size:.68rem; opacity:.5; text-align:center; line-height:1.6;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="tape"></div>
+<header>
+  <div class="logo">TheGrong<span>Co.</span></div>
+  <div class="cert">TheGrongMatch · GRONG-001 · imagined by TheGrongCo.</div>
+</header>
+<main>
+  <!-- INTRO -->
+  <section id="intro" class="card">
+    <h1><span class="flag">🚩</span> Red Flag Tester™</h1>
+    <p class="sub">Nuestra IA* analiza tu personalidad, detecta tus red flags y calcula tu compatibilidad con tus dates. Con precisión científica de aproximadamente el 4%.</p>
+    <p class="sub"><strong>12 preguntas. Zero judgment.</strong> Bueno ok, bastante judgment.</p>
+    <button class="primary" onclick="startQuiz()">Analizar mis traumas →</button>
+    <p class="fine">*IA = Inseguridades Automatizadas. TheGrongCo. no se hace responsable de rupturas, epifanías ni mensajes de "tenemos que hablar" derivados de este test. Resultados 100% vinculantes emocionalmente.</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="card hidden">
+    <div class="progress">
+      <div class="bar"><i id="pbar"></i></div>
+      <div class="qnum" id="qnum">1/12</div>
+    </div>
+    <div class="qtext" id="qtext"></div>
+    <div id="opts"></div>
+  </section>
+
+  <!-- LOADING -->
+  <section id="loading" class="card loading hidden">
+    <span class="bigflag">🚩</span>
+    <div class="loadmsg" id="loadmsg">Inicializando IA emocional…</div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="card hidden">
+    <div class="stamp">Certificado oficial</div>
+    <div class="score-line">
+      <div class="score-big" id="scoreNum">0</div>
+      <div class="score-cap">/ 100 red flag score</div>
+    </div>
+    <div class="arch" id="archTitle"></div>
+    <p class="roast" id="archRoast"></p>
+    <hr class="divider">
+    <div class="sec-title">Tus red flags detectadas</div>
+    <div id="flagList"></div>
+    <hr class="divider">
+    <div class="sec-title">Compatibilidad con tus dates</div>
+    <div id="compatList"></div>
+    <div class="btnrow">
+      <button class="primary" onclick="shareResult()" id="shareBtn">Copiar resultado 📋</button>
+      <button class="ghostbtn" onclick="location.reload()">Otra vez 🔁</button>
+    </div>
+    <p class="fine">Comparte tu certificado. O escóndelo. Nosotros ya lo sabemos igual.</p>
+  </section>
+</main>
+<footer>
+  Red Flag Tester™ (TheGrongMatch) · imagined by TheGrongCo. © 2026<br>
+  Cosas que nadie pidió, hechas con IA. Esta semana: GRONG-001. La próxima: algo peor, prometido.
+</footer>
+
+<script>
+// ====== DATA ======
+// dimensions: LB love bomber, GP ghost, MC main character, TP texting psycho, EU emotionally unavailable, CG chaos gremlin
+const QUESTIONS = [
+  {q:"Tu date no contesta en 2 horas. Tú:",
+   o:[["Mando '??' y luego 'jajaja no te preocupes' en el mismo minuto",{TP:3,LB:1}],
+      ["Reviso su última conexión cada 4 minutos, casually",{TP:3}],
+      ["Ni cuenta me di, estaba en el gym / trabajando",{EU:3}],
+      ["Perfecto, yo tampoco pensaba contestar",{GP:3}]]},
+  {q:"Segunda cita y te dicen 'creo que me gustas mucho'. Tú:",
+   o:[["'Yo ya vi nuestra boda en Pinterest' (lo digo en serio)",{LB:3}],
+      ["'Gracias' *cambia de tema hacia mí*",{MC:2,EU:1}],
+      ["*sudando* 'qué rico está este pan, ¿no?'",{EU:3}],
+      ["Les propongo tatuarnos juntos ese finde",{CG:3,LB:1}]]},
+  {q:"Tu ex te escribe 'hola, ¿cómo estás?'. Tu plan:",
+   o:[["Contesto en 0.2 segundos con párrafo emocional",{LB:2,TP:2}],
+      ["Screenshot al grupo, encuesta, análisis forense del 'hola'",{TP:2,MC:1}],
+      ["Visto. Para siempre. Soy una fortaleza.",{GP:2,EU:2}],
+      ["Le digo 'nos vemos hoy' porque el caos me alimenta",{CG:3}]]},
+  {q:"En tu perfil de dating, tu foto principal es:",
+   o:[["Yo llorando pero estéticamente (blanco y negro)",{MC:2,LB:1}],
+      ["Una foto de hace 4 años, mis mejores tiempos",{GP:1,EU:2}],
+      ["Yo en una fiesta haciendo algo legalmente cuestionable",{CG:3}],
+      ["Selfie en el espejo del gym, obvio",{MC:3}]]},
+  {q:"'¿Qué buscas?' — la pregunta fatal. Tu respuesta real:",
+   o:[["Matrimonio, 3 hijos y una granja. Es primera cita.",{LB:3}],
+      ["'Ir viendo qué pasa' (spoiler: nunca pasa nada)",{GP:3}],
+      ["Alguien que me admire mientras hablo de mí",{MC:3}],
+      ["No sé pero que sea intenso y termine mal",{CG:2,LB:1}]]},
+  {q:"Tu date llega 20 minutos tarde. Tú:",
+   o:[["Ya le escribí 6 mensajes en 3 tonos emocionales distintos",{TP:3}],
+      ["Ya me inventé una historia donde me abandonan como en mi infancia",{LB:1,TP:2}],
+      ["Yo llegué 40 minutos tarde, así que vamos bien",{CG:2,GP:1}],
+      ["Aproveché para contestar correos del trabajo",{EU:3}]]},
+  {q:"Discusión de pareja. Tu técnica estrella:",
+   o:[["Silencio absoluto durante 3 días hábiles",{GP:2,EU:2}],
+      ["Llorar primero para ganar la narrativa",{MC:3}],
+      ["Sacar screenshots del 2023 como evidencia",{TP:3}],
+      ["'¿Sabes qué? Vámonos de viaje AHORA' *no resuelve nada*",{CG:3}]]},
+  {q:"¿Cada cuánto stalkeas los likes de tu date?",
+   o:[["Tengo alertas configuradas. Siguiente pregunta.",{TP:3}],
+      ["Solo cuando respiro",{TP:2,LB:1}],
+      ["Nunca, porque eso implicaría demostrar interés",{EU:2,GP:1}],
+      ["Yo no stalkeo, me stalkean (y me encanta)",{MC:3}]]},
+  {q:"Te presentan a sus amigos. Tu movida:",
+   o:[["Les caigo TAN bien que ahora son MIS amigos",{MC:2,LB:1}],
+      ["Me sé sus nombres, cumpleaños y traumas desde antes (investigué)",{TP:3}],
+      ["Aparezco 1 hora, digo 3 frases, desaparezco como leyenda",{GP:3}],
+      ["Termino organizando un after ilegal con el primo",{CG:3}]]},
+  {q:"'Te mereces algo mejor que yo' — tú dices esto cuando:",
+   o:[["Quiero que me digan que no, que soy perfectx",{MC:2,LB:1}],
+      ["Quiero terminar sin ser el villano de la historia",{GP:3}],
+      ["Lo digo en la primera cita como advertencia legal",{CG:1,EU:2}],
+      ["Nunca lo he dicho, yo directamente desaparezco",{GP:2,EU:1}]]},
+  {q:"Tu historial de mensajes a las 3am parece:",
+   o:[["Una tesis doctoral sobre nuestros sentimientos",{LB:3}],
+      ["'jaja' enviado a 4 conversaciones distintas",{GP:2,CG:1}],
+      ["Vacío. A las 3am duermo como CEO responsable.",{EU:3}],
+      ["'estás despiertx?' a alguien que no me conviene",{CG:2,TP:1}]]},
+  {q:"Pregunta final del algoritmo: ¿tú tienes red flags?",
+   o:[["No, yo soy la green flag de este mundo",{MC:3}],
+      ["Sí, pero las llamo 'personalidad'",{CG:2,MC:1}],
+      ["Sí y las tengo documentadas en un Excel",{TP:2,EU:1}],
+      ["Depende, ¿esto se lo van a enseñar a mi date?",{GP:2,LB:1}]]}
+];
+
+const ARCHETYPES = {
+  LB:{name:"Love Bomber Certificadx 💣❤️", flag:"Love Bombing Industrial",
+      desc:"Te enamoras en 0.3 segundos y planeas bodas con desconocidos.",
+      roast:"Tu amor llega más rápido que un delivery premium. Intenso, brillante, y con la misma vida útil que un aguacate. La IA recomienda: respira entre el 'hola' y el 'te amo'."},
+  GP:{name:"Ghost Protocol Elite 👻", flag:"Ghosting Profesional",
+      desc:"Desapareces mejor que tus ganas de comprometerte.",
+      roast:"Houdini te tiene envidia. Tu superpoder es evaporarte justo cuando la cosa se pone real. La IA detectó 47 conversaciones abandonadas en tu conciencia."},
+  MC:{name:"Main Character Sindical 🎬", flag:"Protagonismo Crónico",
+      desc:"Toda historia es sobre ti, incluso las de otras personas.",
+      roast:"Para ti una relación es un documental biográfico donde tu date hace de extra. La IA sugiere: pregunta '¿y tú cómo estás?' al menos una vez por trimestre."},
+  TP:{name:"Analista Forense del Visto 🔍", flag:"Vigilancia No Solicitada",
+      desc:"El FBI debería contratarte. Tu date debería bloquearte.",
+      roast:"Sabes la hora exacta de última conexión de 6 personas. Eso no es amor, es un sistema de monitoreo. La IA te recomienda un hobby que no sea la jurisprudencia del doble check azul."},
+  EU:{name:"CEO Emocionalmente Cerradx 📊", flag:"Indisponibilidad Ejecutiva",
+      desc:"Tienes más disponibilidad para reuniones que para sentimientos.",
+      roast:"Tratas tus emociones como spam: las archivas sin abrir. Tu date necesita agendar una call de 15 min para saber si le quieres. La IA sugiere: sentir algo, aunque sea en horario laboral."},
+  CG:{name:"Chaos Gremlin Romántico 🔥", flag:"Caos Recreativo",
+      desc:"Tus decisiones románticas son un deporte extremo.",
+      roast:"Tu vida amorosa es una montaña rusa sin cinturón y a ti te encanta. Divertidísimx, sí. Estable, jamás. La IA no te recomienda nada porque igual harás lo contrario."}
+};
+
+const DATE_TYPES = [
+  {name:"El/La estable que madruga 🧘", base:{EU:-8,CG:-10,LB:-4,GP:-6,MC:-5,TP:-7}},
+  {name:"Otrx red flag igual que tú 🚩", base:{EU:6,CG:9,LB:7,GP:6,MC:7,TP:6}},
+  {name:"Tu situationship de siempre 🌀", base:{GP:8,EU:5,CG:4,LB:-6,MC:2,TP:-3}},
+  {name:"Alguien de terapia avanzada 🛋️", base:{LB:4,TP:3,MC:-7,GP:-8,EU:2,CG:-4}},
+  {name:"El gym rat con proteína emocional 💪", base:{MC:6,EU:4,CG:2,LB:-2,GP:1,TP:-5}}
+];
+
+const LOAD_MSGS = [
+  "Inicializando IA emocional…",
+  "Escaneando tus chats imaginarios…",
+  "Consultando a tu ex (broma… ¿o no?)…",
+  "Midiendo nivel de drama por hectárea…",
+  "Compilando traumas.exe…",
+  "Generando certificado oficial…"
+];
+
+// ====== STATE ======
+let current = 0;
+let scores = {LB:0,GP:0,MC:0,TP:0,EU:0,CG:0};
+let shareText = "";
+
+// ====== FLOW ======
+function show(id){
+  ["intro","quiz","loading","result"].forEach(s=>document.getElementById(s).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function startQuiz(){
+  current = 0;
+  scores = {LB:0,GP:0,MC:0,TP:0,EU:0,CG:0};
+  show("quiz");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  document.getElementById("qnum").textContent = (current+1)+"/"+QUESTIONS.length;
+  document.getElementById("pbar").style.width = (current/QUESTIONS.length*100)+"%";
+  document.getElementById("qtext").textContent = q.q;
+  const box = document.getElementById("opts");
+  box.innerHTML = "";
+  // shuffle option order for replay value
+  const opts = q.o.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
+  opts.forEach(({o})=>{
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = o[0];
+    b.onclick = ()=>answer(o[1]);
+    box.appendChild(b);
+  });
+}
+
+function answer(pts){
+  for(const k in pts) scores[k]+=pts[k];
+  current++;
+  if(current < QUESTIONS.length) renderQuestion();
+  else runFakeAI();
+}
+
+function runFakeAI(){
+  show("loading");
+  let i = 0;
+  const el = document.getElementById("loadmsg");
+  el.textContent = LOAD_MSGS[0];
+  const t = setInterval(()=>{
+    i++;
+    if(i < LOAD_MSGS.length) el.textContent = LOAD_MSGS[i];
+    else { clearInterval(t); showResult(); }
+  }, 700);
+}
+
+// ====== RESULTS ======
+function computeResult(){
+  const maxPer = {LB:0,GP:0,MC:0,TP:0,EU:0,CG:0};
+  QUESTIONS.forEach(q=>{
+    for(const k in maxPer){
+      let best = 0;
+      q.o.forEach(o=>{ if(o[1][k] && o[1][k]>best) best=o[1][k]; });
+      maxPer[k]+=best;
+    }
+  });
+  const pct = {};
+  for(const k in scores) pct[k] = Math.round(scores[k]/maxPer[k]*100);
+
+  const totalPts = Object.values(scores).reduce((a,b)=>a+b,0);
+  // 12 questions, ~3 pts each -> ~36-40 total possible; normalize to 0-100 with floor 15 (nadie se salva)
+  const redScore = Math.min(100, Math.max(15, Math.round(totalPts/40*100)+10));
+
+  const ranked = Object.keys(pct).sort((a,b)=>pct[b]-pct[a]);
+  const top = ranked[0];
+
+  const compat = DATE_TYPES.map(d=>{
+    let v = 55;
+    for(const k in d.base) v += d.base[k]*(pct[k]/100);
+    v = Math.round(Math.min(98, Math.max(4, v)));
+    return {name:d.name, v};
+  }).sort((a,b)=>b.v-a.v);
+
+  return {pct, redScore, ranked, top, compat};
+}
+
+function showResult(){
+  const r = computeResult();
+  show("result");
+
+  // animated score
+  const el = document.getElementById("scoreNum");
+  let n = 0;
+  const step = Math.max(1, Math.round(r.redScore/40));
+  const t = setInterval(()=>{
+    n = Math.min(r.redScore, n+step);
+    el.textContent = n;
+    if(n>=r.redScore) clearInterval(t);
+  }, 25);
+
+  const arch = ARCHETYPES[r.top];
+  document.getElementById("archTitle").textContent = arch.name;
+  document.getElementById("archRoast").textContent = arch.roast;
+
+  const fl = document.getElementById("flagList");
+  fl.innerHTML = "";
+  r.ranked.slice(0,3).forEach(k=>{
+    const a = ARCHETYPES[k];
+    const div = document.createElement("div");
+    div.className = "flagrow";
+    div.innerHTML = '<div class="pct">'+r.pct[k]+'%</div><div><div class="nm">🚩 '+a.flag+'</div><div class="ds">'+a.desc+'</div></div>';
+    fl.appendChild(div);
+  });
+
+  const cl = document.getElementById("compatList");
+  cl.innerHTML = "";
+  r.compat.forEach(c=>{
+    const col = c.v>=66 ? "var(--green)" : c.v>=40 ? "var(--yellow)" : "var(--red)";
+    const div = document.createElement("div");
+    div.className = "compat";
+    div.innerHTML = '<div class="cname"><span>'+c.name+'</span><span>'+c.v+'%</span></div><div class="cbar"><i style="width:0%;background:'+col+'"></i></div>';
+    cl.appendChild(div);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ div.querySelector("i").style.width = c.v+"%"; }));
+  });
+
+  shareText = "🚩 TheGrongMatch · Red Flag Tester™ by TheGrongCo.\n" +
+    "Mi red flag score: "+r.redScore+"/100\n" +
+    "Diagnóstico oficial: "+arch.name+"\n" +
+    "Top red flag: "+ARCHETYPES[r.ranked[0]].flag+" ("+r.pct[r.ranked[0]]+"%)\n" +
+    "Mejor match: "+r.compat[0].name+" ("+r.compat[0].v+"%)\n" +
+    "Hazte el test. O no. Igual ya lo sabemos todos.\nimagined by TheGrongCo.";
+}
+
+function shareResult(){
+  const btn = document.getElementById("shareBtn");
+  const done = ()=>{ btn.textContent = "¡Copiado! Ve a asustar a alguien ✅"; setTimeout(()=>btn.textContent="Copiar resultado 📋", 2500); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(shareText).then(done).catch(()=>fallbackCopy(done));
+  } else fallbackCopy(done);
+}
+function fallbackCopy(done){
+  const ta = document.createElement("textarea");
+  ta.value = shareText;
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand("copy"); done(); }catch(e){}
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>

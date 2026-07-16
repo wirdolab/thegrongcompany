@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheGrongProtocol — not wrong. grong.</title>
+<meta name="description" content="El sistema central de TheGrongCo. Cosas que nadie pidió, hechas con IA.">
+<style>
+  :root{
+    --bg:#FAF6F0; --ink:#161616; --dim:#8B857A; --line:#E4DDD1;
+    --red:#FF3B30; --green:#0E9F4E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  ::selection{background:var(--red); color:var(--bg);}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    line-height:1.6; font-size:15px;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px);
+    background-size:100% 96px;
+  }
+  a{color:inherit;}
+  .wrap{max-width:880px; margin:0 auto; padding:0 28px;}
+
+  /* NAV */
+  nav{display:flex; justify-content:space-between; align-items:center; padding:26px 0; border-bottom:1px solid var(--line); flex-wrap:wrap; gap:8px;}
+  .brand{font-weight:700; letter-spacing:.02em;}
+  .brand b{color:var(--red); font-weight:700;}
+  .sys{font-size:.68rem; color:var(--dim); letter-spacing:.18em; text-transform:uppercase;}
+  .sys .ok{color:var(--green);}
+
+  /* HERO */
+  .hero{padding:110px 0 70px;}
+  .proto-label{font-size:.68rem; letter-spacing:.34em; text-transform:uppercase; color:var(--dim);}
+  h1{
+    font-size:clamp(2.4rem,8.5vw,4.6rem); font-weight:700; letter-spacing:-.03em;
+    line-height:1.05; margin:18px 0 8px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  h1 .flip{display:inline-block; min-width:1.1em;}
+  .strike{position:relative; color:var(--dim);}
+  .strike::after{content:""; position:absolute; left:-2%; right:-2%; top:52%; height:3px; background:var(--red); transform:rotate(-3deg);}
+  .tag{font-size:1.05rem; color:var(--dim); max-width:560px; margin-top:18px;}
+  .tag em{font-style:normal; color:var(--ink);}
+  .cursor{display:inline-block; width:.6em; height:1.1em; background:var(--green); vertical-align:text-bottom; animation:blink 1.1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .wrongnote{font-size:.68rem; color:var(--dim); margin-top:26px; letter-spacing:.06em;}
+  .wrongnote s{color:var(--red);}
+
+  /* STATS */
+  .stats{display:flex; gap:0; margin-top:60px; border:1px solid var(--line); flex-wrap:wrap;}
+  .stat{flex:1; min-width:140px; padding:18px 20px; border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat b{display:block; font-size:1.5rem; font-weight:700; color:var(--ink);}
+  .stat span{font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--dim);}
+  .stat.tilt{transform:rotate(-1.2deg); background:var(--bg); border:1px solid var(--line); margin:-1px;}
+  .stat .pct-wrong{color:var(--green);}
+
+  /* SECTIONS */
+  section{padding:70px 0 0;}
+  h2{font-size:.68rem; font-weight:400; letter-spacing:.34em; text-transform:uppercase; color:var(--dim); margin-bottom:34px;}
+  h2::before{content:"// "; color:var(--red);}
+
+  /* REGISTRY */
+  .registry{border-top:1px solid var(--line);}
+  .row{
+    display:grid; grid-template-columns:110px 1fr auto; gap:18px; align-items:baseline;
+    padding:26px 4px; border-bottom:1px solid var(--line); text-decoration:none;
+    transition:background .15s, padding-left .15s;
+  }
+  .row:hover{background:#F2ECE2; padding-left:14px;}
+  .row .serial{font-size:.68rem; color:var(--dim); letter-spacing:.12em;}
+  .row .name{font-size:1.25rem; font-weight:700; letter-spacing:-.01em; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .row .name b{color:var(--red); font-weight:700;}
+  .row .desc{font-size:.8rem; color:var(--dim); margin-top:6px; max-width:520px;}
+  .row .st{font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; white-space:nowrap;}
+  .st.live{color:var(--green);}
+  .st.dev{color:var(--ink); opacity:.55;}
+  .row.wrongrow{transform:rotate(.6deg);}
+  .row.nextrow .name{color:var(--dim);}
+  .row.nextrow{border-bottom-style:dashed;}
+  .upside{display:inline-block; transform:rotate(180deg);}
+
+  /* TRANSMISSION */
+  .trans{border:1px solid var(--line); padding:30px; max-width:680px;}
+  .trans .th{font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:var(--green); margin-bottom:14px;}
+  .trans h3{font-size:1.15rem; font-weight:700; line-height:1.4; margin-bottom:12px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .trans p{font-size:.82rem; color:var(--dim);}
+  .trans .sig{margin-top:16px; font-size:.68rem; color:var(--dim);}
+  .trans .sig::before{content:"> ";}
+
+  /* MANIFESTO */
+  .mani{font-size:clamp(1.15rem,3.4vw,1.7rem); font-weight:700; line-height:1.45; max-width:700px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; letter-spacing:-.01em;}
+  .mani em{font-style:normal; color:var(--red);}
+  .mani .g{color:var(--green);}
+
+  footer{border-top:1px solid var(--line); margin-top:90px;}
+  .fwrap{padding:30px 0 60px; font-size:.68rem; color:var(--dim); line-height:1.9;}
+  .fwrap s{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <div class="brand">TheGrong<b>Co.</b></div>
+    <div class="sys">system status: <span class="ok">wrong</span> · uptime: probablemente</div>
+  </nav>
+
+  <header class="hero">
+    <div class="proto-label">protocolo central · v1.0.1 (la 1.0.0 salió bien y la borramos)</div>
+    <h1>The<span class="flip" id="flip">Grong</span>Protocol</h1>
+    <p class="tag"><em>Not wrong. Grong.™</em> El sistema central de TheGrongCo.: cada semana la IA fabrica, publica y promociona una idea que nadie pidió. Este es el registro oficial.<span class="cursor"></span></p>
+    <p class="wrongnote">nota legal: todo en este sitio está <s>mal</s> correcto. si algo parece un error, es una feature. si algo parece una feature, disculpe las molestias.</p>
+
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section>
+    <h2>registro de grongideas</h2>
+    <div class="registry" id="registry"></div>
+  </section>
+
+  <section>
+    <h2>última transmisión</h2>
+    <div class="trans">
+      <div class="th">broadcast · para publicación inmediata (nadie la pidió)</div>
+      <h3>TheGrongCo. anuncia TheGrongMatch: la primera plataforma que te dice tus red flags antes que tu terapeuta</h3>
+      <p>CDMX — El conglomerado se complace en anunciar GRONG-001, un análisis de personalidad romántica con precisión del 4%. "Estamos muy orgullosos de algo", declaró el Chief Grong Officer, cuyo puesto sigue vacante. Los accionistas (0) reaccionaron con indiferencia histórica.</p>
+      <p class="sig">transmisión imagined by TheGrongCo.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>suscripción al protocolo</h2>
+    <div class="trans" style="max-width:680px;">
+      <div class="th">broadcast list · 1 correo por lanzamiento · 0 spam (no sabemos hacerlo)</div>
+      <h3>Entérate de cada grongidea antes que nadie. Bueno, igual que todos. Pero por correo.</h3>
+      <p>Cada semana lanzamos algo que nadie pidió. Suscríbete para que al menos alguien lo haya pedido, técnicamente.</p>
+      <!-- NEWSLETTER_EMBED: reemplazar este bloque con el embed de Buttondown/Substack cuando exista la cuenta -->
+      <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+        <input id="subEmail" type="email" placeholder="tu@correo.com" style="flex:1; min-width:200px; background:var(--bg); border:1px solid var(--line); color:var(--ink); font-family:inherit; font-size:.85rem; padding:12px;">
+        <button onclick="subscribe()" style="background:var(--green); color:#fff; border:none; padding:12px 22px; font-family:inherit; font-weight:700; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer;">suscribirme →</button>
+      </div>
+      <p class="sig" id="subMsg" style="display:none;">registrado en el protocolo. tu bandeja de entrada acaba de empeorar oficialmente.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>buzón de grongideas</h2>
+    <div class="trans" style="max-width:680px;">
+      <div class="th">input externo · protocolo de sugerencias</div>
+      <h3>¿Tienes una idea que valga la pena?</h3>
+      <p>Qué raro. Mándala igual. Si es suficientemente <s style="color:var(--red)">mala</s> buena, la construimos, le ponemos serial y pasará a ser propiedad emocional del conglomerado. Crédito completo para ti, responsabilidad completa para nadie.</p>
+      <textarea id="ideaBox" rows="3" placeholder="ej: una app que aplaude cuando terminas tus pendientes…" style="width:100%; margin-top:16px; background:var(--bg); border:1px solid var(--line); color:var(--ink); font-family:inherit; font-size:.85rem; padding:12px; resize:vertical;"></textarea>
+      <button onclick="submitIdea()" style="margin-top:12px; background:var(--red); color:#fff; border:none; padding:12px 22px; font-family:inherit; font-weight:700; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer;">transmitir idea →</button>
+      <p class="sig" id="ideaMsg" style="display:none;">transmisión recibida. el comité (1 persona) la evaluará con rigor cuestionable.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>manifesto</h2>
+    <p class="mani">Creemos que la línea entre <em>wrong</em> y <span class="g">grong</span> es una sola letra, y la cruzamos cada semana. Entregamos lo innecesario con excelencia. Porque alguien tenía que hacerlo. Bueno, no. <em>Pero aquí estamos.</em></p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap fwrap">
+    TheGrongCo. © 2026 · All rights <s>reserved</s> wronged. · everything here: imagined by TheGrongCo.<br>
+    TheGrongProtocol es el sistema central del conglomerado. Este sitio también cuenta como producto: GRONG-000-B.<br>
+    contacto: hey@wirdolab.com · quejas: <span class="upside">al vacío, con confianza</span> · hora local: incorrecta
+  </div>
+</footer>
+
+<script>
+// ====== REGISTRO — agregar una grongidea = agregar un objeto aquí ======
+const GRONGIDEAS = [
+  {
+    serial:"GRONG-001",
+    name:"TheGrong", accent:"Match",
+    desc:"Matching por red flags. Certifica tus banderas rojas, encuentra gente igual de intensa y rompe el hielo con tus propios traumas. Precisión del 4%, honestidad del 100%.",
+    status:"live", statusLabel:"● live",
+    link:"red-flag-tester.html",
+    wrong:false
+  },
+  {
+    serial:"GRONG-OO2", // sí, con letras O. no es error. bueno, sí. pero no.
+    name:"TheGrong", accent:"Web",
+    desc:"Creador de páginas web para negocios reales: describe tu changarro y obtén un sitio con menú, catálogo u horarios según tu giro. 112 industrias soportadas, 0 solicitadas.",
+    status:"dev", statusLabel:"◌ en desarrollo",
+    link:null,
+    wrong:true // esta fila está ligeramente chueca a propósito
+  },
+  {
+    serial:"GRONG-003",
+    name:"TheGrong", accent:"Ex",
+    desc:"Tu historial romántico en formato recap anual. Las estadísticas que nadie pidió sobre gente que ya no está. Cierra ciclos, ábrelos otra vez, compártelos.",
+    status:"dev", statusLabel:"◌ en desarrollo",
+    link:null,
+    wrong:false
+  }
+];
+
+const reg = document.getElementById("registry");
+GRONGIDEAS.forEach(g=>{
+  const el = document.createElement(g.link ? "a" : "div");
+  if(g.link) el.href = g.link;
+  el.className = "row" + (g.wrong ? " wrongrow" : "");
+  el.innerHTML =
+    '<div class="serial">'+g.serial+'</div>'+
+    '<div><div class="name">'+g.name+'<b>'+g.accent+'</b></div><div class="desc">'+g.desc+'</div><div class="serial" style="margin-top:8px">imagined by TheGrongCo.</div></div>'+
+    '<div class="st '+g.status+'">'+g.statusLabel+'</div>';
+  reg.appendChild(el);
+});
+// próxima entrada
+const nx = document.createElement("div");
+nx.className = "row nextrow";
+nx.innerHTML =
+  '<div class="serial">GRONG-'+String(GRONGIDEAS.length+1).padStart(3,"0")+'</div>'+
+  '<div><div class="name">???</div><div class="desc">La próxima semana. Será peor. Prometido.</div></div>'+
+  '<div class="st dev">◌ inevitable</div>';
+reg.appendChild(nx);
+
+// stats — una está mal a propósito
+const live = GRONGIDEAS.filter(g=>g.status==="live").length;
+document.getElementById("stats").innerHTML =
+  '<div class="stat"><b>'+GRONGIDEAS.length+'</b><span>grongideas</span></div>'+
+  '<div class="stat"><b>'+live+'</b><span>en producción</span></div>'+
+  '<div class="stat"><b>0</b><span>solicitadas</span></div>'+
+  '<div class="stat tilt"><b class="pct-wrong">104%</b><span>deployment</span></div>';
+
+// suscripción: fallback mailto hasta conectar Buttondown/Substack (ver comentario NEWSLETTER_EMBED)
+function subscribe(){
+  const em = document.getElementById("subEmail").value.trim();
+  if(!em || !em.includes("@")) return;
+  window.location.href = "mailto:hey@wirdolab.com?subject=" + encodeURIComponent("[GRONG SUB] " + em) +
+    "&body=" + encodeURIComponent("Quiero suscribirme al protocolo. Sé lo que hago. Más o menos.");
+  document.getElementById("subMsg").style.display = "block";
+}
+
+// buzón de ideas: abre el cliente de correo con la idea (sin backend)
+function submitIdea(){
+  const idea = document.getElementById("ideaBox").value.trim();
+  if(!idea) return;
+  const subject = encodeURIComponent("[GRONGIDEA] transmisión externa");
+  const body = encodeURIComponent("Idea:\n" + idea + "\n\n— enviada desde TheGrongProtocol. nadie la pidió, pero aquí está.");
+  window.location.href = "mailto:hey@wirdolab.com?subject=" + subject + "&body=" + body;
+  document.getElementById("ideaMsg").style.display = "block";
+}
+
+// wordmark: se equivoca cada tanto — Wrong → Grong, corregido en vivo
+const flip = document.getElementById("flip");
+const seq = ["Grong","Wrong","Wro—","Grong"];
+let i = 0;
+setInterval(()=>{
+  i = (i+1) % seq.length;
+  flip.textContent = seq[i];
+  flip.style.color = seq[i].startsWith("W") ? "var(--red)" : "";
+}, 1800);
+</script>
+</body>
+</html>
