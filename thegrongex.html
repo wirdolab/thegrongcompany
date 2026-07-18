@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheGrongEx — Calificación según tus ex</title>
+<meta name="description" content="Tu reputación romántica, escrita por quienes te conocieron demasiado bien. Imagined by TheGrongCo.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Righteous&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+  :root {
+    --paper:#fdf6ec;
+    --ink:#1a1a1a;
+    --pink:#ff5fa2;
+    --teal:#2ec4b6;
+    --yellow:#ffd23f;
+    --purple:#9b5de5;
+    --orange:#ff8552;
+    --shadow:5px 5px 0 var(--ink);
+    --display:'Righteous', 'Arial Black', sans-serif;
+    --body:'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; background:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px 12px; font-family:var(--body); color:var(--ink);
+    overflow-x:hidden; position:relative;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; }
+  }
+
+  .confetti { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .shape { position:absolute; opacity:.8; animation:float 7s ease-in-out infinite; }
+  .shape:nth-child(2n) { animation-duration:9s; animation-delay:-3s; }
+  .shape:nth-child(3n) { animation-duration:11s; animation-delay:-5s; }
+  @keyframes float {
+    0%,100% { transform:translateY(0) rotate(0deg); }
+    50% { transform:translateY(-22px) rotate(12deg); }
+  }
+
+  .phone {
+    width:min(400px,100%); min-height:660px;
+    background:#fff;
+    border:3px solid var(--ink); border-radius:22px;
+    box-shadow:8px 8px 0 var(--ink);
+    padding:24px 20px 22px; position:relative; z-index:1;
+    overflow:hidden;
+  }
+
+  .app-tag { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .logo {
+    font-family:var(--display); font-size:20px; letter-spacing:1px;
+    color:var(--pink); text-shadow:2px 2px 0 var(--ink);
+    transform:rotate(-2deg);
+  }
+  .badge90 {
+    font-size:10px; font-weight:700; letter-spacing:1px;
+    background:var(--yellow); border:2px solid var(--ink); border-radius:20px;
+    padding:4px 10px; box-shadow:2px 2px 0 var(--ink);
+    animation:wobble 3s ease-in-out infinite;
+  }
+  @keyframes wobble { 0%,100% { transform:rotate(-3deg);} 50% { transform:rotate(3deg);} }
+
+  .tagline {
+    font-size:11px; font-weight:500; color:#777; margin-bottom:16px;
+    border-bottom:2px dashed var(--ink); padding-bottom:12px;
+  }
+
+  .profile { text-align:center; margin-bottom:16px; }
+  .avatar {
+    width:82px; height:82px; border-radius:50%; margin:0 auto 10px;
+    background:var(--teal); border:3px solid var(--ink);
+    box-shadow:4px 4px 0 var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-size:30px; color:#fff;
+    text-shadow:2px 2px 0 var(--ink);
+    animation:bounce-in .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes bounce-in { from { transform:scale(.6); opacity:0; } }
+  .name {
+    font-family:var(--display); font-size:24px; outline:none;
+    border-bottom:2px dashed transparent; display:inline-block; min-width:60px;
+  }
+  .name:focus { border-bottom-color:var(--pink); }
+  .edit-hint { font-size:9px; letter-spacing:1px; color:#aaa; margin-top:3px; text-transform:uppercase; font-weight:700; }
+  .verified {
+    display:inline-block; margin-top:8px;
+    font-size:10px; font-weight:700; letter-spacing:.5px;
+    background:var(--purple); color:#fff;
+    border:2px solid var(--ink); border-radius:20px; padding:4px 12px;
+    box-shadow:2px 2px 0 var(--ink);
+  }
+  .verified.community { background:var(--orange); }
+
+  .score-card {
+    background:var(--yellow); border:3px solid var(--ink); border-radius:16px;
+    box-shadow:var(--shadow); padding:16px; margin-bottom:16px;
+    display:flex; gap:16px; align-items:center;
+  }
+  .big-score { text-align:center; min-width:92px; }
+  .num { font-family:var(--display); font-size:46px; line-height:1; }
+  .stars { font-size:18px; letter-spacing:2px; margin-top:4px;
+    color:var(--pink); text-shadow:1px 1px 0 var(--ink); }
+  .stars .off { color:#fff; }
+  .count { font-size:10px; font-weight:700; margin-top:6px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .bars { flex:1; }
+  .bar-row { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:11px; font-weight:700; }
+  .bar-track { flex:1; height:10px; background:#fff; border:2px solid var(--ink); border-radius:6px; overflow:hidden; }
+  .bar-fill { height:100%; background:var(--pink); width:0; transition:width .8s cubic-bezier(.2,.8,.2,1); }
+
+  .section-title {
+    font-family:var(--display); font-size:14px; margin:18px 0 10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-title::after { content:""; flex:1; height:3px; background:var(--ink); border-radius:2px; }
+
+  .review {
+    background:#fff; border:3px solid var(--ink); border-radius:14px;
+    box-shadow:4px 4px 0 var(--ink);
+    padding:13px 15px; margin-bottom:14px;
+    opacity:0; transform:translateY(12px);
+    animation:pop-in .45s cubic-bezier(.34,1.56,.64,1) forwards;
+    transition:transform .2s;
+  }
+  .review:hover { transform:rotate(-1deg) scale(1.01); }
+  .review:nth-child(2n) { background:#fff5fa; }
+  @keyframes pop-in { to { opacity:1; transform:none; } }
+  .review .head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .who { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+    background:var(--teal); color:#fff; border:2px solid var(--ink); border-radius:12px; padding:2px 9px; }
+  .who.user { background:var(--orange); }
+  .rstars { font-size:13px; color:var(--pink); text-shadow:1px 1px 0 var(--ink); }
+  .rstars .off { color:#e5e0d8; text-shadow:none; }
+  .rtext { font-size:13.5px; line-height:1.5; font-weight:500; }
+  .rmeta { font-size:10px; font-weight:700; color:#999; margin-top:7px; text-transform:uppercase; letter-spacing:.5px; }
+
+  /* proof polaroid */
+  .proof-row { display:flex; gap:12px; align-items:flex-start; margin-top:10px; }
+  .polaroid {
+    flex-shrink:0; width:86px; background:#fff;
+    border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
+    padding:5px 5px 3px; transform:rotate(-3deg);
+    transition:transform .2s;
+  }
+  .polaroid:hover { transform:rotate(0deg) scale(1.06); }
+  .polaroid img, .polaroid svg { width:100%; height:62px; object-fit:cover; display:block; border:2px solid var(--ink); }
+  .polaroid .cap { font-size:7.5px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; text-align:center; padding:3px 0 1px; color:#777; }
+
+  /* validation */
+  .validation { flex:1; }
+  .v-badge {
+    display:inline-block; font-size:9px; font-weight:700; letter-spacing:.5px;
+    text-transform:uppercase; border:2px solid var(--ink); border-radius:10px;
+    padding:3px 8px; margin-bottom:6px;
+  }
+  .v-badge.ok { background:var(--teal); color:#fff; }
+  .v-badge.pending { background:var(--yellow); }
+  .v-progress { font-size:9.5px; font-weight:700; color:#999; margin-bottom:6px; text-transform:uppercase; letter-spacing:.3px; }
+  .vote-row { display:flex; gap:6px; }
+  .vote {
+    font-family:var(--body); font-size:10px; font-weight:700; cursor:pointer;
+    border:2px solid var(--ink); border-radius:10px; padding:5px 9px;
+    background:#fff; box-shadow:2px 2px 0 var(--ink);
+    transition:transform .1s, background .15s;
+  }
+  .vote:hover { transform:translate(-1px,-1px); }
+  .vote:active { transform:translate(2px,2px); box-shadow:0 0 0 var(--ink); }
+  .vote.confirm.voted { background:var(--teal); color:#fff; }
+  .vote.deny.voted { background:var(--pink); color:#fff; }
+  .vote:disabled { cursor:default; opacity:.85; }
+
+  /* buttons */
+  .btn {
+    width:100%; padding:14px; margin-top:10px; cursor:pointer;
+    font-family:var(--display); font-size:14px; letter-spacing:.5px;
+    border:3px solid var(--ink); border-radius:14px;
+    box-shadow:var(--shadow);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .btn:hover { transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--ink); }
+  .btn:active { transform:translate(3px,3px); box-shadow:2px 2px 0 var(--ink); }
+  .btn-pink { background:var(--pink); color:#fff; }
+  .btn-teal { background:var(--teal); color:#fff; }
+  .btn-purple { background:var(--purple); color:#fff; }
+  .btn-ghost { background:#fff; color:var(--ink); }
+  .btn.hidden { display:none; }
+
+  .disclaimer {
+    text-align:center; font-size:9px; font-weight:700; color:#bbb;
+    margin-top:14px; line-height:1.6; text-transform:uppercase; letter-spacing:.5px;
+  }
+
+  /* form view */
+  .view { display:none; }
+  .view.active { display:block; animation:slide-in .4s cubic-bezier(.2,.8,.2,1); }
+  @keyframes slide-in { from { opacity:0; transform:translateX(24px); } }
+
+  .form-title { font-family:var(--display); font-size:20px; margin-bottom:4px; transform:rotate(-1deg); }
+  .form-sub { font-size:12px; color:#777; margin-bottom:16px; }
+  .field { margin-bottom:13px; }
+  .field label { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+  .field label small { color:#aaa; font-weight:700; }
+  .field input, .field textarea, .field select {
+    width:100%; padding:11px 13px; font-family:var(--body); font-size:14px; font-weight:500;
+    border:3px solid var(--ink); border-radius:12px; background:#fff; outline:none;
+    box-shadow:3px 3px 0 var(--ink); transition:box-shadow .15s, transform .15s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--pink);
+  }
+  .field textarea { resize:none; height:74px; }
+
+  .star-pick { display:flex; gap:6px; }
+  .star-pick button {
+    flex:1; padding:10px 0; font-size:20px; cursor:pointer;
+    background:#fff; border:3px solid var(--ink); border-radius:12px;
+    box-shadow:3px 3px 0 var(--ink); color:#e5e0d8;
+    transition:transform .12s, color .12s, background .12s;
+  }
+  .star-pick button:hover { transform:translateY(-2px); }
+  .star-pick button.on { color:var(--pink); background:var(--yellow); text-shadow:1px 1px 0 var(--ink); }
+
+  /* photo dropzone */
+  .dropzone {
+    border:3px dashed var(--ink); border-radius:14px; background:#fffbe9;
+    padding:16px; text-align:center; cursor:pointer;
+    transition:background .15s, transform .12s;
+  }
+  .dropzone:hover { background:var(--yellow); transform:translate(-1px,-1px); }
+  .dropzone.error { border-color:var(--pink); background:#fff0f6; }
+  .dropzone .dz-title { font-weight:700; font-size:12px; }
+  .dropzone .dz-sub { font-size:10px; color:#999; margin-top:3px; font-weight:500; }
+  .dropzone input { display:none; }
+  .dz-preview { display:none; margin-top:10px; }
+  .dz-preview.show { display:flex; justify-content:center; }
+
+  .alert {
+    background:var(--orange); border:3px solid var(--ink); border-radius:14px;
+    box-shadow:4px 4px 0 var(--ink); padding:12px 14px; margin-bottom:16px;
+    font-size:12px; font-weight:700; color:#fff; line-height:1.5;
+    transform:rotate(-.5deg);
+  }
+  .rules {
+    font-size:10.5px; color:#999; font-weight:500; line-height:1.6;
+    background:#faf6ee; border:2px dashed #ccc; border-radius:12px;
+    padding:10px 12px; margin-bottom:14px;
+  }
+  .rules b { color:var(--ink); }
+
+  .share-tip {
+    margin-top:12px; text-align:center;
+    background:var(--yellow); border:3px solid var(--ink); border-radius:14px;
+    box-shadow:4px 4px 0 var(--ink); padding:10px;
+    font-size:11px; font-weight:700; letter-spacing:.3px;
+    animation:wobble 3s ease-in-out infinite; display:none;
+  }
+  .share-tip.show { display:block; }
+
+  /* toast */
+  .toast {
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:var(--ink); color:#fff; font-weight:700; font-size:13px;
+    padding:12px 22px; border-radius:14px; border:3px solid var(--ink);
+    box-shadow:4px 4px 0 rgba(0,0,0,.2); z-index:50;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1); pointer-events:none;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* hide interactive bits during PNG export */
+  .exporting .btn, .exporting .edit-hint, .exporting .vote-row,
+  .exporting .share-tip, .exporting .v-progress { display:none !important; }
+  .exporting .review, .exporting .score-card, .exporting .avatar,
+  .exporting .shape { animation:none !important; opacity:1 !important; transform:none !important; }
+  .exporting .bar-fill { transition:none !important; }
+</style>
+</head>
+<body>
+
+<div class="confetti" id="confetti"></div>
+
+<div class="phone" id="capture">
+
+  <div class="app-tag">
+    <div class="logo">TheGrongEx</div>
+    <div class="badge90">est. 1996</div>
+  </div>
+  <div class="tagline">La única app donde tu reputación la escriben quienes te conocieron demasiado bien.</div>
+
+  <!-- ===== RATING VIEW ===== -->
+  <div class="view active" id="view-rating">
+
+    <div class="profile">
+      <div class="avatar" id="initials">GR</div>
+      <div class="name" id="name" contenteditable="true" spellcheck="false">Grong</div>
+      <div class="edit-hint">tap para editar nombre</div>
+      <div><span class="verified" id="verifiedBadge">Ex verificados</span></div>
+    </div>
+
+    <div class="score-card">
+      <div class="big-score">
+        <div class="num" id="score">2.7</div>
+        <div class="stars" id="scoreStars"></div>
+        <div class="count" id="scoreCount">4 reseñas</div>
+      </div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="section-title">Sus ex opinan</div>
+    <div id="reviews"></div>
+
+    <button class="btn btn-pink" id="shuffle">Consultar a otros ex</button>
+    <button class="btn btn-teal" id="goBuild">¿Tu ex no aparece? Créale su ficha</button>
+    <button class="btn btn-purple" id="exportPng">Descargar para story</button>
+    <button class="btn btn-ghost hidden" id="copyLink">Copiar link de la ficha</button>
+
+    <div class="share-tip" id="shareTip">Súbelo a tu story. El pueblo merece saber.</div>
+
+    <div class="disclaimer">TheGrongEx no se hace responsable por daños emocionales.<br>Las reseñas no pueden apelarse. · imagined by TheGrongCo.</div>
+  </div>
+
+  <!-- ===== BUILD VIEW ===== -->
+  <div class="view" id="view-build">
+
+    <div class="alert">Servicio público: crea la ficha de esa persona para que la gente sepa con quién está saliendo.</div>
+
+    <div class="form-title">Crear ficha de tu ex</div>
+    <div class="form-sub">Tu reseña será la primera de su historial. Sin apelaciones.</div>
+
+    <div class="rules">
+      <b>Reglas anti-inventos:</b> toda reseña necesita <b>foto de prueba</b> (tú con esa persona)
+      y debe ser <b>confirmada por 3 personas</b> que conocieron la relación antes de marcarse como verificada.
+      Sin evidencia, no hay ficha.
+    </div>
+
+    <div class="field">
+      <label>Nombre del implicado/a</label>
+      <input type="text" id="fName" placeholder="Ej. Kevin" maxlength="20">
+    </div>
+
+    <div class="field">
+      <label>Tu calificación</label>
+      <div class="star-pick" id="starPick"></div>
+    </div>
+
+    <div class="field">
+      <label>Tu reseña</label>
+      <textarea id="fReview" placeholder="Ej. Nunca pidió perdón. Ni una vez. Tengo capturas." maxlength="140"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Foto de prueba <small>(tú con tu ex — obligatoria)</small></label>
+      <div class="dropzone" id="dropzone">
+        <div class="dz-title" id="dzTitle">Sube la evidencia</div>
+        <div class="dz-sub">JPG o PNG · la cara de tu ex puede ir censurada, la evidencia no</div>
+        <input type="file" id="fPhoto" accept="image/*">
+        <div class="dz-preview" id="dzPreview">
+          <div class="polaroid"><img id="dzImg" alt="evidencia"><div class="cap">evidencia adjunta</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Cuánto duró?</label>
+      <input type="text" id="fDuration" placeholder="Ej. 8 meses" maxlength="20">
+    </div>
+
+    <div class="field">
+      <label>Veredicto final</label>
+      <select id="fVerdict">
+        <option>No repetiría</option>
+        <option>No recomendaría</option>
+        <option>Volvería solo por el perro</option>
+        <option>Bloqueado en 4 apps</option>
+        <option>Superadísima</option>
+        <option>Le deseo lo mejor (de lejos)</option>
+        <option>Todavía tiene mi Netflix</option>
+      </select>
+    </div>
+
+    <button class="btn btn-pink" id="publish">Publicar ficha</button>
+    <button class="btn btn-ghost" id="goBack">Volver</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Link copiado</div>
+
+<script>
+/* ---------- memphis confetti ---------- */
+const COLORS = ['#ff5fa2','#2ec4b6','#ffd23f','#9b5de5','#ff8552'];
+const SHAPES = [
+  c => `<svg width="22" height="22"><circle cx="11" cy="11" r="8" fill="none" stroke="${c}" stroke-width="3"/></svg>`,
+  c => `<svg width="22" height="22"><rect x="4" y="4" width="14" height="14" fill="${c}" transform="rotate(12 11 11)"/></svg>`,
+  c => `<svg width="24" height="24"><polygon points="12,3 21,20 3,20" fill="none" stroke="${c}" stroke-width="3"/></svg>`,
+  c => `<svg width="30" height="14"><path d="M2 7 Q6 1 10 7 T18 7 T26 7" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round"/></svg>`,
+  c => `<svg width="18" height="18"><line x1="2" y1="16" x2="16" y2="2" stroke="${c}" stroke-width="3" stroke-linecap="round"/><line x1="2" y1="2" x2="16" y2="16" stroke="${c}" stroke-width="3" stroke-linecap="round"/></svg>`
+];
+const conf = document.getElementById('confetti');
+for (let i = 0; i < 16; i++) {
+  const d = document.createElement('div');
+  d.className = 'shape';
+  d.style.left = Math.random()*100 + 'vw';
+  d.style.top = Math.random()*100 + 'vh';
+  d.innerHTML = SHAPES[i % SHAPES.length](COLORS[i % COLORS.length]);
+  conf.appendChild(d);
+}
+
+/* ---------- fake proof photos (censored polaroids) ---------- */
+function fakeProof(i) {
+  const a = COLORS[i % COLORS.length], b = COLORS[(i+2) % COLORS.length];
+  return `<svg viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="70" fill="${a}" opacity=".35"/>
+    <circle cx="35" cy="30" r="13" fill="${b}"/>
+    <rect x="22" y="43" width="26" height="27" rx="8" fill="${b}"/>
+    <circle cx="66" cy="32" r="13" fill="${a}"/>
+    <rect x="53" y="45" width="26" height="25" rx="8" fill="${a}"/>
+    <rect x="20" y="24" width="30" height="9" fill="#1a1a1a"/>
+    <rect x="51" y="26" width="30" height="9" fill="#1a1a1a"/>
+    <text x="50" y="14" font-size="8" font-weight="bold" text-anchor="middle" fill="#1a1a1a" font-family="Arial">CENSURADO</text>
+  </svg>`;
+}
+
+/* ---------- data ---------- */
+const POOL = [
+  { s:1, t:"Nunca pidió perdón. Ni una vez. Tengo capturas.", who:"Ex de 2024", meta:"8 meses · no repetiría", conf:5 },
+  { s:2, t:"Puntual para las citas, impuntual para madurar.", who:"Ex de 2023", meta:"1 año · volvería solo por el perro", conf:4 },
+  { s:4, t:"La verdad, buena persona. El problema era yo. No, mentira, era él.", who:"Ex de 2021", meta:"2 años · amigos (según él)", conf:3 },
+  { s:3, t:"Cocina bien. Escucha mal. Promedio honesto.", who:"Ex de 2022", meta:"6 meses · neutral", conf:2 },
+  { s:1, t:"Dijo 'no eres tú, soy yo' y por primera vez en la relación tuvo razón.", who:"Ex de 2020", meta:"3 meses · bloqueado en 4 apps", conf:7 },
+  { s:2, t:"Su idea de comunicar era dejarme en visto con cariño.", who:"Ex de 2025", meta:"5 meses · no recomendaría", conf:1 },
+  { s:5, t:"10/10. Nadie me ha hecho crecer tanto como persona. En terapia, pero crecer.", who:"Ex de 2019", meta:"2 años · le debo mi psicóloga", conf:6 },
+  { s:2, t:"Le puse dos estrellas porque una se veía muy dramático y no le quiero dar el gusto.", who:"Ex de 2023", meta:"9 meses · superadísima", conf:3 },
+  { s:3, t:"Amable con mi mamá, cruel con mis playlists. Empate técnico.", who:"Ex de 2022", meta:"1 año · se quedó con mi hoodie", conf:2 },
+  { s:1, t:"'Estoy trabajando en mí mismo' — narrador: no estaba trabajando en sí mismo.", who:"Ex de 2024", meta:"7 meses · no repetiría", conf:8 },
+  { s:4, t:"Buen tipo, pésimo timing. Como un chiste que llega tarde.", who:"Ex de 2021", meta:"4 meses · le deseo lo mejor (de lejos)", conf:4 },
+  { s:2, t:"Decía 'te escucho' mientras miraba el celular. Multitasking emocional: bajo.", who:"Ex de 2020", meta:"10 meses · todavía tiene mi Netflix", conf:5 }
+];
+const NEEDED = 3; // confirmaciones para verificar
+
+let state = { mode:'random', picks: [] };
+
+const starsHTML = n => {
+  let h = "";
+  for (let i=1;i<=5;i++) h += `<span class="${i<=n?'':'off'}">★</span>`;
+  return h;
+};
+
+function countUp(el, target) {
+  const t0 = performance.now(), dur = 700;
+  function frame(t) {
+    const p = Math.min((t - t0) / dur, 1);
+    el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(1);
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function validationHTML(r, i) {
+  const ok = r.conf >= NEEDED;
+  return `
+    <span class="v-badge ${ok ? 'ok' : 'pending'}">${ok ? 'Verificada por la comunidad' : 'En verificación'}</span>
+    <div class="v-progress">${r.conf}/${NEEDED} confirmaciones${r.caps ? ' · ' + r.caps + ' dicen que es cap' : ''}</div>
+    <div class="vote-row">
+      <button class="vote confirm ${r.voted==='c'?'voted':''}" data-i="${i}" data-v="c" ${r.voted?'disabled':''}>Confirmo, yo estuve ahí</button>
+      <button class="vote deny ${r.voted==='d'?'voted':''}" data-i="${i}" data-v="d" ${r.voted?'disabled':''}>Es cap</button>
+    </div>`;
+}
+
+function renderCard(picks, opts = {}) {
+  state = { mode: opts.community ? 'community' : 'random', picks };
+  const avg = picks.reduce((a, r) => a + r.s, 0) / picks.length;
+
+  countUp(document.getElementById("score"), avg);
+  document.getElementById("scoreStars").innerHTML = starsHTML(Math.round(avg));
+  document.getElementById("scoreCount").textContent =
+    `${picks.length} reseña${picks.length !== 1 ? 's' : ''}${opts.community ? ' (la tuya)' : ''}`;
+
+  const counts = [0,0,0,0,0];
+  picks.forEach(r => counts[r.s-1]++);
+  document.getElementById("bars").innerHTML = [5,4,3,2,1].map(s =>
+    `<div class="bar-row"><span>${s}★</span>
+     <div class="bar-track"><div class="bar-fill" data-w="${counts[s-1]/picks.length*100}"></div></div>
+     <span>${counts[s-1]}</span></div>`).join("");
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    document.querySelectorAll(".bar-fill").forEach(b => b.style.width = b.dataset.w + "%")));
+
+  document.getElementById("reviews").innerHTML = picks.map((r, i) => `
+    <div class="review" style="animation-delay:${i*90}ms">
+      <div class="head"><span class="who ${r.user?'user':''}">${r.who}</span>
+      <span class="rstars">${starsHTML(r.s)}</span></div>
+      <div class="rtext">"${r.t}"</div>
+      <div class="rmeta">${r.meta}</div>
+      <div class="proof-row">
+        <div class="polaroid">
+          ${r.photo ? `<img src="${r.photo}" alt="evidencia">` : fakeProof(i)}
+          <div class="cap">${r.photo ? 'evidencia real' : 'evidencia_' + (2019 + i) + '.jpg'}</div>
+        </div>
+        <div class="validation" id="val-${i}">${validationHTML(r, i)}</div>
+      </div>
+    </div>`).join("");
+
+  const badge = document.getElementById("verifiedBadge");
+  if (opts.community) {
+    badge.textContent = "Ficha creada por la comunidad";
+    badge.classList.add("community");
+  } else {
+    badge.textContent = "Ex verificados";
+    badge.classList.remove("community");
+  }
+  document.getElementById("shareTip").classList.toggle("show", !!opts.community);
+  document.getElementById("copyLink").classList.toggle("hidden", !opts.community);
+}
+
+/* vote handling (event delegation) */
+document.getElementById("reviews").addEventListener("click", e => {
+  const b = e.target.closest(".vote");
+  if (!b || b.disabled) return;
+  const i = +b.dataset.i, r = state.picks[i];
+  if (b.dataset.v === 'c') { r.conf++; r.voted = 'c'; }
+  else { r.caps = (r.caps || 0) + 1; r.voted = 'd'; }
+  document.getElementById("val-" + i).innerHTML = validationHTML(r, i);
+  if (r.conf === NEEDED && b.dataset.v === 'c') showToast("Reseña verificada por la comunidad");
+});
+
+function renderRandom() {
+  const picks = [...POOL].sort(() => Math.random() - .5).slice(0, 4)
+    .map(r => ({ ...r, voted:null, caps:0 }));
+  renderCard(picks);
+}
+
+/* initials follow editable name */
+const nameEl = document.getElementById("name");
+function setName(v) {
+  nameEl.textContent = v;
+  document.getElementById("initials").textContent = (v.trim().slice(0,2) || "GR").toUpperCase();
+}
+nameEl.addEventListener("input", () => {
+  document.getElementById("initials").textContent = (nameEl.textContent.trim().slice(0,2) || "GR").toUpperCase();
+});
+
+/* ---------- views ---------- */
+const views = { rating: document.getElementById("view-rating"), build: document.getElementById("view-build") };
+function show(v) {
+  Object.values(views).forEach(x => x.classList.remove("active"));
+  views[v].classList.add("active");
+}
+
+/* ---------- star picker ---------- */
+let picked = 1;
+const starPick = document.getElementById("starPick");
+for (let i = 1; i <= 5; i++) {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = "★";
+  b.addEventListener("click", () => {
+    picked = i;
+    [...starPick.children].forEach((c, j) => c.classList.toggle("on", j < i));
+  });
+  starPick.appendChild(b);
+}
+starPick.children[0].classList.add("on");
+
+/* ---------- photo upload ---------- */
+let photoData = null;
+const dropzone = document.getElementById("dropzone");
+const fPhoto = document.getElementById("fPhoto");
+dropzone.addEventListener("click", () => fPhoto.click());
+fPhoto.addEventListener("change", () => {
+  const f = fPhoto.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = ev => {
+    // downscale to keep things light
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      const scale = Math.min(1, 320 / img.width);
+      c.width = img.width * scale; c.height = img.height * scale;
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      photoData = c.toDataURL("image/jpeg", .75);
+      document.getElementById("dzImg").src = photoData;
+      document.getElementById("dzPreview").classList.add("show");
+      document.getElementById("dzTitle").textContent = "Evidencia cargada";
+      dropzone.classList.remove("error");
+    };
+    img.src = ev.target.result;
+  };
+  rd.readAsDataURL(f);
+});
+
+/* ---------- actions ---------- */
+document.getElementById("shuffle").addEventListener("click", renderRandom);
+document.getElementById("goBuild").addEventListener("click", () => show("build"));
+document.getElementById("goBack").addEventListener("click", () => show("rating"));
+
+document.getElementById("publish").addEventListener("click", () => {
+  const name = document.getElementById("fName").value.trim();
+  const review = document.getElementById("fReview").value.trim();
+  const duration = document.getElementById("fDuration").value.trim() || "duración clasificada";
+  const verdict = document.getElementById("fVerdict").value;
+
+  if (!name || !review) {
+    const missing = !name ? document.getElementById("fName") : document.getElementById("fReview");
+    missing.style.boxShadow = "4px 4px 0 #ff5fa2";
+    missing.focus();
+    return;
+  }
+  if (!photoData) {
+    dropzone.classList.add("error");
+    document.getElementById("dzTitle").textContent = "Sin foto no hay ficha. Reglas son reglas.";
+    dropzone.scrollIntoView({ behavior:"smooth", block:"center" });
+    return;
+  }
+
+  setName(name);
+  renderCard([{
+    s: picked, t: review,
+    who: "Tú, en " + new Date().getFullYear(),
+    meta: duration + " · " + verdict.toLowerCase(),
+    user: true, photo: photoData, conf: 0, caps: 0, voted: null
+  }], { community: true });
+
+  document.getElementById("fName").value = "";
+  document.getElementById("fReview").value = "";
+  document.getElementById("fDuration").value = "";
+  show("rating");
+});
+
+/* ---------- shareable link (hash-encoded, photo excluded) ---------- */
+const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
+
+document.getElementById("copyLink").addEventListener("click", () => {
+  const r = state.picks[0];
+  const payload = { n: nameEl.textContent.trim(), s: r.s, t: r.t, m: r.meta };
+  const url = location.origin !== "null"
+    ? location.origin + location.pathname + "#f=" + enc(payload)
+    : location.href.split("#")[0] + "#f=" + enc(payload);
+  (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+    .then(() => showToast("Link copiado. Difúndelo con responsabilidad (o no)."))
+    .catch(() => { prompt("Copia el link:", url); });
+});
+
+/* load shared card from URL */
+function loadFromHash() {
+  const m = location.hash.match(/#f=(.+)/);
+  if (!m) return false;
+  try {
+    const p = dec(m[1]);
+    setName(p.n || "Alguien");
+    renderCard([{
+      s: p.s, t: p.t, who: "Reseña compartida", meta: p.m || "",
+      user: true, conf: 0, caps: 0, voted: null
+    }], { community: true });
+    showToast("Ficha compartida cargada. Tú decides si confirmas.");
+    return true;
+  } catch { return false; }
+}
+
+/* ---------- PNG export for stories (1080x1920, branded) ---------- */
+document.getElementById("exportPng").addEventListener("click", async () => {
+  const btn = document.getElementById("exportPng");
+  btn.textContent = "Generando...";
+  const phone = document.getElementById("capture");
+  phone.classList.add("exporting");
+  try {
+    const shot = await html2canvas(phone, { scale: 1000 / phone.offsetWidth, backgroundColor: "#ffffff", useCORS: true });
+    const W = 1080, H = 1920;
+    const out = document.createElement("canvas");
+    out.width = W; out.height = H;
+    const x = out.getContext("2d");
+
+    // paper background + memphis marks
+    x.fillStyle = "#fdf6ec"; x.fillRect(0, 0, W, H);
+    const cols = ['#ff5fa2','#2ec4b6','#ffd23f','#9b5de5','#ff8552'];
+    for (let i = 0; i < 26; i++) {
+      x.save();
+      x.translate(Math.random()*W, Math.random()*H);
+      x.rotate(Math.random()*Math.PI);
+      x.strokeStyle = x.fillStyle = cols[i % cols.length];
+      x.lineWidth = 6; x.globalAlpha = .8;
+      const k = i % 3;
+      if (k === 0) { x.beginPath(); x.arc(0, 0, 14, 0, 7); x.stroke(); }
+      else if (k === 1) { x.fillRect(-11, -11, 22, 22); }
+      else { x.beginPath(); x.moveTo(-16, 10); x.lineTo(0, -14); x.lineTo(16, 10); x.closePath(); x.stroke(); }
+      x.restore();
+    }
+    x.globalAlpha = 1;
+
+    // card centered
+    const cw = 920, ch = shot.height * (cw / shot.width);
+    const cx = (W - cw) / 2, cy = Math.max(150, (H - 220 - ch) / 2);
+    x.fillStyle = "#1a1a1a"; // hard shadow
+    roundRect(x, cx + 16, cy + 16, cw, Math.min(ch, H - cy - 240), 40); x.fill();
+    x.save();
+    roundRect(x, cx, cy, cw, Math.min(ch, H - cy - 240), 40); x.clip();
+    x.drawImage(shot, cx, cy, cw, ch);
+    x.restore();
+    x.lineWidth = 8; x.strokeStyle = "#1a1a1a";
+    roundRect(x, cx, cy, cw, Math.min(ch, H - cy - 240), 40); x.stroke();
+
+    // branded footer (viral loop)
+    x.fillStyle = "#1a1a1a";
+    x.font = "700 40px 'Space Grotesk', Arial";
+    x.textAlign = "center";
+    x.fillText("Hazle su ficha a tu ex", W/2, H - 130);
+    x.fillStyle = "#ff5fa2";
+    x.font = "44px 'Righteous', Arial";
+    x.fillText("wirdolab.github.io/thegrongcompany", W/2, H - 70);
+
+    // share sheet on mobile (2 taps to IG Stories), download fallback on desktop
+    const blob = await new Promise(res => out.toBlob(res, "image/png"));
+    const file = new File([blob], "thegrongex-" + nameEl.textContent.trim().toLowerCase() + ".png", { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "TheGrongEx",
+          text: "Hazle su ficha a tu ex → https://wirdolab.github.io/thegrongcompany/thegrongex.html"
+        });
+        showToast("Elige Instagram → Stories");
+      } catch (err) {
+        if (err.name !== "AbortError") downloadBlob(blob, file.name);
+      }
+    } else {
+      downloadBlob(blob, file.name);
+      showToast("PNG listo para tu story");
+    }
+  } catch (err) {
+    showToast("No se pudo generar la imagen");
+  } finally {
+    phone.classList.remove("exporting");
+    btn.textContent = shareLabel();
+  }
+});
+
+function downloadBlob(blob, name) {
+  const a = document.createElement("a");
+  a.download = name;
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+/* label reflects what will actually happen on this device */
+function shareLabel() {
+  const probe = new File([""], "p.png", { type: "image/png" });
+  return (navigator.canShare && navigator.canShare({ files: [probe] }))
+    ? "Compartir en tu story" : "Descargar para story";
+}
+document.getElementById("exportPng").textContent = shareLabel();
+
+/* ---------- toast ---------- */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* ---------- init ---------- */
+if (!loadFromHash()) renderRandom();
+</script>
+</body>
+</html>
