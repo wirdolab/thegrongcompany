@@ -3,292 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TheGrongEx — Calificación según tus ex</title>
+<title>TheGrongEx — Tu calificación según tus ex</title>
 <meta name="description" content="Tu reputación romántica, escrita por quienes te conocieron demasiado bien. Imagined by TheGrongCo.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Righteous&family=Space+Grotesk:wght@400;500;700&display=swap');
-
   :root {
-    --paper:#fdf6ec;
-    --ink:#1a1a1a;
-    --pink:#ff5fa2;
-    --teal:#2ec4b6;
-    --yellow:#ffd23f;
-    --purple:#9b5de5;
-    --orange:#ff8552;
-    --shadow:5px 5px 0 var(--ink);
-    --display:'Righteous', 'Arial Black', sans-serif;
-    --body:'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --bg:#f7f6f4;
+    --card:#ffffff;
+    --ink:#222222;
+    --gray:#717171;
+    --light:#ebebeb;
+    --accent:#ff385c;
+    --accent-soft:#fff0f3;
+    --gold:#ffb400;
+    --green:#008a05;
+    --green-soft:#e8f5e9;
+    --radius:16px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    min-height:100vh; background:var(--paper);
-    display:flex; align-items:center; justify-content:center;
-    padding:24px 12px; font-family:var(--body); color:var(--ink);
-    overflow-x:hidden; position:relative;
+    min-height:100vh; background:var(--bg);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:32px 14px; color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation:none !important; transition:none !important; }
   }
 
-  .confetti { position:fixed; inset:0; pointer-events:none; z-index:0; }
-  .shape { position:absolute; opacity:.8; animation:float 7s ease-in-out infinite; }
-  .shape:nth-child(2n) { animation-duration:9s; animation-delay:-3s; }
-  .shape:nth-child(3n) { animation-duration:11s; animation-delay:-5s; }
-  @keyframes float {
-    0%,100% { transform:translateY(0) rotate(0deg); }
-    50% { transform:translateY(-22px) rotate(12deg); }
-  }
-
   .phone {
-    width:min(400px,100%); min-height:660px;
-    background:#fff;
-    border:3px solid var(--ink); border-radius:22px;
-    box-shadow:8px 8px 0 var(--ink);
-    padding:24px 20px 22px; position:relative; z-index:1;
+    width:min(420px,100%);
+    background:var(--card);
+    border-radius:24px;
+    box-shadow:0 6px 30px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.05);
+    padding:24px 22px 20px;
     overflow:hidden;
   }
 
-  .app-tag { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .logo {
-    font-family:var(--display); font-size:20px; letter-spacing:1px;
-    color:var(--pink); text-shadow:2px 2px 0 var(--ink);
-    transform:rotate(-2deg);
-  }
-  .badge90 {
-    font-size:10px; font-weight:700; letter-spacing:1px;
-    background:var(--yellow); border:2px solid var(--ink); border-radius:20px;
-    padding:4px 10px; box-shadow:2px 2px 0 var(--ink);
-    animation:wobble 3s ease-in-out infinite;
-  }
-  @keyframes wobble { 0%,100% { transform:rotate(-3deg);} 50% { transform:rotate(3deg);} }
-
-  .tagline {
-    font-size:11px; font-weight:500; color:#777; margin-bottom:16px;
-    border-bottom:2px dashed var(--ink); padding-bottom:12px;
+  /* header */
+  .app-tag { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .logo { font-size:17px; font-weight:800; letter-spacing:-.3px; }
+  .logo span { color:var(--accent); }
+  .beta {
+    font-size:11px; font-weight:600; color:var(--gray);
+    background:var(--bg); border-radius:20px; padding:4px 10px;
   }
 
-  .profile { text-align:center; margin-bottom:16px; }
+  /* profile */
+  .profile { text-align:center; margin-bottom:20px; }
   .avatar {
-    width:82px; height:82px; border-radius:50%; margin:0 auto 10px;
-    background:var(--teal); border:3px solid var(--ink);
-    box-shadow:4px 4px 0 var(--ink);
+    width:76px; height:76px; border-radius:50%; margin:0 auto 10px;
+    background:linear-gradient(135deg, #ff385c, #ff7e5f);
     display:flex; align-items:center; justify-content:center;
-    font-family:var(--display); font-size:30px; color:#fff;
-    text-shadow:2px 2px 0 var(--ink);
-    animation:bounce-in .5s cubic-bezier(.34,1.56,.64,1);
+    font-size:26px; font-weight:800; color:#fff;
+    animation:fade-up .5s ease both;
   }
-  @keyframes bounce-in { from { transform:scale(.6); opacity:0; } }
+  @keyframes fade-up { from { opacity:0; transform:translateY(8px); } }
   .name {
-    font-family:var(--display); font-size:24px; outline:none;
-    border-bottom:2px dashed transparent; display:inline-block; min-width:60px;
+    font-size:22px; font-weight:800; letter-spacing:-.3px; outline:none;
+    border-bottom:1.5px dashed transparent; display:inline-block; min-width:60px;
   }
-  .name:focus { border-bottom-color:var(--pink); }
-  .edit-hint { font-size:9px; letter-spacing:1px; color:#aaa; margin-top:3px; text-transform:uppercase; font-weight:700; }
+  .name:focus { border-bottom-color:var(--accent); }
+  .edit-hint { font-size:11px; color:#b0b0b0; margin-top:3px; }
   .verified {
-    display:inline-block; margin-top:8px;
-    font-size:10px; font-weight:700; letter-spacing:.5px;
-    background:var(--purple); color:#fff;
-    border:2px solid var(--ink); border-radius:20px; padding:4px 12px;
-    box-shadow:2px 2px 0 var(--ink);
+    display:inline-flex; align-items:center; gap:5px; margin-top:8px;
+    font-size:12px; font-weight:600; color:var(--green);
+    background:var(--green-soft); border-radius:20px; padding:5px 12px;
   }
-  .verified.community { background:var(--orange); }
+  .verified.community { color:#b3541e; background:#fdf0e6; }
+  .verified svg { width:13px; height:13px; }
 
+  /* score */
   .score-card {
-    background:var(--yellow); border:3px solid var(--ink); border-radius:16px;
-    box-shadow:var(--shadow); padding:16px; margin-bottom:16px;
-    display:flex; gap:16px; align-items:center;
+    background:var(--bg); border-radius:var(--radius);
+    padding:18px; margin-bottom:20px;
+    display:flex; gap:20px; align-items:center;
+    animation:fade-up .5s ease .1s both;
   }
-  .big-score { text-align:center; min-width:92px; }
-  .num { font-family:var(--display); font-size:46px; line-height:1; }
-  .stars { font-size:18px; letter-spacing:2px; margin-top:4px;
-    color:var(--pink); text-shadow:1px 1px 0 var(--ink); }
-  .stars .off { color:#fff; }
-  .count { font-size:10px; font-weight:700; margin-top:6px; text-transform:uppercase; letter-spacing:.5px; }
+  .big-score { text-align:center; min-width:88px; }
+  .num { font-size:44px; font-weight:800; line-height:1; letter-spacing:-1px; }
+  .stars { font-size:16px; letter-spacing:1px; margin-top:5px; color:var(--gold); }
+  .stars .off { color:#d9d9d9; }
+  .count { font-size:12px; color:var(--gray); margin-top:5px; }
 
   .bars { flex:1; }
-  .bar-row { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:11px; font-weight:700; }
-  .bar-track { flex:1; height:10px; background:#fff; border:2px solid var(--ink); border-radius:6px; overflow:hidden; }
-  .bar-fill { height:100%; background:var(--pink); width:0; transition:width .8s cubic-bezier(.2,.8,.2,1); }
+  .bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; font-size:11px; color:var(--gray); }
+  .bar-row span:first-child { width:14px; }
+  .bar-track { flex:1; height:5px; background:var(--light); border-radius:3px; overflow:hidden; }
+  .bar-fill { height:100%; background:var(--ink); border-radius:3px; width:0; transition:width .8s cubic-bezier(.2,.8,.2,1); }
 
-  .section-title {
-    font-family:var(--display); font-size:14px; margin:18px 0 10px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .section-title::after { content:""; flex:1; height:3px; background:var(--ink); border-radius:2px; }
+  /* reviews */
+  .section-title { font-size:16px; font-weight:800; letter-spacing:-.2px; margin:22px 0 12px; }
 
   .review {
-    background:#fff; border:3px solid var(--ink); border-radius:14px;
-    box-shadow:4px 4px 0 var(--ink);
-    padding:13px 15px; margin-bottom:14px;
-    opacity:0; transform:translateY(12px);
-    animation:pop-in .45s cubic-bezier(.34,1.56,.64,1) forwards;
-    transition:transform .2s;
+    border:1px solid var(--light); border-radius:var(--radius);
+    padding:14px 15px; margin-bottom:10px;
+    opacity:0; transform:translateY(8px);
+    animation:fade-up .45s ease forwards;
   }
-  .review:hover { transform:rotate(-1deg) scale(1.01); }
-  .review:nth-child(2n) { background:#fff5fa; }
-  @keyframes pop-in { to { opacity:1; transform:none; } }
-  .review .head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-  .who { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
-    background:var(--teal); color:#fff; border:2px solid var(--ink); border-radius:12px; padding:2px 9px; }
-  .who.user { background:var(--orange); }
-  .rstars { font-size:13px; color:var(--pink); text-shadow:1px 1px 0 var(--ink); }
-  .rstars .off { color:#e5e0d8; text-shadow:none; }
-  .rtext { font-size:13.5px; line-height:1.5; font-weight:500; }
-  .rmeta { font-size:10px; font-weight:700; color:#999; margin-top:7px; text-transform:uppercase; letter-spacing:.5px; }
-
-  /* proof polaroid */
-  .proof-row { display:flex; gap:12px; align-items:flex-start; margin-top:10px; }
-  .polaroid {
-    flex-shrink:0; width:86px; background:#fff;
-    border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
-    padding:5px 5px 3px; transform:rotate(-3deg);
-    transition:transform .2s;
+  .review .head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .r-avatar {
+    width:36px; height:36px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:700; color:#fff;
   }
-  .polaroid:hover { transform:rotate(0deg) scale(1.06); }
-  .polaroid img, .polaroid svg { width:100%; height:62px; object-fit:cover; display:block; border:2px solid var(--ink); }
-  .polaroid .cap { font-size:7.5px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; text-align:center; padding:3px 0 1px; color:#777; }
+  .who { font-size:13px; font-weight:700; }
+  .rmeta { font-size:12px; color:var(--gray); }
+  .rstars { margin-left:auto; font-size:12px; color:var(--gold); letter-spacing:.5px; white-space:nowrap; }
+  .rstars .off { color:#d9d9d9; }
+  .rtext { font-size:14px; line-height:1.55; }
 
-  /* validation */
-  .validation { flex:1; }
+  .r-footer { display:flex; gap:12px; align-items:center; margin-top:10px; }
+  .proof {
+    width:52px; height:52px; border-radius:10px; overflow:hidden; flex-shrink:0;
+    border:1px solid var(--light); position:relative; cursor:default;
+  }
+  .proof img, .proof svg { width:100%; height:100%; object-fit:cover; display:block; }
+  .proof .tag {
+    position:absolute; bottom:0; left:0; right:0;
+    font-size:7px; font-weight:700; text-align:center; letter-spacing:.3px;
+    background:rgba(0,0,0,.55); color:#fff; padding:2px 0; text-transform:uppercase;
+  }
+
+  .validation { flex:1; min-width:0; }
   .v-badge {
-    display:inline-block; font-size:9px; font-weight:700; letter-spacing:.5px;
-    text-transform:uppercase; border:2px solid var(--ink); border-radius:10px;
-    padding:3px 8px; margin-bottom:6px;
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:11px; font-weight:700; border-radius:20px; padding:3px 9px;
   }
-  .v-badge.ok { background:var(--teal); color:#fff; }
-  .v-badge.pending { background:var(--yellow); }
-  .v-progress { font-size:9.5px; font-weight:700; color:#999; margin-bottom:6px; text-transform:uppercase; letter-spacing:.3px; }
-  .vote-row { display:flex; gap:6px; }
+  .v-badge.ok { color:var(--green); background:var(--green-soft); }
+  .v-badge.pending { color:#8a6d00; background:#fff8e1; }
+  .v-progress { font-size:11px; color:var(--gray); margin-top:3px; }
+  .vote-row { display:flex; gap:6px; margin-top:7px; }
   .vote {
-    font-family:var(--body); font-size:10px; font-weight:700; cursor:pointer;
-    border:2px solid var(--ink); border-radius:10px; padding:5px 9px;
-    background:#fff; box-shadow:2px 2px 0 var(--ink);
-    transition:transform .1s, background .15s;
+    font-size:11.5px; font-weight:600; cursor:pointer;
+    border:1px solid var(--light); border-radius:20px; padding:5px 11px;
+    background:#fff; color:var(--ink); transition:background .15s, border-color .15s;
   }
-  .vote:hover { transform:translate(-1px,-1px); }
-  .vote:active { transform:translate(2px,2px); box-shadow:0 0 0 var(--ink); }
-  .vote.confirm.voted { background:var(--teal); color:#fff; }
-  .vote.deny.voted { background:var(--pink); color:#fff; }
-  .vote:disabled { cursor:default; opacity:.85; }
+  .vote:hover { border-color:var(--ink); }
+  .vote.confirm.voted { background:var(--green-soft); border-color:var(--green); color:var(--green); }
+  .vote.deny.voted { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
+  .vote:disabled { cursor:default; }
 
   /* buttons */
   .btn {
     width:100%; padding:14px; margin-top:10px; cursor:pointer;
-    font-family:var(--display); font-size:14px; letter-spacing:.5px;
-    border:3px solid var(--ink); border-radius:14px;
-    box-shadow:var(--shadow);
-    transition:transform .12s, box-shadow .12s;
+    font-size:15px; font-weight:700; font-family:inherit;
+    border:none; border-radius:12px;
+    transition:transform .12s, opacity .15s;
   }
-  .btn:hover { transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--ink); }
-  .btn:active { transform:translate(3px,3px); box-shadow:2px 2px 0 var(--ink); }
-  .btn-pink { background:var(--pink); color:#fff; }
-  .btn-teal { background:var(--teal); color:#fff; }
-  .btn-purple { background:var(--purple); color:#fff; }
-  .btn-ghost { background:#fff; color:var(--ink); }
+  .btn:hover { opacity:.92; }
+  .btn:active { transform:scale(.985); }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-dark { background:var(--ink); color:#fff; }
+  .btn-light { background:var(--bg); color:var(--ink); }
   .btn.hidden { display:none; }
 
   .disclaimer {
-    text-align:center; font-size:9px; font-weight:700; color:#bbb;
-    margin-top:14px; line-height:1.6; text-transform:uppercase; letter-spacing:.5px;
+    text-align:center; font-size:10.5px; color:#b8b8b8;
+    margin-top:16px; line-height:1.6;
   }
 
   /* form view */
   .view { display:none; }
-  .view.active { display:block; animation:slide-in .4s cubic-bezier(.2,.8,.2,1); }
-  @keyframes slide-in { from { opacity:0; transform:translateX(24px); } }
+  .view.active { display:block; animation:fade-up .35s ease; }
 
-  .form-title { font-family:var(--display); font-size:20px; margin-bottom:4px; transform:rotate(-1deg); }
-  .form-sub { font-size:12px; color:#777; margin-bottom:16px; }
-  .field { margin-bottom:13px; }
-  .field label { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
-  .field label small { color:#aaa; font-weight:700; }
+  .form-title { font-size:20px; font-weight:800; letter-spacing:-.3px; margin-bottom:4px; }
+  .form-sub { font-size:13px; color:var(--gray); margin-bottom:16px; line-height:1.5; }
+
+  .notice {
+    background:var(--accent-soft); border-radius:var(--radius);
+    padding:12px 14px; margin-bottom:16px;
+    font-size:12.5px; line-height:1.55; color:#c02646;
+  }
+  .notice b { font-weight:700; }
+
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12.5px; font-weight:700; margin-bottom:6px; }
+  .field label small { color:#b0b0b0; font-weight:500; }
   .field input, .field textarea, .field select {
-    width:100%; padding:11px 13px; font-family:var(--body); font-size:14px; font-weight:500;
-    border:3px solid var(--ink); border-radius:12px; background:#fff; outline:none;
-    box-shadow:3px 3px 0 var(--ink); transition:box-shadow .15s, transform .15s;
+    width:100%; padding:12px 14px; font-family:inherit; font-size:14px;
+    border:1.5px solid var(--light); border-radius:12px; background:#fff; outline:none;
+    transition:border-color .15s; color:var(--ink); appearance:none;
   }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--pink);
-  }
-  .field textarea { resize:none; height:74px; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color:var(--ink); }
+  .field textarea { resize:none; height:76px; }
 
-  .star-pick { display:flex; gap:6px; }
+  .star-pick { display:flex; gap:8px; }
   .star-pick button {
-    flex:1; padding:10px 0; font-size:20px; cursor:pointer;
-    background:#fff; border:3px solid var(--ink); border-radius:12px;
-    box-shadow:3px 3px 0 var(--ink); color:#e5e0d8;
-    transition:transform .12s, color .12s, background .12s;
+    flex:1; padding:10px 0; font-size:22px; cursor:pointer;
+    background:#fff; border:1.5px solid var(--light); border-radius:12px;
+    color:#d9d9d9; transition:color .12s, border-color .12s, transform .12s;
   }
-  .star-pick button:hover { transform:translateY(-2px); }
-  .star-pick button.on { color:var(--pink); background:var(--yellow); text-shadow:1px 1px 0 var(--ink); }
+  .star-pick button:hover { transform:translateY(-1px); }
+  .star-pick button.on { color:var(--gold); border-color:var(--gold); }
 
-  /* photo dropzone */
   .dropzone {
-    border:3px dashed var(--ink); border-radius:14px; background:#fffbe9;
-    padding:16px; text-align:center; cursor:pointer;
-    transition:background .15s, transform .12s;
+    border:1.5px dashed #c9c9c9; border-radius:12px; background:#fafafa;
+    padding:18px; text-align:center; cursor:pointer;
+    transition:border-color .15s, background .15s;
   }
-  .dropzone:hover { background:var(--yellow); transform:translate(-1px,-1px); }
-  .dropzone.error { border-color:var(--pink); background:#fff0f6; }
-  .dropzone .dz-title { font-weight:700; font-size:12px; }
-  .dropzone .dz-sub { font-size:10px; color:#999; margin-top:3px; font-weight:500; }
+  .dropzone:hover { border-color:var(--ink); }
+  .dropzone.error { border-color:var(--accent); background:var(--accent-soft); }
+  .dz-title { font-weight:700; font-size:13px; }
+  .dz-sub { font-size:11px; color:var(--gray); margin-top:3px; }
   .dropzone input { display:none; }
-  .dz-preview { display:none; margin-top:10px; }
-  .dz-preview.show { display:flex; justify-content:center; }
-
-  .alert {
-    background:var(--orange); border:3px solid var(--ink); border-radius:14px;
-    box-shadow:4px 4px 0 var(--ink); padding:12px 14px; margin-bottom:16px;
-    font-size:12px; font-weight:700; color:#fff; line-height:1.5;
-    transform:rotate(-.5deg);
-  }
-  .rules {
-    font-size:10.5px; color:#999; font-weight:500; line-height:1.6;
-    background:#faf6ee; border:2px dashed #ccc; border-radius:12px;
-    padding:10px 12px; margin-bottom:14px;
-  }
-  .rules b { color:var(--ink); }
+  .dz-preview { display:none; margin-top:12px; justify-content:center; }
+  .dz-preview.show { display:flex; }
+  .dz-preview img { width:72px; height:72px; object-fit:cover; border-radius:10px; border:1px solid var(--light); }
 
   .share-tip {
     margin-top:12px; text-align:center;
-    background:var(--yellow); border:3px solid var(--ink); border-radius:14px;
-    box-shadow:4px 4px 0 var(--ink); padding:10px;
-    font-size:11px; font-weight:700; letter-spacing:.3px;
-    animation:wobble 3s ease-in-out infinite; display:none;
+    background:#fff8e1; border-radius:12px; padding:11px;
+    font-size:12.5px; font-weight:600; color:#8a6d00; display:none;
   }
   .share-tip.show { display:block; }
 
   /* toast */
   .toast {
-    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px);
-    background:var(--ink); color:#fff; font-weight:700; font-size:13px;
-    padding:12px 22px; border-radius:14px; border:3px solid var(--ink);
-    box-shadow:4px 4px 0 rgba(0,0,0,.2); z-index:50;
-    transition:transform .35s cubic-bezier(.34,1.56,.64,1); pointer-events:none;
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(90px);
+    background:var(--ink); color:#fff; font-weight:600; font-size:13.5px;
+    padding:13px 22px; border-radius:14px; z-index:50;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    transition:transform .35s cubic-bezier(.34,1.4,.64,1); pointer-events:none;
+    max-width:90vw; text-align:center;
   }
   .toast.show { transform:translateX(-50%) translateY(0); }
 
   /* hide interactive bits during PNG export */
   .exporting .btn, .exporting .edit-hint, .exporting .vote-row,
-  .exporting .share-tip, .exporting .v-progress { display:none !important; }
-  .exporting .review, .exporting .score-card, .exporting .avatar,
-  .exporting .shape { animation:none !important; opacity:1 !important; transform:none !important; }
+  .exporting .share-tip { display:none !important; }
+  .exporting .review, .exporting .score-card, .exporting .avatar { animation:none !important; opacity:1 !important; transform:none !important; }
   .exporting .bar-fill { transition:none !important; }
 </style>
 </head>
 <body>
 
-<div class="confetti" id="confetti"></div>
-
 <div class="phone" id="capture">
 
   <div class="app-tag">
-    <div class="logo">TheGrongEx</div>
-    <div class="badge90">est. 1996</div>
+    <div class="logo">TheGrong<span>Ex</span></div>
+    <div class="beta">beta</div>
   </div>
-  <div class="tagline">La única app donde tu reputación la escriben quienes te conocieron demasiado bien.</div>
 
   <!-- ===== RATING VIEW ===== -->
   <div class="view active" id="view-rating">
@@ -296,8 +252,8 @@
     <div class="profile">
       <div class="avatar" id="initials">GR</div>
       <div class="name" id="name" contenteditable="true" spellcheck="false">Grong</div>
-      <div class="edit-hint">tap para editar nombre</div>
-      <div><span class="verified" id="verifiedBadge">Ex verificados</span></div>
+      <div class="edit-hint">toca el nombre para cambiarlo</div>
+      <div><span class="verified" id="verifiedBadge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.3 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8z"/></svg><span id="verifiedText">Reseñas de ex verificados</span></span></div>
     </div>
 
     <div class="score-card">
@@ -309,13 +265,13 @@
       <div class="bars" id="bars"></div>
     </div>
 
-    <div class="section-title">Sus ex opinan</div>
+    <div class="section-title">Lo que dicen sus ex</div>
     <div id="reviews"></div>
 
-    <button class="btn btn-pink" id="shuffle">Consultar a otros ex</button>
-    <button class="btn btn-teal" id="goBuild">¿Tu ex no aparece? Créale su ficha</button>
-    <button class="btn btn-purple" id="exportPng">Descargar para story</button>
-    <button class="btn btn-ghost hidden" id="copyLink">Copiar link de la ficha</button>
+    <button class="btn btn-light" id="shuffle">Ver otras reseñas</button>
+    <button class="btn btn-primary" id="goBuild">Crear la ficha de tu ex</button>
+    <button class="btn btn-dark" id="exportPng">Descargar para story</button>
+    <button class="btn btn-light hidden" id="copyLink">Copiar link para compartir</button>
 
     <div class="share-tip" id="shareTip">Súbelo a tu story. El pueblo merece saber.</div>
 
@@ -325,24 +281,20 @@
   <!-- ===== BUILD VIEW ===== -->
   <div class="view" id="view-build">
 
-    <div class="alert">Servicio público: crea la ficha de esa persona para que la gente sepa con quién está saliendo.</div>
+    <div class="form-title">Crea la ficha de tu ex</div>
+    <div class="form-sub">Tu reseña será la primera de su historial. La gente merece saber con quién está saliendo.</div>
 
-    <div class="form-title">Crear ficha de tu ex</div>
-    <div class="form-sub">Tu reseña será la primera de su historial. Sin apelaciones.</div>
-
-    <div class="rules">
-      <b>Reglas anti-inventos:</b> toda reseña necesita <b>foto de prueba</b> (tú con esa persona)
-      y debe ser <b>confirmada por 3 personas</b> que conocieron la relación antes de marcarse como verificada.
-      Sin evidencia, no hay ficha.
+    <div class="notice">
+      <b>Para que sea válida:</b> necesitas una foto de prueba (tú con esa persona) y que 3 personas que conocieron la relación la confirmen. Sin evidencia no hay ficha.
     </div>
 
     <div class="field">
-      <label>Nombre del implicado/a</label>
+      <label>¿Cómo se llama?</label>
       <input type="text" id="fName" placeholder="Ej. Kevin" maxlength="20">
     </div>
 
     <div class="field">
-      <label>Tu calificación</label>
+      <label>Su calificación</label>
       <div class="star-pick" id="starPick"></div>
     </div>
 
@@ -352,14 +304,12 @@
     </div>
 
     <div class="field">
-      <label>Foto de prueba <small>(tú con tu ex — obligatoria)</small></label>
+      <label>Foto de prueba <small>· tú con tu ex, obligatoria</small></label>
       <div class="dropzone" id="dropzone">
-        <div class="dz-title" id="dzTitle">Sube la evidencia</div>
-        <div class="dz-sub">JPG o PNG · la cara de tu ex puede ir censurada, la evidencia no</div>
+        <div class="dz-title" id="dzTitle">Subir foto</div>
+        <div class="dz-sub">Puedes censurar su cara. La evidencia, no.</div>
         <input type="file" id="fPhoto" accept="image/*">
-        <div class="dz-preview" id="dzPreview">
-          <div class="polaroid"><img id="dzImg" alt="evidencia"><div class="cap">evidencia adjunta</div></div>
-        </div>
+        <div class="dz-preview" id="dzPreview"><img id="dzImg" alt="evidencia"></div>
       </div>
     </div>
 
@@ -381,8 +331,8 @@
       </select>
     </div>
 
-    <button class="btn btn-pink" id="publish">Publicar ficha</button>
-    <button class="btn btn-ghost" id="goBack">Volver</button>
+    <button class="btn btn-primary" id="publish">Publicar ficha</button>
+    <button class="btn btn-light" id="goBack">Volver</button>
   </div>
 
 </div>
@@ -390,41 +340,22 @@
 <div class="toast" id="toast">Link copiado</div>
 
 <script>
-/* ---------- memphis confetti ---------- */
-const COLORS = ['#ff5fa2','#2ec4b6','#ffd23f','#9b5de5','#ff8552'];
-const SHAPES = [
-  c => `<svg width="22" height="22"><circle cx="11" cy="11" r="8" fill="none" stroke="${c}" stroke-width="3"/></svg>`,
-  c => `<svg width="22" height="22"><rect x="4" y="4" width="14" height="14" fill="${c}" transform="rotate(12 11 11)"/></svg>`,
-  c => `<svg width="24" height="24"><polygon points="12,3 21,20 3,20" fill="none" stroke="${c}" stroke-width="3"/></svg>`,
-  c => `<svg width="30" height="14"><path d="M2 7 Q6 1 10 7 T18 7 T26 7" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round"/></svg>`,
-  c => `<svg width="18" height="18"><line x1="2" y1="16" x2="16" y2="2" stroke="${c}" stroke-width="3" stroke-linecap="round"/><line x1="2" y1="2" x2="16" y2="16" stroke="${c}" stroke-width="3" stroke-linecap="round"/></svg>`
-];
-const conf = document.getElementById('confetti');
-for (let i = 0; i < 16; i++) {
-  const d = document.createElement('div');
-  d.className = 'shape';
-  d.style.left = Math.random()*100 + 'vw';
-  d.style.top = Math.random()*100 + 'vh';
-  d.innerHTML = SHAPES[i % SHAPES.length](COLORS[i % COLORS.length]);
-  conf.appendChild(d);
-}
+/* ---------- data ---------- */
+const AVA_COLORS = ['#ff385c','#00a884','#5c6bc0','#ff8f3e','#8e44ad','#0097a7'];
 
-/* ---------- fake proof photos (censored polaroids) ---------- */
 function fakeProof(i) {
-  const a = COLORS[i % COLORS.length], b = COLORS[(i+2) % COLORS.length];
-  return `<svg viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100" height="70" fill="${a}" opacity=".35"/>
-    <circle cx="35" cy="30" r="13" fill="${b}"/>
-    <rect x="22" y="43" width="26" height="27" rx="8" fill="${b}"/>
-    <circle cx="66" cy="32" r="13" fill="${a}"/>
-    <rect x="53" y="45" width="26" height="25" rx="8" fill="${a}"/>
-    <rect x="20" y="24" width="30" height="9" fill="#1a1a1a"/>
-    <rect x="51" y="26" width="30" height="9" fill="#1a1a1a"/>
-    <text x="50" y="14" font-size="8" font-weight="bold" text-anchor="middle" fill="#1a1a1a" font-family="Arial">CENSURADO</text>
+  const a = AVA_COLORS[i % AVA_COLORS.length], b = AVA_COLORS[(i+2) % AVA_COLORS.length];
+  return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <rect width="60" height="60" fill="${a}" opacity=".25"/>
+    <circle cx="22" cy="24" r="9" fill="${b}"/>
+    <rect x="13" y="34" width="18" height="22" rx="6" fill="${b}"/>
+    <circle cx="42" cy="26" r="9" fill="${a}"/>
+    <rect x="33" y="36" width="18" height="20" rx="6" fill="${a}"/>
+    <rect x="12" y="20" width="20" height="7" fill="#222"/>
+    <rect x="32" y="22" width="20" height="7" fill="#222"/>
   </svg>`;
 }
 
-/* ---------- data ---------- */
 const POOL = [
   { s:1, t:"Nunca pidió perdón. Ni una vez. Tengo capturas.", who:"Ex de 2024", meta:"8 meses · no repetiría", conf:5 },
   { s:2, t:"Puntual para las citas, impuntual para madurar.", who:"Ex de 2023", meta:"1 año · volvería solo por el perro", conf:4 },
@@ -439,7 +370,7 @@ const POOL = [
   { s:4, t:"Buen tipo, pésimo timing. Como un chiste que llega tarde.", who:"Ex de 2021", meta:"4 meses · le deseo lo mejor (de lejos)", conf:4 },
   { s:2, t:"Decía 'te escucho' mientras miraba el celular. Multitasking emocional: bajo.", who:"Ex de 2020", meta:"10 meses · todavía tiene mi Netflix", conf:5 }
 ];
-const NEEDED = 3; // confirmaciones para verificar
+const NEEDED = 3;
 
 let state = { mode:'random', picks: [] };
 
@@ -462,11 +393,11 @@ function countUp(el, target) {
 function validationHTML(r, i) {
   const ok = r.conf >= NEEDED;
   return `
-    <span class="v-badge ${ok ? 'ok' : 'pending'}">${ok ? 'Verificada por la comunidad' : 'En verificación'}</span>
-    <div class="v-progress">${r.conf}/${NEEDED} confirmaciones${r.caps ? ' · ' + r.caps + ' dicen que es cap' : ''}</div>
+    <span class="v-badge ${ok ? 'ok' : 'pending'}">${ok ? '✓ Verificada por la comunidad' : 'En verificación'}</span>
+    <div class="v-progress">${r.conf} de ${NEEDED} confirmaciones${r.caps ? ' · ' + r.caps + ' dicen que no es cierto' : ''}</div>
     <div class="vote-row">
-      <button class="vote confirm ${r.voted==='c'?'voted':''}" data-i="${i}" data-v="c" ${r.voted?'disabled':''}>Confirmo, yo estuve ahí</button>
-      <button class="vote deny ${r.voted==='d'?'voted':''}" data-i="${i}" data-v="d" ${r.voted?'disabled':''}>Es cap</button>
+      <button class="vote confirm ${r.voted==='c'?'voted':''}" data-i="${i}" data-v="c" ${r.voted?'disabled':''}>Confirmo</button>
+      <button class="vote deny ${r.voted==='d'?'voted':''}" data-i="${i}" data-v="d" ${r.voted?'disabled':''}>No es cierto</button>
     </div>`;
 }
 
@@ -482,40 +413,46 @@ function renderCard(picks, opts = {}) {
   const counts = [0,0,0,0,0];
   picks.forEach(r => counts[r.s-1]++);
   document.getElementById("bars").innerHTML = [5,4,3,2,1].map(s =>
-    `<div class="bar-row"><span>${s}★</span>
+    `<div class="bar-row"><span>${s}</span>
      <div class="bar-track"><div class="bar-fill" data-w="${counts[s-1]/picks.length*100}"></div></div>
      <span>${counts[s-1]}</span></div>`).join("");
   requestAnimationFrame(() => requestAnimationFrame(() =>
     document.querySelectorAll(".bar-fill").forEach(b => b.style.width = b.dataset.w + "%")));
 
   document.getElementById("reviews").innerHTML = picks.map((r, i) => `
-    <div class="review" style="animation-delay:${i*90}ms">
-      <div class="head"><span class="who ${r.user?'user':''}">${r.who}</span>
-      <span class="rstars">${starsHTML(r.s)}</span></div>
+    <div class="review" style="animation-delay:${i*80}ms">
+      <div class="head">
+        <div class="r-avatar" style="background:${AVA_COLORS[i % AVA_COLORS.length]}">${(r.who.match(/\d{2}$/) || ["EX"])[0]}</div>
+        <div>
+          <div class="who">${r.who}</div>
+          <div class="rmeta">${r.meta}</div>
+        </div>
+        <div class="rstars">${starsHTML(r.s)}</div>
+      </div>
       <div class="rtext">"${r.t}"</div>
-      <div class="rmeta">${r.meta}</div>
-      <div class="proof-row">
-        <div class="polaroid">
+      <div class="r-footer">
+        <div class="proof">
           ${r.photo ? `<img src="${r.photo}" alt="evidencia">` : fakeProof(i)}
-          <div class="cap">${r.photo ? 'evidencia real' : 'evidencia_' + (2019 + i) + '.jpg'}</div>
+          <div class="tag">${r.photo ? 'evidencia' : 'censurada'}</div>
         </div>
         <div class="validation" id="val-${i}">${validationHTML(r, i)}</div>
       </div>
     </div>`).join("");
 
   const badge = document.getElementById("verifiedBadge");
+  const text = document.getElementById("verifiedText");
   if (opts.community) {
-    badge.textContent = "Ficha creada por la comunidad";
+    text.textContent = "Ficha creada por la comunidad";
     badge.classList.add("community");
   } else {
-    badge.textContent = "Ex verificados";
+    text.textContent = "Reseñas de ex verificados";
     badge.classList.remove("community");
   }
   document.getElementById("shareTip").classList.toggle("show", !!opts.community);
   document.getElementById("copyLink").classList.toggle("hidden", !opts.community);
 }
 
-/* vote handling (event delegation) */
+/* votes */
 document.getElementById("reviews").addEventListener("click", e => {
   const b = e.target.closest(".vote");
   if (!b || b.disabled) return;
@@ -532,7 +469,7 @@ function renderRandom() {
   renderCard(picks);
 }
 
-/* initials follow editable name */
+/* name */
 const nameEl = document.getElementById("name");
 function setName(v) {
   nameEl.textContent = v;
@@ -542,14 +479,14 @@ nameEl.addEventListener("input", () => {
   document.getElementById("initials").textContent = (nameEl.textContent.trim().slice(0,2) || "GR").toUpperCase();
 });
 
-/* ---------- views ---------- */
+/* views */
 const views = { rating: document.getElementById("view-rating"), build: document.getElementById("view-build") };
 function show(v) {
   Object.values(views).forEach(x => x.classList.remove("active"));
   views[v].classList.add("active");
 }
 
-/* ---------- star picker ---------- */
+/* star picker */
 let picked = 1;
 const starPick = document.getElementById("starPick");
 for (let i = 1; i <= 5; i++) {
@@ -563,7 +500,7 @@ for (let i = 1; i <= 5; i++) {
 }
 starPick.children[0].classList.add("on");
 
-/* ---------- photo upload ---------- */
+/* photo upload */
 let photoData = null;
 const dropzone = document.getElementById("dropzone");
 const fPhoto = document.getElementById("fPhoto");
@@ -573,7 +510,6 @@ fPhoto.addEventListener("change", () => {
   if (!f) return;
   const rd = new FileReader();
   rd.onload = ev => {
-    // downscale to keep things light
     const img = new Image();
     img.onload = () => {
       const c = document.createElement("canvas");
@@ -583,7 +519,7 @@ fPhoto.addEventListener("change", () => {
       photoData = c.toDataURL("image/jpeg", .75);
       document.getElementById("dzImg").src = photoData;
       document.getElementById("dzPreview").classList.add("show");
-      document.getElementById("dzTitle").textContent = "Evidencia cargada";
+      document.getElementById("dzTitle").textContent = "Foto cargada";
       dropzone.classList.remove("error");
     };
     img.src = ev.target.result;
@@ -591,7 +527,7 @@ fPhoto.addEventListener("change", () => {
   rd.readAsDataURL(f);
 });
 
-/* ---------- actions ---------- */
+/* actions */
 document.getElementById("shuffle").addEventListener("click", renderRandom);
 document.getElementById("goBuild").addEventListener("click", () => show("build"));
 document.getElementById("goBack").addEventListener("click", () => show("rating"));
@@ -604,13 +540,13 @@ document.getElementById("publish").addEventListener("click", () => {
 
   if (!name || !review) {
     const missing = !name ? document.getElementById("fName") : document.getElementById("fReview");
-    missing.style.boxShadow = "4px 4px 0 #ff5fa2";
+    missing.style.borderColor = "#ff385c";
     missing.focus();
     return;
   }
   if (!photoData) {
     dropzone.classList.add("error");
-    document.getElementById("dzTitle").textContent = "Sin foto no hay ficha. Reglas son reglas.";
+    document.getElementById("dzTitle").textContent = "Falta la foto. Sin evidencia no hay ficha.";
     dropzone.scrollIntoView({ behavior:"smooth", block:"center" });
     return;
   }
@@ -629,7 +565,7 @@ document.getElementById("publish").addEventListener("click", () => {
   show("rating");
 });
 
-/* ---------- shareable link (hash-encoded, photo excluded) ---------- */
+/* shareable link (hash-encoded, photo excluded) */
 const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
 
@@ -644,7 +580,6 @@ document.getElementById("copyLink").addEventListener("click", () => {
     .catch(() => { prompt("Copia el link:", url); });
 });
 
-/* load shared card from URL */
 function loadFromHash() {
   const m = location.hash.match(/#f=(.+)/);
   if (!m) return false;
@@ -655,12 +590,12 @@ function loadFromHash() {
       s: p.s, t: p.t, who: "Reseña compartida", meta: p.m || "",
       user: true, conf: 0, caps: 0, voted: null
     }], { community: true });
-    showToast("Ficha compartida cargada. Tú decides si confirmas.");
+    showToast("Alguien te compartió esta ficha. Tú decides si confirmas.");
     return true;
   } catch { return false; }
 }
 
-/* ---------- PNG export for stories (1080x1920, branded) ---------- */
+/* PNG export for stories (1080x1920, branded) */
 document.getElementById("exportPng").addEventListener("click", async () => {
   const btn = document.getElementById("exportPng");
   btn.textContent = "Generando...";
@@ -673,45 +608,35 @@ document.getElementById("exportPng").addEventListener("click", async () => {
     out.width = W; out.height = H;
     const x = out.getContext("2d");
 
-    // paper background + memphis marks
-    x.fillStyle = "#fdf6ec"; x.fillRect(0, 0, W, H);
-    const cols = ['#ff5fa2','#2ec4b6','#ffd23f','#9b5de5','#ff8552'];
-    for (let i = 0; i < 26; i++) {
-      x.save();
-      x.translate(Math.random()*W, Math.random()*H);
-      x.rotate(Math.random()*Math.PI);
-      x.strokeStyle = x.fillStyle = cols[i % cols.length];
-      x.lineWidth = 6; x.globalAlpha = .8;
-      const k = i % 3;
-      if (k === 0) { x.beginPath(); x.arc(0, 0, 14, 0, 7); x.stroke(); }
-      else if (k === 1) { x.fillRect(-11, -11, 22, 22); }
-      else { x.beginPath(); x.moveTo(-16, 10); x.lineTo(0, -14); x.lineTo(16, 10); x.closePath(); x.stroke(); }
-      x.restore();
-    }
-    x.globalAlpha = 1;
+    // soft gradient background
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#ffe4ea");
+    g.addColorStop(1, "#fff6f0");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
 
-    // card centered
+    // card centered with soft shadow
     const cw = 920, ch = shot.height * (cw / shot.width);
-    const cx = (W - cw) / 2, cy = Math.max(150, (H - 220 - ch) / 2);
-    x.fillStyle = "#1a1a1a"; // hard shadow
-    roundRect(x, cx + 16, cy + 16, cw, Math.min(ch, H - cy - 240), 40); x.fill();
+    const cx = (W - cw) / 2, cy = Math.max(140, (H - 220 - ch) / 2);
+    const cardH = Math.min(ch, H - cy - 240);
     x.save();
-    roundRect(x, cx, cy, cw, Math.min(ch, H - cy - 240), 40); x.clip();
+    x.shadowColor = "rgba(0,0,0,.18)"; x.shadowBlur = 40; x.shadowOffsetY = 16;
+    roundRect(x, cx, cy, cw, cardH, 44); x.fillStyle = "#fff"; x.fill();
+    x.restore();
+    x.save();
+    roundRect(x, cx, cy, cw, cardH, 44); x.clip();
     x.drawImage(shot, cx, cy, cw, ch);
     x.restore();
-    x.lineWidth = 8; x.strokeStyle = "#1a1a1a";
-    roundRect(x, cx, cy, cw, Math.min(ch, H - cy - 240), 40); x.stroke();
 
     // branded footer (viral loop)
-    x.fillStyle = "#1a1a1a";
-    x.font = "700 40px 'Space Grotesk', Arial";
+    x.fillStyle = "#222";
+    x.font = "700 42px -apple-system, 'Segoe UI', Arial";
     x.textAlign = "center";
-    x.fillText("Hazle su ficha a tu ex", W/2, H - 130);
-    x.fillStyle = "#ff5fa2";
-    x.font = "44px 'Righteous', Arial";
-    x.fillText("wirdolab.github.io/thegrongcompany", W/2, H - 70);
+    x.fillText("Hazle su ficha a tu ex", W/2, H - 128);
+    x.fillStyle = "#ff385c";
+    x.font = "800 40px -apple-system, 'Segoe UI', Arial";
+    x.fillText("wirdolab.github.io/thegrongcompany", W/2, H - 68);
 
-    // share sheet on mobile (2 taps to IG Stories), download fallback on desktop
+    // share sheet on mobile, download fallback on desktop
     const blob = await new Promise(res => out.toBlob(res, "image/png"));
     const file = new File([blob], "thegrongex-" + nameEl.textContent.trim().toLowerCase() + ".png", { type: "image/png" });
 
@@ -728,7 +653,7 @@ document.getElementById("exportPng").addEventListener("click", async () => {
       }
     } else {
       downloadBlob(blob, file.name);
-      showToast("PNG listo para tu story");
+      showToast("Imagen lista para tu story");
     }
   } catch (err) {
     showToast("No se pudo generar la imagen");
@@ -746,7 +671,6 @@ function downloadBlob(blob, name) {
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
 
-/* label reflects what will actually happen on this device */
 function shareLabel() {
   const probe = new File([""], "p.png", { type: "image/png" });
   return (navigator.canShare && navigator.canShare({ files: [probe] }))
@@ -754,7 +678,17 @@ function shareLabel() {
 }
 document.getElementById("exportPng").textContent = shareLabel();
 
-/* ---------- toast ---------- */
+function roundRect(x, px, py, w, h, r) {
+  x.beginPath();
+  x.moveTo(px + r, py);
+  x.arcTo(px + w, py, px + w, py + h, r);
+  x.arcTo(px + w, py + h, px, py + h, r);
+  x.arcTo(px, py + h, px, py, r);
+  x.arcTo(px, py, px + w, py, r);
+  x.closePath();
+}
+
+/* toast */
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById("toast");
@@ -764,7 +698,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
-/* ---------- init ---------- */
+/* init */
 if (!loadFromHash()) renderRandom();
 </script>
 </body>
