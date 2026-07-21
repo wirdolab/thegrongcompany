@@ -394,7 +394,7 @@ function validationHTML(r, i) {
   const ok = r.conf >= NEEDED;
   return `
     <span class="v-badge ${ok ? 'ok' : 'pending'}">${ok ? '✓ Verificada por la comunidad' : 'En verificación'}</span>
-    <div class="v-progress">${r.conf} de ${NEEDED} confirmaciones${r.caps ? ' · ' + r.caps + ' dicen que no es cierto' : ''}</div>
+    <div class="v-progress">${ok ? r.conf + ' personas la confirman' : r.conf + ' de ' + NEEDED + ' confirmaciones'}${r.caps ? ' · ' + r.caps + ' dicen que no es cierto' : ''}</div>
     <div class="vote-row">
       <button class="vote confirm ${r.voted==='c'?'voted':''}" data-i="${i}" data-v="c" ${r.voted?'disabled':''}>Confirmo</button>
       <button class="vote deny ${r.voted==='d'?'voted':''}" data-i="${i}" data-v="d" ${r.voted?'disabled':''}>No es cierto</button>
