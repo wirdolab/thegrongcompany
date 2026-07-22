@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TheGrongCall — Social Emergency Exit</title>
+<meta name="description" content="A digital panic button that fakes an incoming emergency call to get you out of any awkward social situation. imagined by TheGrongCo.">
+<style>
+  :root{
+    --grong-bg: #08090A;
+    --grong-bg-2: #0F1012;
+    --grong-card: #121316;
+    --grong-border: #232427;
+    --grong-border-hi: #34363B;
+    --grong-accent: #FF3B30;
+    --grong-accent-dim: #431411;
+    --grong-text: #EDEDEC;
+    --grong-text-dim: #6E7075;
+    --grong-green: #2FD66E;
+    --grong-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, "Courier New", monospace;
+    --radius: 6px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 800px 400px at 50% -10%, rgba(255,59,48,0.08), transparent),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      var(--grong-bg);
+    color:var(--grong-text);
+    font-family:var(--grong-mono);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  svg.icon{width:18px;height:18px;flex:none;display:block;}
+  svg.icon-sm{width:14px;height:14px;}
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  header.top{
+    padding:20px 20px 14px;
+    border-bottom:1px solid var(--grong-border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .head-left{display:flex;flex-direction:column;gap:3px;}
+  .wordmark{
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  .wordmark span{color:var(--grong-accent);}
+  .tagline{
+    font-size:9.5px;
+    color:var(--grong-text-dim);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .lang-toggle{
+    display:flex;
+    border:1px solid var(--grong-border);
+    border-radius:4px;
+    overflow:hidden;
+    flex:none;
+  }
+  .lang-btn{
+    background:transparent;
+    border:none;
+    color:var(--grong-text-dim);
+    font-family:var(--grong-mono);
+    font-size:10px;
+    letter-spacing:1px;
+    padding:6px 9px;
+    cursor:pointer;
+  }
+  .lang-btn.active{background:var(--grong-accent);color:#fff;}
+
+  main{
+    flex:1;
+    padding:18px;
+    padding-bottom:104px;
+  }
+  .card{
+    background:var(--grong-card);
+    border:1px solid var(--grong-border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .quick-card{
+    border:1px solid var(--grong-accent);
+    background:linear-gradient(180deg, rgba(255,59,48,0.07), transparent 60%);
+  }
+  .quick-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .btn-test-call{
+    width:100%;
+    margin-top:12px;
+    background:transparent;
+    border:1px dashed var(--grong-border-hi);
+    color:var(--grong-text-dim);
+    font-family:var(--grong-mono);
+    font-size:11px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    padding:10px;
+    border-radius:4px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+  .btn-test-call:hover{border-color:var(--grong-accent);color:var(--grong-accent);}
+  .quick-text .qk-label{font-size:12.5px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  .quick-text .qk-sub{font-size:10.5px;color:var(--grong-text-dim);margin-top:3px;}
+  .btn-quick{
+    background:var(--grong-accent);
+    color:#fff;
+    border:none;
+    padding:11px 16px;
+    border-radius:4px;
+    font-family:var(--grong-mono);
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:1px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex:none;
+  }
+  .divider-label{
+    text-align:center;
+    font-size:9.5px;
+    color:var(--grong-text-dim);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin:16px 0 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .divider-label::before, .divider-label::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--grong-border);
+  }
+  .label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--grong-text-dim);
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .label .hint{display:flex;align-items:center;gap:4px;color:var(--grong-text-dim);}
+  .excuse-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .excuse-btn{
+    background:var(--grong-bg-2);
+    border:1px solid var(--grong-border);
+    border-radius:var(--radius);
+    padding:11px 10px;
+    color:var(--grong-text);
+    font-family:var(--grong-mono);
+    font-size:11.5px;
+    text-align:left;
+    cursor:pointer;
+    transition:border-color .15s;
+    position:relative;
+    line-height:1.35;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .excuse-btn:hover{border-color:var(--grong-border-hi);}
+  .excuse-btn.selected{
+    border-color:var(--grong-accent);
+    background:var(--grong-accent-dim);
+  }
+  .excuse-btn .icon{color:var(--grong-text-dim);}
+  .excuse-btn.selected .icon{color:var(--grong-accent);}
+  .excuse-btn.locked{opacity:0.5;cursor:pointer;}
+  .lock-badge{
+    position:absolute;
+    top:8px;
+    right:8px;
+    display:flex;
+    align-items:center;
+    gap:3px;
+    font-size:8.5px;
+    letter-spacing:0.5px;
+    color:var(--grong-accent);
+  }
+  input[type=text], input[type=number]{
+    width:100%;
+    background:var(--grong-bg-2);
+    border:1px solid var(--grong-border);
+    color:var(--grong-text);
+    font-family:var(--grong-mono);
+    padding:10px 11px;
+    border-radius:4px;
+    font-size:12.5px;
+  }
+  input[type=number]{border-color:var(--grong-accent);margin-top:10px;}
+  input[type=text]:focus, input[type=number]:focus{outline:none;border-color:var(--grong-accent);}
+  .timer-options{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+  }
+  .timer-chip{
+    background:var(--grong-bg-2);
+    border:1px solid var(--grong-border);
+    color:var(--grong-text);
+    font-family:var(--grong-mono);
+    padding:8px 13px;
+    border-radius:4px;
+    font-size:11px;
+    cursor:pointer;
+  }
+  .timer-chip.selected{
+    background:var(--grong-accent);
+    border-color:var(--grong-accent);
+    color:#fff;
+  }
+  .cta{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    padding:14px 18px 20px;
+    background:linear-gradient(180deg, transparent, var(--grong-bg) 35%);
+    max-width:480px;
+    margin:0 auto;
+  }
+  .btn-primary{
+    width:100%;
+    background:var(--grong-accent);
+    color:#fff;
+    border:none;
+    padding:15px;
+    border-radius:6px;
+    font-family:var(--grong-mono);
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  .btn-primary:disabled{
+    background:var(--grong-border);
+    color:var(--grong-text-dim);
+    cursor:not-allowed;
+  }
+  .fine-print{
+    font-size:9.5px;
+    color:var(--grong-text-dim);
+    line-height:1.6;
+    padding:14px 2px 0;
+    border-top:1px dashed var(--grong-border);
+    margin-top:4px;
+  }
+  .fine-print b{color:var(--grong-text);}
+
+  /* WAITING SCREEN */
+  #screen-waiting{display:none;text-align:center;padding-top:36px;}
+  .countdown{
+    font-size:52px;
+    font-weight:700;
+    color:var(--grong-accent);
+    margin:20px 0 6px;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:1px;
+  }
+  .pulse-ring{
+    width:110px;height:110px;
+    border-radius:50%;
+    border:1px solid var(--grong-accent);
+    margin:26px auto;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--grong-accent);
+    position:relative;
+  }
+  .pulse-ring::before, .pulse-ring::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid var(--grong-accent);
+    animation:pulse-expand 2.4s ease-out infinite;
+    opacity:0;
+  }
+  .pulse-ring::after{animation-delay:1.2s;}
+  @keyframes pulse-expand{
+    0%{transform:scale(1);opacity:0.6;}
+    100%{transform:scale(1.6);opacity:0;}
+  }
+
+  /* INCOMING CALL SCREEN */
+  #screen-call{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:1000;
+    flex-direction:column;
+    align-items:center;
+    color:#fff;
+    padding:60px 24px 40px;
+  }
+  .call-status{
+    font-size:10.5px;
+    color:var(--grong-text-dim);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .call-avatar{
+    width:96px;height:96px;
+    border-radius:50%;
+    border:1px solid var(--grong-accent);
+    background:var(--grong-accent-dim);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--grong-accent);
+    margin:16px 0;
+    position:relative;
+  }
+  .call-avatar::before{
+    content:'';
+    position:absolute;inset:-10px;
+    border-radius:50%;
+    border:1px solid rgba(255,59,48,0.4);
+    animation:pulse-expand 1.6s ease-out infinite;
+  }
+  .call-avatar svg{width:32px;height:32px;}
+  .call-name{font-size:24px;font-weight:700;margin-top:8px;letter-spacing:0.3px;}
+  .call-sub{font-size:11px;color:var(--grong-text-dim);margin-top:4px;letter-spacing:0.5px;text-transform:uppercase;}
+  .call-mode-tag{
+    margin-top:14px;
+    font-size:9px;
+    color:var(--grong-text-dim);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .call-actions{
+    margin-top:auto;
+    display:flex;
+    justify-content:space-between;
+    width:100%;
+    max-width:320px;
+  }
+  .call-action{
+    display:flex;flex-direction:column;align-items:center;gap:9px;
+    background:none;border:none;color:#fff;font-family:var(--grong-mono);
+    font-size:10px;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;
+  }
+  .call-action .circle{
+    width:58px;height:58px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid transparent;
+  }
+  .circle.decline{background:var(--grong-accent);}
+  .circle.accept{background:var(--grong-green);}
+  .circle svg{width:22px;height:22px;color:#fff;}
+
+  /* ACTIVE CALL SCREEN */
+  #screen-active{
+    display:none;
+    position:fixed;inset:0;
+    background:#000;
+    z-index:1000;
+    flex-direction:column;
+    align-items:center;
+    color:#fff;
+    padding:60px 24px 40px;
+  }
+  .active-timer{font-size:12px;color:var(--grong-text-dim);margin-top:4px;letter-spacing:1px;}
+  .caption-box{
+    margin-top:28px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--radius);
+    padding:16px;
+    font-size:12.5px;
+    line-height:1.7;
+    min-height:110px;
+    max-width:340px;
+  }
+  .caption-box .live-dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--grong-green);margin-right:6px;
+    animation:blink 1s infinite;
+  }
+  @keyframes blink{50%{opacity:0.2;}}
+  .mute-row{
+    margin-top:20px;
+    display:flex;gap:10px;
+  }
+  .mute-btn{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    color:#fff;font-family:var(--grong-mono);
+    padding:8px 14px;border-radius:4px;font-size:10.5px;
+    letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+  }
+  .end-call{
+    margin-top:auto;
+    width:58px;height:58px;border-radius:50%;
+    background:var(--grong-accent);border:none;color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .end-call svg{width:22px;height:22px;}
+
+  /* DONE SCREEN */
+  #screen-done{display:none;text-align:center;padding-top:56px;}
+  .done-icon{color:var(--grong-green);margin-bottom:12px;display:flex;justify-content:center;}
+  .done-icon svg{width:44px;height:44px;}
+  .done-title{font-size:15px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  .done-sub{font-size:11.5px;color:var(--grong-text-dim);margin-top:6px;line-height:1.6;}
+
+  /* MODAL */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);
+    z-index:2000;align-items:flex-end;justify-content:center;
+  }
+  .modal{
+    background:var(--grong-card);
+    border:1px solid var(--grong-border);
+    border-radius:12px 12px 0 0;
+    max-width:480px;width:100%;
+    padding:22px 20px 28px;
+  }
+  .modal h3{margin:0 0 4px;font-size:15px;text-transform:uppercase;letter-spacing:0.5px;}
+  .modal .sub{font-size:11.5px;color:var(--grong-text-dim);margin-bottom:16px;}
+  .pro-list{list-style:none;padding:0;margin:0 0 18px;font-size:11.5px;line-height:2.1;}
+  .pro-list li{display:flex;align-items:center;gap:8px;}
+  .pro-list svg{color:var(--grong-green);flex:none;}
+  .price-tag{font-size:22px;font-weight:700;color:var(--grong-accent);margin-bottom:14px;}
+  .placeholder-note{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    font-size:10px;
+    color:#ffb199;
+    background:rgba(255,59,48,0.07);
+    border:1px dashed var(--grong-accent);
+    border-radius:4px;
+    padding:10px;
+    margin-bottom:12px;
+    line-height:1.6;
+  }
+  .placeholder-note svg{flex:none;margin-top:1px;}
+  .close-modal{
+    text-align:center;font-size:10.5px;color:var(--grong-text-dim);
+    margin-top:12px;cursor:pointer;letter-spacing:0.3px;
+  }
+
+  .footer-credit{
+    text-align:center;
+    font-size:9.5px;
+    color:var(--grong-text-dim);
+    padding:16px 20px 0;
+    letter-spacing:0.3px;
+  }
+  .footer-credit b{color:var(--grong-text);}
+  .footer-credit .grong-mark{color:var(--grong-accent);}
+  .footer-credit .share-link{text-decoration:underline;cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+
+  .toast{
+    position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+    background:var(--grong-card);border:1px solid var(--grong-border);
+    color:var(--grong-text);padding:10px 16px;border-radius:6px;
+    font-size:11.5px;z-index:3000;opacity:0;transition:opacity .2s;
+    pointer-events:none;max-width:90%;text-align:center;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="head-left">
+      <div class="wordmark">TheGrong<span>Call</span></div>
+      <div class="tagline">Not wrong. Grong.™</div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn" id="lang-en" type="button">EN</button>
+      <button class="lang-btn" id="lang-es" type="button">ES</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- SETUP SCREEN -->
+    <div id="screen-setup">
+
+      <div class="card quick-card">
+        <div class="quick-row">
+          <div class="quick-text">
+            <div class="qk-label" data-i18n="quickStart">Quick start</div>
+            <div class="qk-sub" id="quick-sub">1-tap with smart defaults</div>
+          </div>
+          <button class="btn-quick" id="btn-quick-start" type="button"></button>
+        </div>
+        <button class="btn-test-call" id="btn-test-call" type="button"></button>
+      </div>
+
+      <div class="divider-label" data-i18n="orCustomize">or customize</div>
+
+      <div class="card">
+        <div class="label">
+          <span data-i18n="step1">1. Pick your excuse</span>
+          <span class="hint"></span>
+        </div>
+        <div class="excuse-grid" id="excuse-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="label" data-i18n="step2">2. Who's "calling" you?</div>
+        <input type="text" id="caller-name" maxlength="24">
+      </div>
+
+      <div class="card">
+        <div class="label" data-i18n="step3">3. Exit timer</div>
+        <div class="timer-options" id="timer-options"></div>
+        <input type="number" id="custom-timer-input" min="1" max="180" step="1" style="display:none;">
+      </div>
+
+      <div class="card">
+        <div class="label"><span data-i18n="savedLabel">Saved excuses</span><span id="saved-count">(0)</span></div>
+        <div id="saved-list" style="font-size:11.5px;color:var(--grong-text-dim);"></div>
+      </div>
+
+      <div class="fine-print">
+        <b data-i18n="disclaimerLabel">Legal-ish disclaimer:</b> <span data-i18n="disclaimerText">TheGrongCall simulates a phone call. It does not dispatch paramedics, does not fix your relationship with your in-laws, and is not responsible if people still don't believe you. Works only while the tab/app stays open. Use at your own social risk.</span>
+      </div>
+
+      <div class="footer-credit">
+        <b>imagined by TheGrongCo.</b> — <span class="grong-mark">GRONG-004</span><br>
+        <span class="share-link" id="share-btn"></span>
+      </div>
+    </div>
+
+    <!-- WAITING SCREEN -->
+    <div id="screen-waiting">
+      <div class="label" style="justify-content:center;" data-i18n="armed">Grong exit armed</div>
+      <div class="pulse-ring"></div>
+      <div class="countdown" id="countdown">15:00</div>
+      <div style="color:var(--grong-text-dim);font-size:11.5px;" id="waiting-sub"></div>
+    </div>
+
+    <!-- DONE SCREEN -->
+    <div id="screen-done">
+      <div class="done-icon"></div>
+      <div class="done-title" data-i18n="doneTitle">Bail successful.</div>
+      <div class="done-sub" data-i18n="doneSub">You're out. Not your problem anymore.<br>Grong-approved.</div>
+    </div>
+  </main>
+
+  <div class="cta" id="cta-bar">
+    <button class="btn-primary" id="btn-start" disabled></button>
+  </div>
+</div>
+
+<!-- INCOMING CALL -->
+<div id="screen-call">
+  <div class="call-status" data-i18n="incomingLabel">Incoming call · Grong Exit</div>
+  <div class="call-avatar" id="call-avatar"></div>
+  <div class="call-name" id="call-name">—</div>
+  <div class="call-sub" data-i18n="mobileLabel">Mobile</div>
+  <div class="call-mode-tag">imagined by TheGrongCo.</div>
+  <div class="call-actions">
+    <button class="call-action" id="btn-decline">
+      <span class="circle decline"></span> <span data-i18n="decline">Decline</span>
+    </button>
+    <button class="call-action" id="btn-accept">
+      <span class="circle accept"></span> <span data-i18n="accept">Answer</span>
+    </button>
+  </div>
+</div>
+
+<!-- ACTIVE CALL -->
+<div id="screen-active">
+  <div class="call-status" data-i18n="inCall">In call</div>
+  <div class="call-avatar" id="active-avatar"></div>
+  <div class="call-name" id="active-name">—</div>
+  <div class="active-timer" id="active-timer">00:00</div>
+  <div class="caption-box"><span class="live-dot"></span><span id="caption-text"></span></div>
+  <div class="mute-row">
+    <button class="mute-btn" id="btn-toggle-voice"></button>
+  </div>
+  <button class="end-call" id="btn-end-call"></button>
+</div>
+
+<!-- PRO MODAL -->
+<div class="modal-overlay" id="pro-modal">
+  <div class="modal">
+    <h3>TheGrongCall PRO</h3>
+    <div class="sub" data-i18n="proSub">Unlock the full excuse bank + extras</div>
+    <div class="price-tag">$2.99 <span style="font-size:11px;color:var(--grong-text-dim);font-weight:400;" data-i18n="proOnce">one-time</span></div>
+    <ul class="pro-list" id="pro-list"></ul>
+    <div class="placeholder-note">
+      <span id="placeholder-icon"></span>
+      <span data-i18n="placeholderNote">Payment link pending. Stripe isn't connected in this build — this button is a placeholder. Once Stripe connects, this is where GRONG-004's real Payment Link goes.</span>
+    </div>
+    <button class="btn-primary" id="btn-buy-pro" data-i18n="unlockPro">Unlock PRO (placeholder)</button>
+    <div class="close-modal" id="close-modal" data-i18n="stayFree">stay free, that's fine</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- ICONS (minimal line icons, no emoji) ----------
+  const ICON_PATHS = {
+    phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',
+    x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    check: '<polyline points="20 6 9 17 4 12"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    mute: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>',
+    unmute: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>',
+    share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+    successCheck: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    alert: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    family: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    work: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    flame: '<path d="M12 2c1.2 3-2 3.8-2 7a4 4 0 0 0 8 0c0-1.2-.5-2.2-1-3 1.1.6 2 2.1 2 3.8A6 6 0 0 1 6 10c0-4.2 3.2-5.4 6-8z"/>',
+    paw: '<circle cx="7.5" cy="7.5" r="1.6"/><circle cx="12" cy="5.5" r="1.6"/><circle cx="16.5" cy="7.5" r="1.6"/><ellipse cx="12" cy="14" rx="5.2" ry="4.2"/>',
+    drop: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+    car: '<path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13"/><rect x="3" y="13" width="18" height="5" rx="1"/><circle cx="7.5" cy="18.5" r="1.5"/><circle cx="16.5" cy="18.5" r="1.5"/>',
+    child: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/>',
+    plane: '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',
+    heartbreak: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M12 8l-1.6 3 3 2-1.4 3"/>',
+    medical: '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>'
+  };
+  function icon(name, cls){
+    const p = ICON_PATHS[name] || '';
+    return '<svg class="icon' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+  }
+
+  // ---------- TRANSLATIONS ----------
+  const STRINGS = {
+    en: {
+      quickStart:'Quick start', quickStartSub:'1-tap with smart defaults', quickStartBtn:'Call now',
+      ringsInMin:function(m){return 'Rings in ' + m + (m===1 ? ' min' : ' min');},
+      testCall:'Test call in 5 sec',
+      orCustomize:'or customize',
+      step1:'1. Pick your excuse', proHint:'PRO', callerPlaceholder:'e.g. Mom, Boss, Dr. Grong',
+      step2:'2. Who’s "calling" you?', step3:'3. Exit timer', customPlaceholder:'minutes (1–180)', customLabel:'Custom',
+      savedLabel:'Saved excuses', savedEmpty:'No excuses saved yet. Ones you use are saved here automatically (localStorage — stays on your device).',
+      disclaimerLabel:'Legal-ish disclaimer:',
+      disclaimerText:'TheGrongCall simulates a phone call. It does not dispatch paramedics, does not fix your relationship with your in-laws, and is not responsible if people still don’t believe you. Works only while the tab/app stays open. Use at your own social risk.',
+      share:'share', chooseExcuseFirst:'Pick an excuse first', customMinutesNeeded:'Set custom minutes',
+      activate:function(m){return 'Arm grong exit (' + m + ' min)';},
+      armed:'Grong exit armed', waitingSub:function(name){return 'Act normal. A call from <b>' + name + '</b> is coming in.';},
+      doneTitle:'Bail successful.', doneSub:'You’re out. Not your problem anymore.<br>Grong-approved.',
+      incomingLabel:'Incoming call · Grong Exit', mobileLabel:'Mobile',
+      decline:'Decline', accept:'Answer', inCall:'In call', connecting:'Connecting...',
+      muteVoice:'Mute voice', unmuteVoice:'Unmute voice',
+      proSub:'Unlock the full excuse bank + extras', proOnce:'one-time',
+      proFeatures:['50+ premium excuses (more believable, more grong)','Custom TTS voices','Fake video-call mode','Removes the watermark from the call screen'],
+      placeholderNote:'Payment link pending. Stripe isn’t connected in this build — this button is a placeholder. Once Stripe connects, this is where GRONG-004’s real Payment Link goes.',
+      unlockPro:'Unlock PRO (placeholder)', stayFree:'stay free, that’s fine',
+      toastPending:'Payment link pending — Stripe not connected yet. Grong will let you know.',
+      toastCopied:'Share text copied to clipboard.', toastCopyFail:'Couldn’t copy. Copy it manually, not a big deal.',
+      lockLabel:'PRO'
+    },
+    es: {
+      quickStart:'Inicio rápido', quickStartSub:'1 toque con opciones inteligentes', quickStartBtn:'Llamar ahora',
+      ringsInMin:function(m){return 'Suena en ' + m + ' min';},
+      testCall:'Llamada de prueba en 5 seg',
+      orCustomize:'o personaliza',
+      step1:'1. Elige tu excusa', proHint:'PRO', callerPlaceholder:'ej. Mamá, Jefe, Dr. Grong',
+      step2:'2. ¿Quién te "llama"?', step3:'3. Temporizador de salida', customPlaceholder:'minutos (1–180)', customLabel:'Custom',
+      savedLabel:'Excusas guardadas', savedEmpty:'Aún no guardas ninguna. Las que uses se guardan solas aquí (localStorage, no sale de tu dispositivo).',
+      disclaimerLabel:'Disclaimer legal-ish:',
+      disclaimerText:'TheGrongCall simula una llamada. No convoca paramédicos, no repara tu relación con tus suegros, y no es responsable si igual no te creen. Funciona solo mientras el tab/app esté abierto. Uso bajo tu propio riesgo social.',
+      share:'compartir', chooseExcuseFirst:'Elige una excusa primero', customMinutesNeeded:'Pon los minutos custom',
+      activate:function(m){return 'Activar grong exit (' + m + ' min)';},
+      armed:'Grong exit armado', waitingSub:function(name){return 'Actúa normal. La llamada de <b>' + name + '</b> está por entrar.';},
+      doneTitle:'Bail exitoso.', doneSub:'Saliste. Ya no es tu problema.<br>Grong-approved.',
+      incomingLabel:'Llamada entrante · Grong Exit', mobileLabel:'Móvil',
+      decline:'Rechazar', accept:'Contestar', inCall:'En llamada', connecting:'Conectando...',
+      muteVoice:'Silenciar voz', unmuteVoice:'Activar voz',
+      proSub:'Desbloquea el banco completo de excusas + extras', proOnce:'pago único',
+      proFeatures:['50+ excusas premium (más creíbles, más grong)','Voces TTS personalizadas','Modo videollamada falsa','Quita la marca de agua de la pantalla de llamada'],
+      placeholderNote:'Payment link pendiente. Stripe no está conectado en este build — este botón es un placeholder. Cuando se conecte Stripe, aquí va el Payment Link real de GRONG-004.',
+      unlockPro:'Desbloquear PRO (placeholder)', stayFree:'seguir gratis, está bien',
+      toastPending:'Payment link pendiente — Stripe no conectado todavía. Grong te avisa.',
+      toastCopied:'Texto de share copiado al portapapeles.', toastCopyFail:'No se pudo copiar. Cópialo manual, tampoco es tan grave.',
+      lockLabel:'PRO'
+    }
+  };
+
+  // ---------- EXCUSE DATA (bilingual) ----------
+  const EXCUSES = [
+    {id:'family', icon:'family', pro:false,
+     label:{en:'Family emergency', es:'Emergencia familiar'},
+     caller:{en:'Mom', es:'Mamá'},
+     script:{en:"Hey, sorry to interrupt. It's a family emergency, I need you to come now. No, not that serious, but I do need you here. I'll explain when you get here, okay? Please come now.",
+              es:"Hola, perdón que interrumpo. Es una emergencia familiar, necesito que vengas ya. No es grave-grave, pero sí necesito que vengas. Te explico cuando llegues, ¿va? Ven ya por favor."}},
+    {id:'work', icon:'work', pro:false,
+     label:{en:'Crying boss', es:'Jefe llorando'},
+     caller:{en:'Boss', es:'Jefe'},
+     script:{en:"I need you to log on right now, we have a system issue and only you know how to fix it. Yes, right now. Sorry for the hour, but I really need you on this, it's urgent.",
+              es:"Necesito que te conectes ya, tenemos un problema con el sistema y solo tú sabes arreglarlo. Sí, ahora mismo. Perdón por la hora, pero de verdad te necesito en esto, es urgente."}},
+    {id:'gas', icon:'flame', pro:false,
+     label:{en:'Gas leak', es:'Fuga de gas'},
+     caller:{en:'Neighbor', es:'Vecino'},
+     script:{en:"Hey, it smells like gas in the building hallway, I already called maintenance but they need someone here. Can you come? Seriously, better come now.",
+              es:"Oye, huele a gas en el pasillo del edificio, ya llamé al de mantenimiento pero necesitan que alguien esté aquí. ¿Puedes venir? Es en serio, mejor ven ya."}},
+    {id:'dog', icon:'paw', pro:true,
+     label:{en:'Dog ate the keys', es:'El perro se comió las llaves'},
+     caller:{en:'Roommate', es:'Roomie'},
+     script:{en:"You won't believe this but the dog ate your keys. Literally. It's fine, but we need to go to the vet now. Please come, this is surreally urgent.",
+              es:"No vas a creer esto pero el perro se comió tus llaves. Literal. Está bien, pero necesitamos ir al veterinario ya. Ven por favor, esto es surrealmente urgente."}},
+    {id:'flood', icon:'drop', pro:true,
+     label:{en:'Flooded bathroom', es:'Se inundó el baño'},
+     caller:{en:'Building manager', es:'Portero'},
+     script:{en:"A pipe burst and the upstairs unit is flooding, the water is already coming down into yours. I need you to come open the door right now, please.",
+              es:"Se rompió un tubo y se está inundando el departamento de arriba, el agua ya está bajando al tuyo. Necesito que vengas a abrir la puerta ahora mismo, por favor."}},
+    {id:'car', icon:'car', pro:true,
+     label:{en:'Car alarm', es:'Alarma del carro'},
+     caller:{en:'Security', es:'Seguridad'},
+     script:{en:"Hi, this is parking security. Your vehicle's alarm went off and it looks like someone tried to force the door. We need you to come check right now.",
+              es:"Buenas, hablamos de seguridad del estacionamiento. Su vehículo activó la alarma y parece que alguien intentó forzar la puerta. Necesitamos que venga a revisar en este momento."}},
+    {id:'kid', icon:'child', pro:true,
+     label:{en:'Babysitter needs help', es:'La niñera necesita ayuda'},
+     caller:{en:'Babysitter', es:'Niñera'},
+     script:{en:"Sorry to call this late, but the kid won't stop crying and I can't calm them down, I think they really need you. Can you come earlier than planned?",
+              es:"Perdón que llame tan tarde, pero el niño no para de llorar y no logro calmarlo, creo que de verdad te necesita a ti. ¿Puedes venir antes de lo planeado?"}},
+    {id:'flight', icon:'plane', pro:true,
+     label:{en:'Flight changed', es:'Cambiaron tu vuelo'},
+     caller:{en:'Airline', es:'Aerolínea'},
+     script:{en:"This is the airline calling. There was a last-minute change to your flight and we need to confirm your details and rebook check-in right now, it's time-sensitive.",
+              es:"Le llamamos de la aerolínea, hubo un cambio de última hora en su vuelo y necesitamos confirmar sus datos y reorganizar el check-in ahora mismo, es urgente."}},
+    {id:'ex', icon:'heartbreak', pro:true,
+     label:{en:'Your ex is at the door', es:'Tu ex está en la puerta'},
+     caller:{en:'Roommate', es:'Roomie'},
+     script:{en:"Hey, your ex is literally standing outside the door asking for you. I don't know what they want. Are you coming now or do I say something?",
+              es:"Oye, tu ex está literalmente parado afuera del depa preguntando por ti. No sé qué quiere. ¿Vienes ya o le digo algo?"}},
+    {id:'medical', icon:'medical', pro:true,
+     label:{en:'Medical results', es:'Resultado médico'},
+     caller:{en:'Clinic', es:'Clínica'},
+     script:{en:"Hi, this is the clinic calling. Your results are ready and the doctor would prefer to go over them with you in person as soon as possible. Can you come now?",
+              es:"Buenas, hablamos de la clínica. Ya tenemos listos sus resultados y el doctor prefiere comentarlos con usted en persona lo antes posible. ¿Puede venir ahora?"}}
+  ];
+
+  const TIMERS = [1, 5, 10, 15, 30];
+
+  // ---------- STATE ----------
+  let state = {
+    lang: 'es',
+    selectedExcuseId: null,
+    callerName: '',
+    timerMinutes: 5,
+    isCustomTimer: false,
+    customMinutes: null,
+    userTouchedTimer: false,
+    proUnlocked: false,
+    countdownInterval: null,
+    voiceMuted: false,
+    activeInterval: null,
+    ringAudioCtx: null,
+    ringInterval: null
+  };
+
+  function t(key){ return STRINGS[state.lang][key]; }
+
+  // ---------- STORAGE ----------
+  function loadPrefs(){
+    try{
+      const raw = localStorage.getItem('grongcall_prefs');
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return {savedExcuses:[], proUnlocked:false};
+  }
+  function savePrefs(p){
+    try{ localStorage.setItem('grongcall_prefs', JSON.stringify(p)); }catch(e){}
+  }
+  let prefs = loadPrefs();
+  state.proUnlocked = !!prefs.proUnlocked;
+
+  try{
+    const savedLang = localStorage.getItem('grongcall_lang');
+    if(savedLang === 'en' || savedLang === 'es'){
+      state.lang = savedLang;
+    } else if(navigator.language && navigator.language.toLowerCase().indexOf('es') !== 0){
+      state.lang = 'en';
+    }
+  }catch(e){}
+
+  // ---------- LANGUAGE ----------
+  function applyLanguage(){
+    document.documentElement.lang = state.lang;
+    document.getElementById('lang-en').classList.toggle('active', state.lang === 'en');
+    document.getElementById('lang-es').classList.toggle('active', state.lang === 'es');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = t(key);
+      if(typeof val === 'string') el.innerHTML = val;
+    });
+
+    document.getElementById('caller-name').placeholder = t('callerPlaceholder');
+    document.getElementById('custom-timer-input').placeholder = t('customPlaceholder');
+    document.getElementById('btn-quick-start').innerHTML = icon('phone') + ' <span>' + t('quickStartBtn') + '</span>';
+    document.getElementById('btn-test-call').innerHTML = icon('phone', 'icon-sm') + ' <span>' + t('testCall') + '</span>';
+    document.getElementById('btn-toggle-voice').innerHTML = icon(state.voiceMuted ? 'mute' : 'unmute') + ' <span>' + (state.voiceMuted ? t('unmuteVoice') : t('muteVoice')) + '</span>';
+    document.getElementById('btn-end-call').innerHTML = icon('x');
+    document.getElementById('share-btn').innerHTML = icon('share', 'icon-sm') + ' <span>' + t('share') + '</span>';
+    document.getElementById('placeholder-icon').innerHTML = icon('alert', 'icon-sm');
+    document.getElementById('call-avatar').innerHTML = icon('phone');
+    document.getElementById('active-avatar').innerHTML = icon('phone');
+    document.querySelector('.pulse-ring').innerHTML = icon('phone');
+    document.querySelector('.done-icon').innerHTML = icon('successCheck');
+    document.querySelector('.circle.decline').innerHTML = icon('x');
+    document.querySelector('.circle.accept').innerHTML = icon('check');
+
+    const proList = document.getElementById('pro-list');
+    proList.innerHTML = t('proFeatures').map(f => '<li>' + icon('check','icon-sm') + '<span>' + f + '</span></li>').join('');
+
+    document.getElementById('caption-text').textContent = t('connecting');
+
+    renderExcuses();
+    renderTimers();
+    renderSaved();
+    updateStartBtn();
+    updateQuickSub();
+  }
+
+  document.getElementById('lang-en').addEventListener('click', () => {
+    state.lang = 'en';
+    try{ localStorage.setItem('grongcall_lang','en'); }catch(e){}
+    applyLanguage();
+  });
+  document.getElementById('lang-es').addEventListener('click', () => {
+    state.lang = 'es';
+    try{ localStorage.setItem('grongcall_lang','es'); }catch(e){}
+    applyLanguage();
+  });
+
+  // ---------- RENDER EXCUSES ----------
+  const grid = document.getElementById('excuse-grid');
+  function renderExcuses(){
+    grid.innerHTML = '';
+    EXCUSES.forEach(ex => {
+      const btn = document.createElement('button');
+      const locked = ex.pro && !state.proUnlocked;
+      btn.type = 'button';
+      btn.className = 'excuse-btn' + (locked ? ' locked' : '') + (state.selectedExcuseId === ex.id ? ' selected' : '');
+      btn.innerHTML = icon(ex.icon) +
+        '<span>' + ex.label[state.lang] + '</span>' +
+        (locked ? '<span class="lock-badge">' + icon('lock','icon-sm') + t('lockLabel') + '</span>' : '');
+      btn.addEventListener('click', () => {
+        if(locked){ openProModal(); return; }
+        state.selectedExcuseId = ex.id;
+        const callerInput = document.getElementById('caller-name');
+        if(!callerInput.value) callerInput.value = ex.caller[state.lang];
+        renderExcuses();
+        updateStartBtn();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  // ---------- RENDER TIMERS ----------
+  const timerWrap = document.getElementById('timer-options');
+  const customInput = document.getElementById('custom-timer-input');
+  function updateQuickSub(){
+    document.getElementById('quick-sub').textContent = t('ringsInMin')(state.timerMinutes || 5);
+  }
+
+  function renderTimers(){
+    timerWrap.innerHTML = '';
+    TIMERS.forEach(m => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'timer-chip' + (!state.isCustomTimer && state.timerMinutes === m ? ' selected' : '');
+      chip.textContent = m + ' min';
+      chip.addEventListener('click', () => {
+        state.isCustomTimer = false;
+        state.timerMinutes = m;
+        state.userTouchedTimer = true;
+        customInput.style.display = 'none';
+        renderTimers();
+        updateStartBtn();
+        updateQuickSub();
+      });
+      timerWrap.appendChild(chip);
+    });
+    const customChip = document.createElement('button');
+    customChip.type = 'button';
+    customChip.className = 'timer-chip' + (state.isCustomTimer ? ' selected' : '');
+    customChip.textContent = t('customLabel') + (state.isCustomTimer && state.customMinutes ? ' (' + state.customMinutes + ')' : '');
+    customChip.addEventListener('click', () => {
+      state.isCustomTimer = true;
+      state.userTouchedTimer = true;
+      customInput.style.display = 'block';
+      customInput.value = state.customMinutes || '';
+      customInput.focus();
+      if(state.customMinutes) state.timerMinutes = state.customMinutes;
+      renderTimers();
+      updateStartBtn();
+      updateQuickSub();
+    });
+    timerWrap.appendChild(customChip);
+  }
+  customInput.addEventListener('input', () => {
+    let val = parseInt(customInput.value, 10);
+    if(isNaN(val)) val = null;
+    if(val !== null) val = Math.max(1, Math.min(180, val));
+    state.customMinutes = val;
+    state.timerMinutes = val || 0;
+    updateStartBtn();
+    updateQuickSub();
+  });
+
+  // ---------- SAVED LIST ----------
+  function renderSaved(){
+    const list = document.getElementById('saved-list');
+    const count = document.getElementById('saved-count');
+    count.textContent = '(' + prefs.savedExcuses.length + ')';
+    if(prefs.savedExcuses.length === 0){
+      list.textContent = t('savedEmpty');
+      return;
+    }
+    list.innerHTML = prefs.savedExcuses.slice(-5).reverse().map(s =>
+      '· ' + s.excuseLabel + ' — ' + s.caller + ' — ' + s.date
+    ).join('<br>');
+  }
+
+  // ---------- START BUTTON STATE ----------
+  function updateStartBtn(){
+    const btn = document.getElementById('btn-start');
+    const hasValidTimer = state.timerMinutes && state.timerMinutes > 0;
+    if(!state.selectedExcuseId){
+      btn.disabled = true;
+      btn.textContent = t('chooseExcuseFirst');
+    } else if(state.isCustomTimer && !hasValidTimer){
+      btn.disabled = true;
+      btn.textContent = t('customMinutesNeeded');
+    } else {
+      btn.disabled = false;
+      btn.textContent = t('activate')(state.timerMinutes);
+    }
+  }
+
+  document.getElementById('caller-name').addEventListener('input', e => {
+    state.callerName = e.target.value;
+  });
+
+  // ---------- SCREENS ----------
+  function showScreen(name){
+    ['setup','waiting','done'].forEach(s => {
+      document.getElementById('screen-'+s).style.display = (s===name) ? 'block' : 'none';
+    });
+    document.getElementById('cta-bar').style.display = (name==='setup') ? 'block' : 'none';
+  }
+
+  function startExit(){
+    const excuse = EXCUSES.find(e => e.id === state.selectedExcuseId);
+    if(!excuse) return;
+    const callerInput = document.getElementById('caller-name');
+    state.callerName = callerInput.value.trim() || excuse.caller[state.lang];
+    document.getElementById('waiting-sub').innerHTML = t('waitingSub')(state.callerName);
+    showScreen('waiting');
+    startCountdown(state.timerMinutes * 60);
+  }
+
+  document.getElementById('btn-start').addEventListener('click', startExit);
+
+  document.getElementById('btn-quick-start').addEventListener('click', () => {
+    // Quick Start only fills in whatever the user hasn't already chosen —
+    // it never overrides an excuse or timer you picked yourself.
+    const callerInput = document.getElementById('caller-name');
+    if(!state.selectedExcuseId){
+      const defaultExcuse = EXCUSES.find(e => !e.pro) || EXCUSES[0];
+      state.selectedExcuseId = defaultExcuse.id;
+      if(!callerInput.value) callerInput.value = defaultExcuse.caller[state.lang];
+    }
+    if(!state.userTouchedTimer){
+      state.isCustomTimer = false;
+      state.timerMinutes = 5;
+    }
+    renderExcuses();
+    renderTimers();
+    updateStartBtn();
+    startExit();
+  });
+
+  document.getElementById('btn-test-call').addEventListener('click', () => {
+    // Instant test: rings in 5 SECONDS regardless of the timer selected above.
+    if(!state.selectedExcuseId){
+      const defaultExcuse = EXCUSES.find(e => !e.pro) || EXCUSES[0];
+      state.selectedExcuseId = defaultExcuse.id;
+    }
+    const excuse = EXCUSES.find(e => e.id === state.selectedExcuseId);
+    const callerInput = document.getElementById('caller-name');
+    state.callerName = callerInput.value.trim() || excuse.caller[state.lang];
+    document.getElementById('waiting-sub').innerHTML = t('waitingSub')(state.callerName);
+    showScreen('waiting');
+    startCountdown(5);
+  });
+
+  function startCountdown(seconds){
+    let remaining = seconds;
+    updateCountdownDisplay(remaining);
+    clearInterval(state.countdownInterval);
+    state.countdownInterval = setInterval(() => {
+      remaining--;
+      updateCountdownDisplay(remaining);
+      if(remaining <= 0){
+        clearInterval(state.countdownInterval);
+        triggerIncomingCall();
+      }
+    }, 1000);
+  }
+  function updateCountdownDisplay(remaining){
+    const m = Math.floor(remaining/60).toString().padStart(2,'0');
+    const s = (remaining%60).toString().padStart(2,'0');
+    document.getElementById('countdown').textContent = m+':'+s;
+  }
+
+  // ---------- RINGTONE ----------
+  function startRingtone(){
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      state.ringAudioCtx = new Ctx();
+      function beep(){
+        const ctx = state.ringAudioCtx;
+        if(!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 900;
+        gain.gain.value = 0.15;
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.frequency.setValueAtTime(900, ctx.currentTime);
+        osc.frequency.setValueAtTime(700, ctx.currentTime + 0.25);
+        osc.stop(ctx.currentTime + 0.5);
+      }
+      beep();
+      state.ringInterval = setInterval(beep, 1400);
+    }catch(e){}
+  }
+  function stopRingtone(){
+    clearInterval(state.ringInterval);
+    if(state.ringAudioCtx){
+      try{ state.ringAudioCtx.close(); }catch(e){}
+      state.ringAudioCtx = null;
+    }
+  }
+
+  // ---------- INCOMING CALL ----------
+  function triggerIncomingCall(){
+    document.getElementById('call-name').textContent = state.callerName;
+    document.getElementById('screen-call').style.display = 'flex';
+    startRingtone();
+    if(navigator.vibrate){
+      try{ navigator.vibrate([500,300,500,300,500]); }catch(e){}
+    }
+  }
+
+  document.getElementById('btn-decline').addEventListener('click', () => {
+    stopRingtone();
+    if(navigator.vibrate) try{navigator.vibrate(0);}catch(e){}
+    document.getElementById('screen-call').style.display = 'none';
+    finishFlow();
+  });
+
+  document.getElementById('btn-accept').addEventListener('click', () => {
+    stopRingtone();
+    if(navigator.vibrate) try{navigator.vibrate(0);}catch(e){}
+    document.getElementById('screen-call').style.display = 'none';
+    startActiveCall();
+  });
+
+  // ---------- ACTIVE CALL + TTS ----------
+  function startActiveCall(){
+    const excuse = EXCUSES.find(e => e.id === state.selectedExcuseId);
+    document.getElementById('active-name').textContent = state.callerName;
+    document.getElementById('screen-active').style.display = 'flex';
+
+    let seconds = 0;
+    document.getElementById('active-timer').textContent = '00:00';
+    state.activeInterval = setInterval(() => {
+      seconds++;
+      const m = Math.floor(seconds/60).toString().padStart(2,'0');
+      const s = (seconds%60).toString().padStart(2,'0');
+      document.getElementById('active-timer').textContent = m+':'+s;
+    }, 1000);
+
+    const scriptText = excuse.script[state.lang];
+    typeCaption(scriptText);
+    speakScript(scriptText);
+
+    prefs.savedExcuses.push({
+      excuseLabel: excuse.label[state.lang],
+      caller: state.callerName,
+      date: new Date().toLocaleDateString()
+    });
+    savePrefs(prefs);
+  }
+
+  function typeCaption(text){
+    const el = document.getElementById('caption-text');
+    el.textContent = '';
+    let i = 0;
+    const speed = 28;
+    const iv = setInterval(() => {
+      el.textContent = text.slice(0, i);
+      i++;
+      if(i > text.length) clearInterval(iv);
+    }, speed);
+  }
+
+  function speakScript(text){
+    if(state.voiceMuted) return;
+    if(!('speechSynthesis' in window)) return;
+    try{
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = state.lang === 'en' ? 'en-US' : 'es-ES';
+      u.rate = 1.02;
+      u.pitch = 1.0;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  document.getElementById('btn-toggle-voice').addEventListener('click', function(){
+    state.voiceMuted = !state.voiceMuted;
+    this.innerHTML = icon(state.voiceMuted ? 'mute' : 'unmute') + ' <span>' + (state.voiceMuted ? t('unmuteVoice') : t('muteVoice')) + '</span>';
+    if(state.voiceMuted && 'speechSynthesis' in window){
+      window.speechSynthesis.cancel();
+    }
+  });
+
+  document.getElementById('btn-end-call').addEventListener('click', () => {
+    clearInterval(state.activeInterval);
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+    document.getElementById('screen-active').style.display = 'none';
+    finishFlow();
+  });
+
+  function finishFlow(){
+    showScreen('done');
+    renderSaved();
+    setTimeout(() => {
+      showScreen('setup');
+      state.selectedExcuseId = null;
+      renderExcuses();
+      updateStartBtn();
+    }, 2600);
+  }
+
+  // ---------- PRO MODAL ----------
+  function openProModal(){
+    document.getElementById('pro-modal').style.display = 'flex';
+  }
+  function closeProModal(){
+    document.getElementById('pro-modal').style.display = 'none';
+  }
+  document.getElementById('close-modal').addEventListener('click', closeProModal);
+  document.getElementById('pro-modal').addEventListener('click', (e) => {
+    if(e.target.id === 'pro-modal') closeProModal();
+  });
+  document.getElementById('btn-buy-pro').addEventListener('click', () => {
+    showToast(t('toastPending'));
+  });
+
+  // ---------- SHARE ----------
+  document.getElementById('share-btn').addEventListener('click', () => {
+    const shareText = 'TheGrongCall — a panic button that fakes an incoming emergency call to get you out of ANY awkward social situation. imagined by TheGrongCo. Not wrong. Grong.™';
+    if(navigator.share){
+      navigator.share({title:'TheGrongCall', text:shareText, url: window.location.href}).catch(()=>{});
+    } else if(navigator.clipboard){
+      navigator.clipboard.writeText(shareText + ' ' + window.location.href).then(() => {
+        showToast(t('toastCopied'));
+      }).catch(() => showToast(t('toastCopyFail')));
+    } else {
+      showToast(shareText);
+    }
+  });
+
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  // ---------- INIT ----------
+  showScreen('setup');
+  applyLanguage();
+
+})();
+</script>
+</body>
+</html>
