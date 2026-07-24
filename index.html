@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TheGrongProtocol — not wrong. grong.</title>
-<meta name="description" content="El sistema central de TheGrongCo. Cosas que nadie pidió, hechas con IA.">
-<style>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;title&gt;TheGrongProtocol — not wrong. grong.&lt;/title&gt;
+&lt;meta name="description" content="El sistema central de TheGrongCo. Cosas que nadie pidió, hechas con IA."&gt;
+&lt;style&gt;
   :root{
     --bg:#FAF6F0; --ink:#161616; --dim:#8B857A; --line:#E4DDD1;
     --red:#FF3B30; --green:#0E9F4E;
@@ -91,7 +91,7 @@
   .trans h3{font-size:1.15rem; font-weight:700; line-height:1.4; margin-bottom:12px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
   .trans p{font-size:.82rem; color:var(--dim);}
   .trans .sig{margin-top:16px; font-size:.68rem; color:var(--dim);}
-  .trans .sig::before{content:"> ";}
+  .trans .sig::before{content:"&gt; ";}
   .trans input, .trans textarea{
     background:var(--bg); border:1px solid var(--line); color:var(--ink);
     font-family:inherit; font-size:.85rem; padding:12px;
@@ -109,88 +109,88 @@
   footer{border-top:1px solid var(--line); margin-top:90px;}
   .fwrap{padding:30px 0 60px; font-size:.68rem; color:var(--dim); line-height:1.9;}
   .fwrap s{color:var(--red);}
-</style>
-</head>
-<body>
-<div class="wrap">
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
 
-  <nav>
-    <div class="brand">TheGrong<b>Co.</b></div>
-    <div class="navright">
-      <div class="sys" data-t="sys"></div>
-      <button class="langbtn" id="langBtn" onclick="toggleLang()">EN</button>
-    </div>
-  </nav>
+  &lt;nav&gt;
+    &lt;div class="brand"&gt;TheGrong&lt;b&gt;Co.&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="navright"&gt;
+      &lt;div class="sys" data-t="sys"&gt;&lt;/div&gt;
+      &lt;button class="langbtn" id="langBtn" onclick="toggleLang()"&gt;EN&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
 
-  <header class="hero">
-    <div class="proto-label" data-t="protoLabel"></div>
-    <h1>The<span class="flip" id="flip">Grong</span>Protocol</h1>
-    <p class="tag" data-t="tag"></p>
-    <p class="wrongnote" data-t="wrongnote"></p>
-    <div class="stats" id="stats"></div>
-  </header>
+  &lt;header class="hero"&gt;
+    &lt;div class="proto-label" data-t="protoLabel"&gt;&lt;/div&gt;
+    &lt;h1&gt;The&lt;span class="flip" id="flip"&gt;Grong&lt;/span&gt;Protocol&lt;/h1&gt;
+    &lt;p class="tag" data-t="tag"&gt;&lt;/p&gt;
+    &lt;p class="wrongnote" data-t="wrongnote"&gt;&lt;/p&gt;
+    &lt;div class="stats" id="stats"&gt;&lt;/div&gt;
+  &lt;/header&gt;
 
-  <section>
-    <h2 data-t="hRegistry"></h2>
-    <div class="registry" id="registry"></div>
-  </section>
+  &lt;section&gt;
+    &lt;h2 data-t="hRegistry"&gt;&lt;/h2&gt;
+    &lt;div class="registry" id="registry"&gt;&lt;/div&gt;
+  &lt;/section&gt;
 
-  <section>
-    <h2 data-t="hTrans"></h2>
-    <div class="trans">
-      <div class="th" data-t="pressTh"></div>
-      <h3 data-t="pressTitle"></h3>
-      <p data-t="pressBody"></p>
-      <p class="sig" data-t="pressSig"></p>
-    </div>
-  </section>
+  &lt;section&gt;
+    &lt;h2 data-t="hTrans"&gt;&lt;/h2&gt;
+    &lt;div class="trans"&gt;
+      &lt;div class="th" data-t="pressTh"&gt;&lt;/div&gt;
+      &lt;h3 data-t="pressTitle"&gt;&lt;/h3&gt;
+      &lt;p data-t="pressBody"&gt;&lt;/p&gt;
+      &lt;p class="sig" data-t="pressSig"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
 
-  <section>
-    <h2 data-t="hSub"></h2>
-    <div class="trans" style="max-width:680px;">
-      <div class="th" data-t="subTh"></div>
-      <h3 data-t="subTitle"></h3>
-      <p data-t="subBody"></p>
-      <!-- NEWSLETTER_EMBED: reemplazar este bloque con el embed de Buttondown/Substack cuando exista la cuenta -->
-      <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
-        <input id="subEmail" type="email" data-t-placeholder="subPh" style="flex:1; min-width:200px;">
-        <button onclick="subscribe()" class="btn" style="background:var(--green);" data-t="subBtn"></button>
-      </div>
-      <p class="sig" id="subMsg" style="display:none;" data-t="subMsg"></p>
-    </div>
-  </section>
+  &lt;section&gt;
+    &lt;h2 data-t="hSub"&gt;&lt;/h2&gt;
+    &lt;div class="trans" style="max-width:680px;"&gt;
+      &lt;div class="th" data-t="subTh"&gt;&lt;/div&gt;
+      &lt;h3 data-t="subTitle"&gt;&lt;/h3&gt;
+      &lt;p data-t="subBody"&gt;&lt;/p&gt;
+      &lt;!-- NEWSLETTER_EMBED: reemplazar este bloque con el embed de Buttondown/Substack cuando exista la cuenta --&gt;
+      &lt;div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;"&gt;
+        &lt;input id="subEmail" type="email" data-t-placeholder="subPh" style="flex:1; min-width:200px;"&gt;
+        &lt;button onclick="subscribe()" class="btn" style="background:var(--green);" data-t="subBtn"&gt;&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;p class="sig" id="subMsg" style="display:none;" data-t="subMsg"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
 
-  <section>
-    <h2 data-t="hIdea"></h2>
-    <div class="trans" style="max-width:680px;">
-      <div class="th" data-t="ideaTh"></div>
-      <h3 data-t="ideaTitle"></h3>
-      <p data-t="ideaBody"></p>
-      <textarea id="ideaBox" rows="3" data-t-placeholder="ideaPh" style="width:100%; margin-top:16px; resize:vertical;"></textarea>
-      <button onclick="submitIdea()" class="btn" style="margin-top:12px; background:var(--red);" data-t="ideaBtn"></button>
-      <p class="sig" id="ideaMsg" style="display:none;" data-t="ideaMsg"></p>
-    </div>
-  </section>
+  &lt;section&gt;
+    &lt;h2 data-t="hIdea"&gt;&lt;/h2&gt;
+    &lt;div class="trans" style="max-width:680px;"&gt;
+      &lt;div class="th" data-t="ideaTh"&gt;&lt;/div&gt;
+      &lt;h3 data-t="ideaTitle"&gt;&lt;/h3&gt;
+      &lt;p data-t="ideaBody"&gt;&lt;/p&gt;
+      &lt;textarea id="ideaBox" rows="3" data-t-placeholder="ideaPh" style="width:100%; margin-top:16px; resize:vertical;"&gt;&lt;/textarea&gt;
+      &lt;button onclick="submitIdea()" class="btn" style="margin-top:12px; background:var(--red);" data-t="ideaBtn"&gt;&lt;/button&gt;
+      &lt;p class="sig" id="ideaMsg" style="display:none;" data-t="ideaMsg"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
 
-  <section>
-    <h2 data-t="hMani"></h2>
-    <p class="mani" data-t="mani"></p>
-  </section>
+  &lt;section&gt;
+    &lt;h2 data-t="hMani"&gt;&lt;/h2&gt;
+    &lt;p class="mani" data-t="mani"&gt;&lt;/p&gt;
+  &lt;/section&gt;
 
-</div>
+&lt;/div&gt;
 
-<footer>
-  <div class="wrap fwrap" data-t="footer"></div>
-</footer>
+&lt;footer&gt;
+  &lt;div class="wrap fwrap" data-t="footer"&gt;&lt;/div&gt;
+&lt;/footer&gt;
 
-<script>
+&lt;script&gt;
 // ====== TRADUCCIONES ======
 const T = {
   es: {
-    sys: 'system status: <span class="ok">wrong</span> · uptime: probablemente',
+    sys: 'system status: &lt;span class="ok"&gt;wrong&lt;/span&gt; · uptime: probablemente',
     protoLabel: 'protocolo central · v1.0.1 (la 1.0.0 salió bien y la borramos)',
-    tag: '<em>Not wrong. Grong.™</em> El sistema central de TheGrongCo.: cada semana la IA fabrica, publica y promociona una idea que nadie pidió. Este es el registro oficial.<span class="cursor"></span>',
-    wrongnote: 'nota legal: todo en este sitio está <s>mal</s> correcto. si algo parece un error, es una feature. si algo parece una feature, disculpe las molestias.',
+    tag: '&lt;em&gt;Not wrong. Grong.™&lt;/em&gt; El sistema central de TheGrongCo.: cada semana la IA fabrica, publica y promociona una idea que nadie pidió. Este es el registro oficial.&lt;span class="cursor"&gt;&lt;/span&gt;',
+    wrongnote: 'nota legal: todo en este sitio está &lt;s&gt;mal&lt;/s&gt; correcto. si algo parece un error, es una feature. si algo parece una feature, disculpe las molestias.',
     hRegistry: 'registro de grongideas',
     hTrans: 'última transmisión',
     hSub: 'suscripción al protocolo',
@@ -210,24 +210,24 @@ const T = {
     body_sub: 'Quiero suscribirme al protocolo. Sé lo que hago. Más o menos.',
     ideaTh: 'input externo · protocolo de sugerencias',
     ideaTitle: '¿Tienes una idea que valga la pena?',
-    ideaBody: 'Qué raro. Mándala igual. Si es suficientemente <s style="color:var(--red)">mala</s> buena, la construimos, le ponemos serial y pasará a ser propiedad emocional del conglomerado. Crédito completo para ti, responsabilidad completa para nadie.',
+    ideaBody: 'Qué raro. Mándala igual. Si es suficientemente &lt;s style="color:var(--red)"&gt;mala&lt;/s&gt; buena, la construimos, le ponemos serial y pasará a ser propiedad emocional del conglomerado. Crédito completo para ti, responsabilidad completa para nadie.',
     ideaPh: 'ej: una app que aplaude cuando terminas tus pendientes…',
     ideaBtn: 'transmitir idea →',
     ideaMsg: 'transmisión recibida. el comité (1 persona) la evaluará con rigor cuestionable.',
     subject_idea: '[GRONGIDEA] transmisión externa',
     body_idea: '— enviada desde TheGrongProtocol. nadie la pidió, pero aquí está.',
-    mani: 'Creemos que la línea entre <em>wrong</em> y <span class="g">grong</span> es una sola letra, y la cruzamos cada semana. Entregamos lo innecesario con excelencia. Porque alguien tenía que hacerlo. Bueno, no. <em>Pero aquí estamos.</em>',
-    footer: 'TheGrongCo. © 2026 · All rights <s>reserved</s> wronged. · everything here: imagined by TheGrongCo.<br>TheGrongProtocol es el sistema central del conglomerado. Este sitio también cuenta como producto: GRONG-000-B.<br>contacto: hey@wirdolab.com · quejas: <span class="upside">al vacío, con confianza</span> · hora local: incorrecta',
+    mani: 'Creemos que la línea entre &lt;em&gt;wrong&lt;/em&gt; y &lt;span class="g"&gt;grong&lt;/span&gt; es una sola letra, y la cruzamos cada semana. Entregamos lo innecesario con excelencia. Porque alguien tenía que hacerlo. Bueno, no. &lt;em&gt;Pero aquí estamos.&lt;/em&gt;',
+    footer: 'TheGrongCo. © 2026 · All rights &lt;s&gt;reserved&lt;/s&gt; wronged. · everything here: imagined by TheGrongCo.&lt;br&gt;TheGrongProtocol es el sistema central del conglomerado. Este sitio también cuenta como producto: GRONG-000-B.&lt;br&gt;contacto: hey@wirdolab.com · quejas: &lt;span class="upside"&gt;al vacío, con confianza&lt;/span&gt; · hora local: incorrecta',
     stLive: '● live', stDev: '◌ en desarrollo', stNext: '◌ inevitable',
     statIdeas: 'grongideas', statProd: 'en producción', statReq: 'solicitadas', statBit: 'compromiso con el bit', statDeploy: 'deployment',
     nextDesc: 'La próxima semana. Será peor. Prometido.',
     title: 'TheGrongProtocol — not wrong. grong.'
   },
   en: {
-    sys: 'system status: <span class="ok">wrong</span> · uptime: probably',
+    sys: 'system status: &lt;span class="ok"&gt;wrong&lt;/span&gt; · uptime: probably',
     protoLabel: 'central protocol · v1.0.1 (v1.0.0 worked fine so we deleted it)',
-    tag: '<em>Not wrong. Grong.™</em> The central system of TheGrongCo.: every week, AI builds, ships and markets an idea nobody asked for. This is the official registry.<span class="cursor"></span>',
-    wrongnote: 'legal note: everything on this site is <s>wrong</s> correct. if something looks like a bug, it\'s a feature. if something looks like a feature, we apologize for the inconvenience.',
+    tag: '&lt;em&gt;Not wrong. Grong.™&lt;/em&gt; The central system of TheGrongCo.: every week, AI builds, ships and markets an idea nobody asked for. This is the official registry.&lt;span class="cursor"&gt;&lt;/span&gt;',
+    wrongnote: 'legal note: everything on this site is &lt;s&gt;wrong&lt;/s&gt; correct. if something looks like a bug, it\'s a feature. if something looks like a feature, we apologize for the inconvenience.',
     hRegistry: 'grongidea registry',
     hTrans: 'latest transmission',
     hSub: 'protocol subscription',
@@ -247,14 +247,14 @@ const T = {
     body_sub: 'I want to subscribe to the protocol. I know what I\'m doing. More or less.',
     ideaTh: 'external input · suggestion protocol',
     ideaTitle: 'Got an idea actually worth building?',
-    ideaBody: 'Weird. Send it anyway. If it\'s <s style="color:var(--red)">bad</s> good enough, we\'ll build it, give it a serial number, and it will become emotional property of the conglomerate. Full credit to you, full responsibility to no one.',
+    ideaBody: 'Weird. Send it anyway. If it\'s &lt;s style="color:var(--red)"&gt;bad&lt;/s&gt; good enough, we\'ll build it, give it a serial number, and it will become emotional property of the conglomerate. Full credit to you, full responsibility to no one.',
     ideaPh: 'e.g. an app that claps when you finish your to-do list…',
     ideaBtn: 'transmit idea →',
     ideaMsg: 'transmission received. the committee (1 person) will evaluate it with questionable rigor.',
     subject_idea: '[GRONGIDEA] external transmission',
     body_idea: '— sent from TheGrongProtocol. nobody asked for it, but here it is.',
-    mani: 'We believe the line between <em>wrong</em> and <span class="g">grong</span> is a single letter, and we cross it weekly. We deliver the unnecessary with excellence. Because someone had to. Well, no. <em>But here we are.</em>',
-    footer: 'TheGrongCo. © 2026 · All rights <s>reserved</s> wronged. · everything here: imagined by TheGrongCo.<br>TheGrongProtocol is the central system of the conglomerate. This site also counts as a product: GRONG-000-B.<br>contact: hey@wirdolab.com · complaints: <span class="upside">into the void, with confidence</span> · local time: incorrect',
+    mani: 'We believe the line between &lt;em&gt;wrong&lt;/em&gt; and &lt;span class="g"&gt;grong&lt;/span&gt; is a single letter, and we cross it weekly. We deliver the unnecessary with excellence. Because someone had to. Well, no. &lt;em&gt;But here we are.&lt;/em&gt;',
+    footer: 'TheGrongCo. © 2026 · All rights &lt;s&gt;reserved&lt;/s&gt; wronged. · everything here: imagined by TheGrongCo.&lt;br&gt;TheGrongProtocol is the central system of the conglomerate. This site also counts as a product: GRONG-000-B.&lt;br&gt;contact: hey@wirdolab.com · complaints: &lt;span class="upside"&gt;into the void, with confidence&lt;/span&gt; · local time: incorrect',
     stLive: '● live', stDev: '◌ in development', stNext: '◌ inevitable',
     statIdeas: 'grongideas', statProd: 'in production', statReq: 'requested', statBit: 'commitment to the bit', statDeploy: 'deployment',
     nextDesc: 'Next week. It will be worse. Promise.',
@@ -307,6 +307,17 @@ const GRONGIDEAS = [
     status:"live",
     link:"thegrongcall.html",
     wrong:false
+  },
+  {
+    serial:"GRONG-005",
+    name:"TheGrong", accent:"Sugar",
+    desc:{
+      es:"Sugar dating con más papeleo que un trámite migratorio: verificación de identidad, videollamada grabada obligatoria antes de conocerse en persona, y un botón de pánico que probablemente uses más que el match. El amor(ish), pero auditado.",
+      en:"Sugar dating with more paperwork than a visa application: ID verification, a mandatory recorded video call before meeting in person, and a panic button you'll probably use more than the match itself. Love(ish), fully audited."
+    },
+    status:"live",
+    link:"thegrongsugar.html",
+    wrong:false
   }
 ];
 
@@ -339,28 +350,28 @@ function renderRegistry(){
     if(g.link) el.href = g.link;
     el.className = "row" + (g.wrong ? " wrongrow" : "");
     el.innerHTML =
-      '<div class="serial">'+g.serial+'</div>'+
-      '<div><div class="name">'+g.name+'<b>'+g.accent+'</b></div><div class="desc">'+g.desc[LANG]+'</div><div class="serial" style="margin-top:8px">imagined by TheGrongCo.</div></div>'+
-      '<div class="st '+g.status+'">'+(g.status==="live" ? t.stLive : t.stDev)+'</div>';
+      '&lt;div class="serial"&gt;'+g.serial+'&lt;/div&gt;'+
+      '&lt;div&gt;&lt;div class="name"&gt;'+g.name+'&lt;b&gt;'+g.accent+'&lt;/b&gt;&lt;/div&gt;&lt;div class="desc"&gt;'+g.desc[LANG]+'&lt;/div&gt;&lt;div class="serial" style="margin-top:8px"&gt;imagined by TheGrongCo.&lt;/div&gt;&lt;/div&gt;'+
+      '&lt;div class="st '+g.status+'"&gt;'+(g.status==="live" ? t.stLive : t.stDev)+'&lt;/div&gt;';
     reg.appendChild(el);
   });
   const nx = document.createElement("div");
   nx.className = "row nextrow";
   nx.innerHTML =
-    '<div class="serial">GRONG-'+String(GRONGIDEAS.length+1).padStart(3,"0")+'</div>'+
-    '<div><div class="name">???</div><div class="desc">'+t.nextDesc+'</div></div>'+
-    '<div class="st dev">'+t.stNext+'</div>';
+    '&lt;div class="serial"&gt;GRONG-'+String(GRONGIDEAS.length+1).padStart(3,"0")+'&lt;/div&gt;'+
+    '&lt;div&gt;&lt;div class="name"&gt;???&lt;/div&gt;&lt;div class="desc"&gt;'+t.nextDesc+'&lt;/div&gt;&lt;/div&gt;'+
+    '&lt;div class="st dev"&gt;'+t.stNext+'&lt;/div&gt;';
   reg.appendChild(nx);
 }
 
 function renderStats(){
   const t = T[LANG];
-  const live = GRONGIDEAS.filter(g=>g.status==="live").length;
+  const live = GRONGIDEAS.filter(g=&gt;g.status==="live").length;
   document.getElementById("stats").innerHTML =
-    '<div class="stat"><b>'+GRONGIDEAS.length+'</b><span>'+t.statIdeas+'</span></div>'+
-    '<div class="stat"><b>'+live+'</b><span>'+t.statProd+'</span></div>'+
-    '<div class="stat"><b>0</b><span>'+t.statReq+'</span></div>'+
-    '<div class="stat tilt"><b class="pct-wrong">104%</b><span>'+t.statDeploy+'</span></div>';
+    '&lt;div class="stat"&gt;&lt;b&gt;'+GRONGIDEAS.length+'&lt;/b&gt;&lt;span&gt;'+t.statIdeas+'&lt;/span&gt;&lt;/div&gt;'+
+    '&lt;div class="stat"&gt;&lt;b&gt;'+live+'&lt;/b&gt;&lt;span&gt;'+t.statProd+'&lt;/span&gt;&lt;/div&gt;'+
+    '&lt;div class="stat"&gt;&lt;b&gt;0&lt;/b&gt;&lt;span&gt;'+t.statReq+'&lt;/span&gt;&lt;/div&gt;'+
+    '&lt;div class="stat tilt"&gt;&lt;b class="pct-wrong"&gt;104%&lt;/b&gt;&lt;span&gt;'+t.statDeploy+'&lt;/span&gt;&lt;/div&gt;';
 }
 
 function setLang(l){
@@ -399,11 +410,11 @@ setLang(LANG);
 const flip = document.getElementById("flip");
 const seq = ["Grong","Wrong","Wro—","Grong"];
 let i = 0;
-setInterval(()=>{
+setInterval(()=&gt;{
   i = (i+1) % seq.length;
   flip.textContent = seq[i];
   flip.style.color = seq[i].startsWith("W") ? "var(--red)" : "";
 }, 1800);
-</script>
-</body>
-</html>
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
