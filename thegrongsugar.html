@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TheGrongSugar — Not wrong. Grong.™</title>
-<meta name="description" content="Sugar dating with more paperwork than a visa application: ID verification, a mandatory recorded video intro call before meeting in person, and a panic button. imagined by TheGrongCo.">
+<meta name="description" content="Sugar dating with more paperwork than a visa application: verification, a recommended video intro call, and contact info shared only with your approval. imagined by TheGrongCo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -56,6 +56,12 @@
     position:absolute; top:9px; left:50%; transform:translateX(-50%);
     width:110px; height:20px; background:#1C1B1A; border-radius: 12px; z-index:50;
   }
+  #langToggle{
+    position:absolute; top:34px; right:16px; z-index:60;
+    background:var(--card); border:1.5px solid var(--line); border-radius:100px;
+    padding:5px 11px; font-size:11px; font-weight:700; cursor:pointer; color:var(--ink);
+    font-family:'Inter';
+  }
 
   #screens{ position:relative; flex: 1; overflow: hidden; }
   .screen{
@@ -86,6 +92,7 @@
   .btn-ghost{ background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
   .btn-block{ width:100%; display:flex; text-align:center; }
   .btn-sm{ padding: 9px 14px; font-size: 13px; }
+  .btn-link{ background:none; border:none; color:var(--muted); font-size:12.5px; text-decoration:underline; cursor:pointer; font-family:'Inter'; }
   .btn:disabled{ opacity:.45; cursor:not-allowed; }
 
   .logo-mark{
@@ -104,25 +111,28 @@
   @keyframes popIn{ 0%{ opacity:0; transform: scale(.6);} 100%{ opacity:1; transform: scale(1);} }
   @keyframes fadeUp{ 0%{ opacity:0; transform: translateY(12px);} 100%{ opacity:1; transform:translateY(0);} }
 
-  /* ---------- Persona picker ---------- */
-  .persona-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 18px;}
-  .persona-card{
+  /* ---------- Role picker ---------- */
+  .role-list{ display:flex; flex-direction:column; gap:12px; margin-bottom: 18px;}
+  .role-card{
+    display:flex; align-items:center; gap:14px;
     border: 1.5px solid var(--line); background:var(--card); border-radius: var(--radius-md);
-    padding: 18px 14px; text-align:center; cursor:pointer; transition: all .18s ease;
+    padding: 16px; cursor:pointer; transition: all .18s ease;
   }
-  .persona-card .icon-badge{ width:42px;height:42px;border-radius:50%; margin:0 auto 10px; background:var(--bg); display:flex;align-items:center;justify-content:center; color:var(--ink); }
-  .persona-card span{ display:block; font-weight:600; font-size:13.5px; color:var(--ink); }
-  .persona-card small{ color:var(--muted); font-size:11px; }
-  .persona-card.selected{ border-color: var(--accent); background: var(--accent-soft); }
-  .persona-card.selected .icon-badge{ background:#fff; color:var(--accent-deep); }
+  .role-card .icon-badge{ width:44px;height:44px;border-radius:50%; background:var(--bg); display:flex;align-items:center;justify-content:center; color:var(--ink); flex-shrink:0; }
+  .role-card .rtext strong{ display:block; font-weight:600; font-size:14.5px; color:var(--ink); }
+  .role-card .rtext span{ color:var(--muted); font-size:12px; }
+  .role-card.selected{ border-color: var(--accent); background: var(--accent-soft); }
+  .role-card.selected .icon-badge{ background:#fff; color:var(--accent-deep); }
 
   .field{ margin-bottom:16px; }
-  .field label{ display:block; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
-  .field input[type=text], .field input[type=number], .field select{
+  .field label{ display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .field label svg{ width:14px; height:14px; color:var(--muted); }
+  .field .hint{ font-size:11px; color:var(--muted); margin-top:5px; line-height:1.4; }
+  .field input[type=text], .field input[type=number], .field input[type=tel], .field select, .field textarea{
     width:100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line);
-    font-family:'Inter'; font-size:14px; background:var(--card); color:var(--ink); outline:none; transition: border .2s ease;
+    font-family:'Inter'; font-size:14px; background:var(--card); color:var(--ink); outline:none; transition: border .2s ease; resize:none;
   }
-  .field input:focus, .field select:focus{ border-color: var(--accent); }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color: var(--accent); }
   .range-row{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;}
   input[type=range]{ width:100%; accent-color: var(--accent); }
 
@@ -135,16 +145,33 @@
 
   .footer-nav{ margin-top:auto; display:flex; gap:10px; padding-top: 12px; }
 
+  /* ---------- Photo upload ---------- */
+  .photo-row{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+  .photo-circle{
+    width:74px; height:74px; border-radius:50%; background:var(--bg); border:1.5px dashed var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--muted); cursor:pointer; flex-shrink:0;
+    background-size:cover; background-position:center; position:relative; overflow:hidden;
+  }
+  .photo-circle .cam-badge{ position:absolute; bottom:-2px; right:-2px; width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; border:2px solid var(--card); }
+  .photo-row .ptext strong{ display:block; font-size:13.5px; }
+  .photo-row .ptext span{ font-size:11.5px; color:var(--muted); }
+
+  .completeness-wrap{ margin-top:6px; margin-bottom:20px; }
+  .completeness-row{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-bottom:6px; }
+  .completeness-row strong{ color:var(--ink); }
+
   /* ---------- Verification ---------- */
   .verify-step{ display:flex; align-items:center; gap:12px; padding:14px; border-radius: var(--radius-md); background:var(--card); border:1.5px solid var(--line); margin-bottom:10px; }
   .verify-icon{ width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background: var(--bg); color:var(--ink); }
   .verify-step.done .verify-icon{ background: var(--mint-soft); color:var(--mint); }
+  .verify-step .vtext{ flex:1; }
   .verify-step .vtext strong{ display:block; font-size:13.5px; }
   .verify-step .vtext span{ font-size:11.5px; color:var(--muted); }
   .verify-step.done{ border-color: var(--mint-soft); }
+  .pill-recommended{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; background:var(--accent-soft); color:var(--accent-deep); padding:4px 8px; border-radius:100px; flex-shrink:0; }
 
   .video-box{
-    border-radius: var(--radius-md); background: var(--ink); color:#fff; padding:24px 18px; text-align:center; margin: 6px 0 18px;
+    border-radius: var(--radius-md); background: var(--ink); color:#fff; padding:24px 18px; text-align:center; margin: 6px 0 14px;
     position:relative; overflow:hidden;
   }
   .video-box.recording{ box-shadow: 0 0 0 3px var(--danger) inset; }
@@ -169,14 +196,15 @@
     transition: transform .3s cubic-bezier(.2,.8,.3,1), opacity .3s ease;
   }
   .swipe-card:active{ cursor:grabbing; }
-  .card-photo{ height: 58%; display:flex; align-items:center; justify-content:center; position:relative; }
-  .card-photo .initials{ font-family:'Fredoka'; font-weight:600; font-size:52px; color:#fff; opacity:.95; }
+  .card-photo{ height: 50%; display:flex; align-items:center; justify-content:center; position:relative; }
+  .card-photo .initials{ font-family:'Fredoka'; font-weight:600; font-size:48px; color:#fff; opacity:.95; }
   .verified-badge{ position:absolute; top:12px; right:12px; background:rgba(255,255,255,.95); color:var(--mint); font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:100px; display:flex; align-items:center; gap:4px; }
   .verified-badge svg{ width:13px; height:13px; }
   .compat-badge{ position:absolute; bottom:12px; left:12px; background: rgba(28,27,26,.55); color:#fff; font-size:11px; font-weight:600; padding:5px 10px; border-radius:100px; }
-  .card-body{ padding: 14px 16px; flex:1; display:flex; flex-direction:column; }
+  .card-body{ padding: 12px 16px; flex:1; display:flex; flex-direction:column; }
   .card-body h3{ margin:0 0 2px; font-size:18px; color:var(--ink); }
-  .card-body .loc{ font-size:12px; color:var(--muted); margin-bottom:10px; }
+  .card-body .loc{ font-size:12px; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:4px; }
+  .card-body .vibe{ font-size:11.5px; color:var(--muted); font-style:italic; margin-bottom:8px; }
   .tag-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .tag-row .tag{ font-size:10.5px; font-weight:600; background: var(--bg); color: var(--ink); padding:5px 9px; border-radius:100px; }
 
@@ -198,24 +226,36 @@
   #matchModal h2{ font-size:28px; margin: 6px 0 6px; color: #fff; }
   #matchModal p{ font-size:13.5px; color: rgba(255,255,255,.72); margin-bottom:22px; }
   .match-avatars{ display:flex; margin-bottom:10px; }
-  .match-avatars .mav{ width:66px;height:66px;border-radius:50%; border:3px solid #fff; display:flex;align-items:center;justify-content:center; font-family:'Fredoka'; font-weight:600; font-size:24px; color:#fff; margin-left:-14px; }
+  .match-avatars .mav{ width:66px;height:66px;border-radius:50%; border:3px solid #fff; display:flex;align-items:center;justify-content:center; font-family:'Fredoka'; font-weight:600; font-size:24px; color:#fff; margin-left:-14px; background-size:cover; background-position:center; }
 
   /* ---------- Matches list / chat ---------- */
   .match-row{ display:flex; align-items:center; gap:12px; padding:12px 8px; border-bottom:1px solid var(--line); cursor:pointer; }
-  .avatar-sm{ width:46px;height:46px;border-radius:50%; display:flex;align-items:center;justify-content:center; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:17px; flex-shrink:0; }
+  .avatar-sm{ width:46px;height:46px;border-radius:50%; display:flex;align-items:center;justify-content:center; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:17px; flex-shrink:0; background-size:cover; background-position:center; }
   .match-row .mtext{ flex:1; min-width:0; }
   .match-row .mtext strong{ font-size:13.5px; display:block; }
   .match-row .mtext span{ font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
 
-  .safety-banner{ background: var(--accent-soft); border-radius: var(--radius-md); padding:12px 14px; display:flex; gap:10px; align-items:center; margin-bottom:14px; color:var(--accent-deep); }
+  .safety-banner{ background: var(--accent-soft); border-radius: var(--radius-md); padding:12px 14px; display:flex; gap:10px; align-items:center; margin-bottom:12px; color:var(--accent-deep); }
   .safety-banner .stext{ flex:1; font-size:11.5px; color:#7A3420; line-height:1.4; }
   .safety-banner .stext strong{ display:block; font-size:12.5px; }
 
-  #chatscreen .chat-header{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-  #chatscreen .bubble{ max-width:78%; padding:10px 14px; border-radius:16px; font-size:13px; margin-bottom:8px; line-height:1.4; }
+  #chatscreen .chat-header{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  #chatscreen .chat-header .grow{ flex:1; }
+  #chatscreen .report-btn{ background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; }
+  #chatscreen .bubble{ max-width:82%; padding:10px 14px; border-radius:16px; font-size:12.5px; margin-bottom:8px; line-height:1.4; }
   #chatscreen .them{ background:var(--card); border:1px solid var(--line); align-self:flex-start; border-bottom-left-radius:4px; }
   #chatscreen .me{ background: var(--ink); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+  #chatscreen .sys{ background:var(--mint-soft); color:#0E7A5D; align-self:center; border-radius:12px; font-size:11.5px; text-align:center; }
   #chatscreen .chatlog{ display:flex; flex-direction:column; flex:1; }
+
+  .contact-card{ background:var(--card); border:1.5px solid var(--line); border-radius: var(--radius-md); padding:12px 14px; margin-bottom:12px; }
+  .contact-card .ctitle{ font-size:12px; font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .contact-actions{ display:flex; flex-wrap:wrap; gap:8px; }
+  .contact-actions .btn{ font-size:11.5px; padding:8px 12px; }
+
+  .icebreaker-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:4px; }
+  .icebreaker-row::-webkit-scrollbar{ display:none; }
+  .ice-chip{ flex-shrink:0; white-space:nowrap; padding:8px 13px; border-radius:100px; border:1.5px solid var(--line); background:var(--card); font-size:11.5px; cursor:pointer; }
 
   /* ---------- Safety screen ---------- */
   .safety-item{ display:flex; align-items:center; gap:12px; background:var(--card); border-radius: var(--radius-md); padding:14px; margin-bottom:10px; border:1.5px solid var(--line); }
@@ -238,13 +278,14 @@
 
   /* ---------- Profile screen ---------- */
   .profile-card{ background:var(--card); border-radius: var(--radius-lg); padding:22px; text-align:center; border:1.5px solid var(--line); margin-bottom:16px; }
-  .profile-avatar{ width:78px; height:78px; border-radius:50%; margin: 0 auto 12px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:600; font-size:28px; color:#fff; background: var(--accent); }
+  .profile-avatar{ width:78px; height:78px; border-radius:50%; margin: 0 auto 12px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:600; font-size:28px; color:#fff; background: var(--accent); background-size:cover; background-position:center; }
   .badge-row{ display:flex; justify-content:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
   .mini-badge{ font-size:10.5px; font-weight:700; background: var(--bg); color:var(--ink); padding:5px 10px; border-radius:100px; display:flex; align-items:center; gap:4px; }
   .mini-badge svg{ width:12px; height:12px; }
   .mini-badge.on{ background: var(--mint-soft); color: var(--mint); }
+  .profile-bio{ font-size:12.5px; color:var(--muted); margin-top:10px; line-height:1.5; }
 
-  .toast{ position:absolute; bottom: 96px; left:50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color:#fff; padding:10px 18px; border-radius:100px; font-size:12.5px; opacity:0; transition: all .3s ease; z-index:200; pointer-events:none; white-space:nowrap;}
+  .toast{ position:absolute; bottom: 96px; left:50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color:#fff; padding:10px 18px; border-radius:100px; font-size:12px; opacity:0; transition: all .3s ease; z-index:200; pointer-events:none; white-space:nowrap; max-width:88%; overflow:hidden; text-overflow:ellipsis;}
   .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
@@ -252,120 +293,172 @@
 
 <div id="phone">
   <div id="notch"></div>
+  <button id="langToggle" onclick="toggleLang()">ES</button>
   <div id="screens">
 
     <!-- SPLASH -->
     <section class="screen active" id="screen-splash">
       <div class="logo-mark">G</div>
-      <h1>TheGrongSugar</h1>
-      <p>Clear terms. Verified people. A safer way to meet your match.</p>
-      <button class="btn btn-primary" onclick="go('persona')">Get started</button>
+      <h1 data-t="splashTitle">TheGrongSugar</h1>
+      <p data-t="splashTag">Clear terms. Verified people. A safer way to meet your match.</p>
+      <button class="btn btn-primary" onclick="go('persona')" data-t="splashBtn">Get started</button>
     </section>
 
-    <!-- PERSONA -->
+    <!-- ROLE -->
     <section class="screen" id="screen-persona">
-      <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
-      <div class="eyebrow">Step 1 of 5</div>
-      <h2 class="title">Who are you here as?</h2>
-      <p class="subtitle">This shapes your profile and who you'll see first. You can adjust it anytime.</p>
-      <div class="persona-grid" id="personaGrid">
-        <div class="persona-card" data-v="baby">
-          <div class="icon-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18"/><path d="M9 3l-2 5 5 13 5-13-2-5"/></svg></div>
-          <span>Sugar Baby</span><small>Seeking support</small>
-        </div>
-        <div class="persona-card" data-v="daddy">
+      <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+      <div class="eyebrow" id="stepLabel1"></div>
+      <h2 class="title" data-t="roleTitle">What brings you here?</h2>
+      <p class="subtitle" data-t="roleSub">This shapes who you'll see first. You can adjust it anytime.</p>
+      <div class="role-list" id="roleList">
+        <div class="role-card" data-v="sugar">
           <div class="icon-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3c0 4.5 2.2 7.5 5 7.5s5-3 5-7.5"/><path d="M12 10.5V18"/><path d="M8 21h8"/><path d="M7 3h10"/></svg></div>
-          <span>Sugar Daddy</span><small>Offering support</small>
+          <div class="rtext"><strong data-t="roleSugarTitle">Be someone's Sugar</strong><span data-t="roleSugarDesc">Offer support, you set the terms</span></div>
         </div>
-        <div class="persona-card" data-v="mommy">
-          <div class="icon-badge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 3a2.6 2.6 0 012.6 2.6A2.6 2.6 0 0112 8.2 2.6 2.6 0 019.4 5.6 2.6 2.6 0 0112 3z"/><path d="M12 21a2.6 2.6 0 002.6-2.6A2.6 2.6 0 0012 15.8a2.6 2.6 0 00-2.6 2.6A2.6 2.6 0 0012 21z"/><path d="M3 12a2.6 2.6 0 012.6-2.6A2.6 2.6 0 018.2 12a2.6 2.6 0 01-2.6 2.6A2.6 2.6 0 013 12z"/><path d="M21 12a2.6 2.6 0 00-2.6-2.6A2.6 2.6 0 0015.8 12a2.6 2.6 0 002.6 2.6A2.6 2.6 0 0021 12z"/></svg></div>
-          <span>Sugar Mommy</span><small>Offering support</small>
+        <div class="role-card" data-v="baby">
+          <div class="icon-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18"/><path d="M9 3l-2 5 5 13 5-13-2-5"/></svg></div>
+          <div class="rtext"><strong data-t="roleBabyTitle">Find my Sugar</strong><span data-t="roleBabyDesc">Looking for support</span></div>
         </div>
-        <div class="persona-card" data-v="switch">
+        <div class="role-card" data-v="switch">
           <div class="icon-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M7 7h11l-3-3"/><path d="M18 7l-3 3"/><path d="M17 17H6l3 3"/><path d="M6 17l3-3"/></svg></div>
-          <span>Switch</span><small>Open either way</small>
+          <div class="rtext"><strong data-t="roleSwitchTitle">Open to both</strong><span data-t="roleSwitchDesc">Flexible either way</span></div>
         </div>
       </div>
-      <div class="footer-nav"><button class="btn btn-primary btn-block" onclick="go('basics')">Continue</button></div>
+      <div class="footer-nav"><button class="btn btn-primary btn-block" onclick="go('basics')" data-t="continueBtn">Continue</button></div>
     </section>
 
-    <!-- BASICS -->
+    <!-- PROFILE CREATION -->
     <section class="screen" id="screen-basics">
-      <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
-      <div class="eyebrow">Step 2 of 5</div>
-      <h2 class="title">The basics</h2>
-      <p class="subtitle">Real name not required — a first name or nickname is fine.</p>
-      <div class="field"><label>Display name</label><input type="text" id="inpName" placeholder="e.g. Jordan" value="Jordan"></div>
-      <div class="field"><label>Age</label><input type="number" id="inpAge" placeholder="e.g. 27" value="27"></div>
-      <div class="field"><label>City</label><input type="text" id="inpCity" placeholder="e.g. Miami, FL" value="Miami, FL"></div>
-      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('persona')">Back</button><button class="btn btn-primary btn-block" onclick="go('quiz')">Continue</button></div>
+      <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+      <div class="eyebrow" id="stepLabel2"></div>
+      <h2 class="title" data-t="profileTitle">Create your profile</h2>
+      <p class="subtitle" data-t="profileSub">Real name not required — a first name or nickname is fine.</p>
+
+      <div class="photo-row">
+        <div class="photo-circle" id="photoCircle" onclick="document.getElementById('photoInput').click()">
+          <svg class="ic" viewBox="0 0 24 24" id="photoIcon"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+          <div class="cam-badge"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3"/></svg></div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+        <div class="ptext"><strong data-t="addPhoto">Add a photo</strong><span data-t="photoHint">Real, recent photos get more matches</span></div>
+      </div>
+
+      <div class="field"><label data-t="labelName">Display name</label><input type="text" id="inpName" value="Jordan" oninput="onFieldChange()"></div>
+      <div class="field"><label data-t="labelAge">Age</label><input type="number" id="inpAge" value="27" oninput="onFieldChange()"></div>
+      <div class="field">
+        <label><svg class="ic" viewBox="0 0 24 24"><path d="M12 22s7-6.8 7-12.5a7 7 0 10-14 0C5 15.2 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span data-t="labelLocation">Location</span></label>
+        <input type="text" id="inpCity" value="Miami, FL" oninput="onFieldChange()">
+      </div>
+      <div class="field">
+        <label><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 005 5L15 12l5 2v3a2 2 0 01-2 2A15 15 0 016 6a2 2 0 012-2z"/></svg><span data-t="labelPhone">Phone number</span></label>
+        <input type="tel" id="inpPhone" data-t-ph="phPhone" placeholder="+1 305 555 0100" oninput="onFieldChange()">
+        <div class="hint" data-t="phonePrivacyNote">Never shown publicly — only shared in chat if you approve.</div>
+      </div>
+      <div class="field">
+        <label><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg><span data-t="labelInstagram">Instagram (optional)</span></label>
+        <input type="text" id="inpInsta" data-t-ph="phInsta" placeholder="@yourhandle" oninput="onFieldChange()">
+        <div class="hint" data-t="instaPrivacyNote">Never shown publicly — only shared in chat if you approve.</div>
+      </div>
+      <div class="field">
+        <label data-t="labelBio">About you</label>
+        <textarea id="inpBio" rows="3" data-t-ph="phBio" placeholder="A short intro — hobbies, what you're looking for..." oninput="onFieldChange()"></textarea>
+      </div>
+      <div class="field">
+        <label data-t="labelInterests">Interests</label>
+        <div class="chip-group" id="interests">
+          <div class="chip" data-v="Travel" data-t="interestTravel">Travel</div>
+          <div class="chip" data-v="Fitness" data-t="interestFitness">Fitness</div>
+          <div class="chip" data-v="Foodie" data-t="interestFoodie">Foodie</div>
+          <div class="chip" data-v="Art" data-t="interestArt">Art</div>
+          <div class="chip" data-v="Music" data-t="interestMusic">Music</div>
+          <div class="chip" data-v="Business" data-t="interestBusiness">Business</div>
+          <div class="chip" data-v="Outdoors" data-t="interestOutdoors">Outdoors</div>
+        </div>
+      </div>
+
+      <div class="completeness-wrap">
+        <div class="completeness-row"><span id="completenessText"></span></div>
+        <div class="progress-track" style="margin-bottom:0;"><div class="progress-fill" id="completenessFill" style="width:0%; background:var(--mint);"></div></div>
+      </div>
+
+      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('persona')" data-t="back">Back</button><button class="btn btn-primary btn-block" onclick="go('quiz')" data-t="continueBtn">Continue</button></div>
     </section>
 
     <!-- EXPECTATIONS QUIZ -->
     <section class="screen" id="screen-quiz">
-      <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
-      <div class="eyebrow">Step 3 of 5</div>
-      <h2 class="title">Set your expectations</h2>
-      <p class="subtitle">Shown to matches up front — no awkward money talk on date one.</p>
+      <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+      <div class="eyebrow" id="stepLabel3"></div>
+      <h2 class="title" data-t="quizTitle">Set your expectations</h2>
+      <p class="subtitle" data-t="quizSub">Shown to matches up front — no awkward money talk on date one.</p>
       <div class="field">
-        <label>Monthly allowance range</label>
+        <label data-t="labelBudget">Monthly allowance range</label>
         <input type="range" id="inpBudget" min="500" max="10000" step="100" value="2500" oninput="document.getElementById('budgetOut').textContent = '$'+Number(this.value).toLocaleString()">
         <div class="range-row"><span>$500</span><span id="budgetOut">$2,500</span><span>$10,000+</span></div>
       </div>
       <div class="field">
-        <label>What it covers</label>
+        <label data-t="labelCovers">What it covers</label>
         <div class="chip-group" id="covers">
-          <div class="chip" data-v="Dinners">Dinners</div>
-          <div class="chip" data-v="Travel">Travel</div>
-          <div class="chip" data-v="Tuition">Tuition</div>
-          <div class="chip" data-v="Rent">Rent</div>
-          <div class="chip" data-v="Shopping">Shopping</div>
+          <div class="chip" data-v="Dinners" data-t="coverDinners">Dinners</div>
+          <div class="chip" data-v="Travel" data-t="coverTravel">Travel</div>
+          <div class="chip" data-v="Tuition" data-t="coverTuition">Tuition</div>
+          <div class="chip" data-v="Rent" data-t="coverRent">Rent</div>
+          <div class="chip" data-v="Shopping" data-t="coverShopping">Shopping</div>
         </div>
       </div>
       <div class="field">
-        <label>Meeting style</label>
+        <label data-t="labelMeet">Meeting style</label>
         <div class="chip-group" id="meetstyle">
-          <div class="chip" data-v="Local only">Local only</div>
-          <div class="chip" data-v="Open to travel">Open to travel</div>
-          <div class="chip" data-v="Long-distance ok">Long-distance ok</div>
+          <div class="chip" data-v="Local only" data-t="meetLocal">Local only</div>
+          <div class="chip" data-v="Open to travel" data-t="meetTravelOpen">Open to travel</div>
+          <div class="chip" data-v="Long-distance ok" data-t="meetLongDistance">Long-distance ok</div>
         </div>
       </div>
-      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('basics')">Back</button><button class="btn btn-primary btn-block" onclick="go('verify')">Continue</button></div>
+      <div class="field">
+        <label data-t="labelAvailability">Availability</label>
+        <div class="chip-group" id="availability">
+          <div class="chip" data-v="Weekdays" data-t="availWeekdays">Weekdays</div>
+          <div class="chip" data-v="Weekends" data-t="availWeekends">Weekends</div>
+          <div class="chip" data-v="Flexible" data-t="availFlexible">Flexible</div>
+        </div>
+      </div>
+      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('basics')" data-t="back">Back</button><button class="btn btn-primary btn-block" onclick="go('verify')" data-t="continueBtn">Continue</button></div>
     </section>
 
     <!-- VERIFICATION -->
     <section class="screen" id="screen-verify">
-      <div class="progress-track"><div class="progress-fill" style="width:85%"></div></div>
-      <div class="eyebrow">Step 4 of 5 · Trust &amp; safety</div>
-      <h2 class="title">Let's verify it's really you</h2>
-      <p class="subtitle">Every member completes this. It's what keeps the community safe.</p>
+      <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+      <div class="eyebrow" id="stepLabel4"></div>
+      <h2 class="title" data-t="verifyTitle">Let's verify it's really you</h2>
+      <p class="subtitle" data-t="verifySub">ID and liveness are required for every member. The video intro is recommended, not required.</p>
 
       <div class="verify-step done" id="stepId">
         <div class="verify-icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M14.5 9h3"/><path d="M14.5 13h3"/><path d="M6 16.2c.5-1.4 1.8-2 3-2s2.5.6 3 2"/></svg></div>
-        <div class="vtext"><strong>Government ID scan</strong><span>Verified automatically</span></div>
+        <div class="vtext"><strong data-t="idScanTitle">Government ID scan</strong><span data-t="idScanSub">Verified automatically</span></div>
       </div>
       <div class="verify-step done" id="stepLive">
         <div class="verify-icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M8 15c1 1.3 2.4 1.8 4 1.8s3-.5 4-1.8"/></svg></div>
-        <div class="vtext"><strong>Liveness selfie check</strong><span>Matched to your ID</span></div>
+        <div class="vtext"><strong data-t="livenessTitle">Liveness selfie check</strong><span data-t="livenessSub">Matched to your ID</span></div>
       </div>
       <div class="verify-step" id="stepVideo">
         <div class="verify-icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg></div>
-        <div class="vtext"><strong>Recorded video intro</strong><span>Required before meeting in person</span></div>
+        <div class="vtext"><strong data-t="videoTitle">Recorded video intro</strong><span data-t="videoSubRecommended">Recommended — boosts trust and matches</span></div>
+        <div class="pill-recommended" data-t="recommendedPill">Recommended</div>
       </div>
 
       <div class="video-box" id="videoBox">
         <div class="cam-circle"><svg class="ic" viewBox="0 0 24 24" style="width:26px;height:26px;stroke:#fff;"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg></div>
-        <div style="font-size:13px; margin-bottom:14px; line-height:1.5;" id="videoText">30 seconds, just say hi. It's encrypted, auto-deleted in 30 days, and only reviewed if someone files a report.</div>
-        <button class="btn btn-primary" id="videoBtn" onclick="recordVideo()" style="background:#fff; color:var(--ink);">Start recording</button>
+        <div style="font-size:13px; margin-bottom:14px; line-height:1.5;" id="videoText" data-t="videoBoxText">30 seconds, just say hi. Optional — but recommended before meeting in person. Encrypted, auto-deleted in 30 days, only reviewed if someone files a report.</div>
+        <button class="btn btn-primary" id="videoBtn" onclick="recordVideo()" style="background:#fff; color:var(--ink);" data-t="startRecording">Start recording</button>
       </div>
+      <div style="text-align:center; margin-bottom:14px;"><button class="btn-link" onclick="go('discover'); enterApp();" data-t="skipForNow">Skip for now</button></div>
 
-      <div class="footer-nav"><button class="btn btn-primary btn-block" id="verifyContinue" onclick="go('discover'); enterApp();" disabled>Complete video to continue</button></div>
+      <div class="footer-nav"><button class="btn btn-primary btn-block" id="verifyContinue" onclick="go('discover'); enterApp();" data-t="continueToDiscover">Continue to Discover</button></div>
     </section>
 
     <!-- DISCOVER -->
     <section class="screen" id="screen-discover">
-      <h2 class="title" style="margin-bottom:2px;">Discover</h2>
-      <p class="subtitle" style="margin-bottom:10px;">Swipe or use the buttons — drag a card to see it move.</p>
+      <h2 class="title" style="margin-bottom:2px;" data-t="discoverTitle">Discover</h2>
+      <p class="subtitle" style="margin-bottom:10px;" data-t="discoverSub">Swipe or use the buttons — drag a card to see it move.</p>
       <div class="stack-wrap" id="stackWrap"></div>
       <div class="swipe-actions">
         <button class="round-btn pass" onclick="programmaticSwipe(-1)"><svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
@@ -374,21 +467,21 @@
 
       <div id="matchModal">
         <div class="match-avatars">
-          <div class="mav" style="background:var(--accent);">J</div>
+          <div class="mav" id="matchAvatar1" style="background:var(--accent);">J</div>
           <div class="mav" id="matchAvatar2" style="background:var(--mint);">?</div>
         </div>
-        <div class="eyebrow" style="color:#fff">It's a match</div>
+        <div class="eyebrow" style="color:#fff" data-t="matchModalEyebrow">It's a match</div>
         <h2 id="matchName">You matched!</h2>
-        <p>You both liked each other. Say hello — and remember, a recorded video call happens before you meet up in person.</p>
-        <button class="btn btn-primary" onclick="goToMatchChat()">Send a message</button>
-        <button class="btn btn-ghost" style="margin-top:10px; color:#fff; border-color:rgba(255,255,255,.4);" onclick="closeMatch()">Keep browsing</button>
+        <p data-t="matchModalBody">You both liked each other. Say hello — and remember, sharing your Instagram or phone is always your choice.</p>
+        <button class="btn btn-primary" onclick="goToMatchChat()" data-t="sendMessageBtn">Send a message</button>
+        <button class="btn btn-ghost" style="margin-top:10px; color:#fff; border-color:rgba(255,255,255,.4);" onclick="closeMatch()" data-t="keepBrowsingBtn">Keep browsing</button>
       </div>
     </section>
 
     <!-- MATCHES LIST -->
     <section class="screen" id="screen-matches">
-      <h2 class="title">Your matches</h2>
-      <p class="subtitle">Tap a match to open the conversation.</p>
+      <h2 class="title" data-t="matchesTitle">Your matches</h2>
+      <p class="subtitle" data-t="matchesSub">Tap a match to open the conversation.</p>
       <div id="matchesList"></div>
     </section>
 
@@ -398,79 +491,97 @@
         <div class="chat-header">
           <button class="btn-ghost btn btn-sm" style="border:none; padding:4px;" onclick="go('matches')"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg></button>
           <div class="avatar-sm" id="chatAvatar" style="background:var(--ink);">?</div>
-          <div><strong id="chatName" style="font-size:14px;">Match</strong><div style="font-size:11px;color:var(--mint); display:flex; align-items:center; gap:4px;"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Verified member</div></div>
+          <div class="grow"><strong id="chatName" style="font-size:14px;">Match</strong><div style="font-size:11px;color:var(--mint); display:flex; align-items:center; gap:4px;"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span data-t="verifiedMember">Verified member</span></div></div>
+          <button class="report-btn" onclick="reportUser()" title="Report"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></button>
         </div>
         <div class="safety-banner">
           <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
-          <div class="stext"><strong>Meeting up?</strong>Complete a recorded video intro call first — it's how we keep in-person meetings safer.</div>
+          <div class="stext"><strong data-t="safetyBannerTitle">Meeting up?</strong><span data-t="safetyBannerBodyRecommended">A recorded video intro is recommended before meeting in person — not required.</span></div>
         </div>
+
+        <div class="contact-card">
+          <div class="ctitle"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span data-t="shareTitle">Contact info — always your choice</span></div>
+          <div class="contact-actions">
+            <button class="btn btn-ghost btn-sm" id="btnShareInsta" onclick="shareContact('insta')" data-t="shareInstaBtn">Share my Instagram</button>
+            <button class="btn btn-ghost btn-sm" id="btnSharePhone" onclick="shareContact('phone')" data-t="sharePhoneBtn">Share my phone</button>
+            <button class="btn btn-ghost btn-sm" onclick="requestContact()" data-t="askInfoBtn">Ask for their info</button>
+          </div>
+        </div>
+
         <div class="chatlog" id="chatlog"></div>
-        <div style="display:flex; gap:8px; margin-top:8px;">
-          <input type="text" id="chatInput" placeholder="Type a message…" style="flex:1; padding:11px 14px; border-radius:100px; border:1.5px solid var(--line); font-family:'Inter'; font-size:13px;">
-          <button class="btn btn-primary btn-sm" onclick="sendChat()">Send</button>
+        <div class="icebreaker-row" id="icebreakerRow">
+          <div class="ice-chip" onclick="useIcebreaker(0)" data-t="iceBreaker1">Ask about their week</div>
+          <div class="ice-chip" onclick="useIcebreaker(1)" data-t="iceBreaker2">Compliment their profile</div>
+          <div class="ice-chip" onclick="useIcebreaker(2)" data-t="iceBreaker3">Suggest a coffee date</div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:4px;">
+          <input type="text" id="chatInput" data-t-ph="chatPlaceholder" placeholder="Type a message…" style="flex:1; padding:11px 14px; border-radius:100px; border:1.5px solid var(--line); font-family:'Inter'; font-size:13px;">
+          <button class="btn btn-primary btn-sm" onclick="sendChat()" data-t="sendBtn">Send</button>
         </div>
       </div>
     </section>
 
     <!-- SAFETY CENTER -->
     <section class="screen" id="screen-safety">
-      <h2 class="title">Safety center</h2>
-      <p class="subtitle">Everything that keeps meetups low-risk.</p>
+      <h2 class="title" data-t="safetyTitle">Safety center</h2>
+      <p class="subtitle" data-t="safetySub">Everything that keeps meetups low-risk.</p>
 
       <div class="safety-item">
         <div class="sicon2"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M14.5 9h3"/><path d="M14.5 13h3"/></svg></div>
-        <div><strong>ID &amp; liveness verified</strong><span>Completed at signup</span></div>
+        <div><strong data-t="idVerifiedTitle">ID &amp; liveness verified</strong><span data-t="idVerifiedSub">Completed at signup</span></div>
         <div class="toggle on" style="pointer-events:none;"></div>
       </div>
       <div class="safety-item">
         <div class="sicon2"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg></div>
-        <div><strong>Video intro call</strong><span id="safetyVideoStatus">Not completed yet</span></div>
+        <div><strong data-t="videoCallTitle">Video intro call (recommended)</strong><span id="safetyVideoStatus" data-t="videoNotDone">Not completed — optional</span></div>
         <div class="toggle" id="safetyVideoToggle" style="pointer-events:none;"></div>
       </div>
       <div class="safety-item">
         <div class="sicon2"><svg class="ic" viewBox="0 0 24 24"><path d="M12 22s7-6.8 7-12.5a7 7 0 10-14 0C5 15.2 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.4"/></svg></div>
-        <div><strong>Live check-in on dates</strong><span>Share location with a trusted contact</span></div>
+        <div><strong data-t="checkinTitle">Live check-in on dates</strong><span data-t="checkinSub">Share location with a trusted contact</span></div>
         <div class="toggle" id="checkinToggle" onclick="toggleCheckin()"></div>
       </div>
       <div class="safety-item">
         <div class="sicon2"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div>
-        <div><strong>Report or block</strong><span>Fast-response trust &amp; safety team</span></div>
+        <div><strong data-t="reportBlockTitle">Report or block</strong><span data-t="reportBlockSub">Fast-response trust &amp; safety team</span></div>
         <div class="toggle" style="pointer-events:none; opacity:0;"></div>
       </div>
 
       <div class="panic-wrap">
         <button id="panicBtn" onclick="pressPanic()">
           <svg class="ic" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:#fff;"><path d="M12 2a6 6 0 00-6 6c0 5-2 6-2 6h16s-2-1-2-6a6 6 0 00-6-6z"/><path d="M10 20a2 2 0 004 0"/></svg>
-          Hold for alert
+          <span data-t="panicBtnLabel">Hold for alert</span>
         </button>
-        <div class="panic-note">Sends your live location and a silent alert to your trusted contact and our safety team.</div>
-        <div id="panicSent">Alert sent to your trusted contact</div>
+        <div class="panic-note" data-t="panicNote">Sends your live location and a silent alert to your trusted contact and our safety team.</div>
+        <div id="panicSent" data-t="panicSentMsg">Alert sent to your trusted contact</div>
       </div>
     </section>
 
     <!-- PROFILE -->
     <section class="screen" id="screen-profile">
-      <h2 class="title">Profile</h2>
+      <h2 class="title" data-t="profileTitleScreen">Profile</h2>
       <div class="profile-card">
         <div class="profile-avatar" id="profAvatar">J</div>
         <h3 id="profName" style="margin:0; font-size:19px;">Jordan, 27</h3>
         <div style="font-size:12px;color:var(--muted);" id="profCity">Miami, FL</div>
+        <div class="badge-row" id="profRoleBadgeRow"></div>
         <div class="badge-row">
-          <div class="mini-badge on"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>ID verified</div>
-          <div class="mini-badge" id="profVideoBadge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Video pending</div>
+          <div class="mini-badge on"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span data-t="idVerifiedBadge">ID verified</span></div>
+          <div class="mini-badge" id="profVideoBadge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg><span data-t="videoPendingBadge">Video optional</span></div>
         </div>
+        <p class="profile-bio" id="profBio"></p>
         <div class="tag-row" id="profTags" style="justify-content:center; margin-top:14px;"></div>
       </div>
-      <button class="btn btn-ghost btn-block" onclick="restart()">Restart demo</button>
+      <button class="btn btn-ghost btn-block" onclick="restart()" data-t="restartBtn">Restart demo</button>
     </section>
 
   </div>
 
   <div id="bottomnav">
-    <button class="nav-btn active" data-s="discover" onclick="tab('discover')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20.5s-7-4.4-9.4-8.6C1 9 2 5.6 5.5 4.6 8 3.9 10 5 12 7c2-2 4-3.1 6.5-2.4C22 5.6 23 9 21.4 11.9 19 16.1 12 20.5 12 20.5z"/></svg>Discover</button>
-    <button class="nav-btn" data-s="matches" onclick="tab('matches')"><svg class="ic" viewBox="0 0 24 24"><path d="M21 11.4a8.3 8.3 0 01-4.4 7.4 8.4 8.4 0 01-8.6-.4L3 20l1.7-4.8a8.3 8.3 0 01-1.2-4.3A8.4 8.4 0 0112 2.5h.3a8.4 8.4 0 018.7 8.4z"/></svg>Matches</button>
-    <button class="nav-btn" data-s="safety" onclick="tab('safety')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg>Safety</button>
-    <button class="nav-btn" data-s="profile" onclick="tab('profile')"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Profile</button>
+    <button class="nav-btn active" data-s="discover" onclick="tab('discover')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20.5s-7-4.4-9.4-8.6C1 9 2 5.6 5.5 4.6 8 3.9 10 5 12 7c2-2 4-3.1 6.5-2.4C22 5.6 23 9 21.4 11.9 19 16.1 12 20.5 12 20.5z"/></svg><span data-t="navDiscover">Discover</span></button>
+    <button class="nav-btn" data-s="matches" onclick="tab('matches')"><svg class="ic" viewBox="0 0 24 24"><path d="M21 11.4a8.3 8.3 0 01-4.4 7.4 8.4 8.4 0 01-8.6-.4L3 20l1.7-4.8a8.3 8.3 0 01-1.2-4.3A8.4 8.4 0 0112 2.5h.3a8.4 8.4 0 018.7 8.4z"/></svg><span data-t="navMatches">Matches</span></button>
+    <button class="nav-btn" data-s="safety" onclick="tab('safety')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg><span data-t="navSafety">Safety</span></button>
+    <button class="nav-btn" data-s="profile" onclick="tab('profile')"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span data-t="navProfile">Profile</span></button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -481,10 +592,140 @@
 </div>
 
 <script>
+const STR = {
+  en: {
+    splashTitle:"TheGrongSugar", splashTag:"Clear terms. Verified people. A safer way to meet your match.", splashBtn:"Get started",
+    stepOf:"Step {n} of {total}",
+    roleTitle:"What brings you here?", roleSub:"This shapes who you'll see first. You can adjust it anytime.",
+    roleSugarTitle:"Be someone's Sugar", roleSugarDesc:"Offer support, you set the terms",
+    roleBabyTitle:"Find my Sugar", roleBabyDesc:"Looking for support",
+    roleSwitchTitle:"Open to both", roleSwitchDesc:"Flexible either way",
+    continueBtn:"Continue", back:"Back",
+    profileTitle:"Create your profile", profileSub:"Real name not required — a first name or nickname is fine.",
+    addPhoto:"Add a photo", photoHint:"Real, recent photos get more matches",
+    labelName:"Display name", labelAge:"Age", labelLocation:"Location",
+    labelPhone:"Phone number", phPhone:"+1 305 555 0100", phonePrivacyNote:"Never shown publicly — only shared in chat if you approve.",
+    labelInstagram:"Instagram (optional)", phInsta:"@yourhandle", instaPrivacyNote:"Never shown publicly — only shared in chat if you approve.",
+    labelBio:"About you", phBio:"A short intro — hobbies, what you're looking for...",
+    labelInterests:"Interests", interestTravel:"Travel", interestFitness:"Fitness", interestFoodie:"Foodie", interestArt:"Art", interestMusic:"Music", interestBusiness:"Business", interestOutdoors:"Outdoors",
+    completeness:"Profile", completenessTip:"Add a photo and bio to stand out",
+    quizTitle:"Set your expectations", quizSub:"Shown to matches up front — no awkward money talk on date one.",
+    labelBudget:"Monthly allowance range", labelCovers:"What it covers",
+    coverDinners:"Dinners", coverTravel:"Travel", coverTuition:"Tuition", coverRent:"Rent", coverShopping:"Shopping",
+    labelMeet:"Meeting style", meetLocal:"Local only", meetTravelOpen:"Open to travel", meetLongDistance:"Long-distance ok",
+    labelAvailability:"Availability", availWeekdays:"Weekdays", availWeekends:"Weekends", availFlexible:"Flexible",
+    verifyTitle:"Let's verify it's really you", verifySub:"ID and liveness are required for every member. The video intro is recommended, not required.",
+    idScanTitle:"Government ID scan", idScanSub:"Verified automatically",
+    livenessTitle:"Liveness selfie check", livenessSub:"Matched to your ID",
+    videoTitle:"Recorded video intro", videoSubRecommended:"Recommended — boosts trust and matches", recommendedPill:"Recommended",
+    videoBoxText:"30 seconds, just say hi. Optional — but recommended before meeting in person. Encrypted, auto-deleted in 30 days, only reviewed if someone files a report.",
+    startRecording:"Start recording", recording:"Recording…", videoVerifiedBtn:"Video added",
+    skipForNow:"Skip for now", continueToDiscover:"Continue to Discover",
+    discoverTitle:"Discover", discoverSub:"Swipe or use the buttons — drag a card to see it move.",
+    likeStamp:"LIKE", passStamp:"PASS", matchSuffix:"% match", verifiedLabel:"Verified",
+    matchModalEyebrow:"It's a match", matchModalNameTpl:"You and {name}!",
+    matchModalBody:"You both liked each other. Say hello — and remember, sharing your Instagram or phone is always your choice.",
+    sendMessageBtn:"Send a message", keepBrowsingBtn:"Keep browsing",
+    matchesTitle:"Your matches", matchesSub:"Tap a match to open the conversation.", noMatchesYet:"No matches yet — head to Discover and start swiping.", sayHello:"Say hello",
+    verifiedMember:"Verified member",
+    safetyBannerTitle:"Meeting up?", safetyBannerBodyRecommended:"A recorded video intro is recommended before meeting in person — not required.",
+    shareTitle:"Contact info — always your choice", shareInstaBtn:"Share my Instagram", sharePhoneBtn:"Share my phone", askInfoBtn:"Ask for their info",
+    addInfoFirstToast:"Add this in your profile first", waitingApproval:"Waiting for approval…",
+    approvedInstaTpl:"{name} approved sharing Instagram: {value}", approvedPhoneTpl:"{name} approved sharing phone: {value}",
+    declinedShareTpl:"{name} isn't ready to share that yet.", youSharedInstaTpl:"You shared your Instagram: {value}", youSharedPhoneTpl:"You shared your phone: {value}",
+    reportedToast:"Reported — our trust & safety team will review",
+    iceBreaker1:"Ask about their week", iceBreaker1Text:"How has your week been so far?",
+    iceBreaker2:"Compliment their profile", iceBreaker2Text:"I really liked your profile — great vibe!",
+    iceBreaker3:"Suggest a coffee date", iceBreaker3Text:"Would you be up for coffee sometime this week?",
+    chatPlaceholder:"Type a message…", sendBtn:"Send",
+    theyGreeting:"Hey! Thanks for the match. Loved your profile.",
+    theyFollowup:"Sounds great — want to plan something for this weekend?",
+    safetyTitle:"Safety center", safetySub:"Everything that keeps meetups low-risk.",
+    idVerifiedTitle:"ID & liveness verified", idVerifiedSub:"Completed at signup",
+    videoCallTitle:"Video intro call (recommended)", videoNotDone:"Not completed — optional", videoDoneJust:"Completed — thanks for adding it!",
+    checkinTitle:"Live check-in on dates", checkinSub:"Share location with a trusted contact",
+    reportBlockTitle:"Report or block", reportBlockSub:"Fast-response trust & safety team",
+    panicBtnLabel:"Hold for alert", panicNote:"Sends your live location and a silent alert to your trusted contact and our safety team.", panicSentMsg:"Alert sent to your trusted contact",
+    checkinOnToast:"Live check-in enabled for your next date", checkinOffToast:"Live check-in turned off",
+    profileTitleScreen:"Profile", restartBtn:"Restart demo",
+    idVerifiedBadge:"ID verified", videoPendingBadge:"Video optional", videoAddedBadge:"Video added",
+    roleBadgeSugar:"Being a Sugar", roleBadgeBaby:"Finding a Sugar", roleBadgeSwitch:"Open to both",
+    navDiscover:"Discover", navMatches:"Matches", navSafety:"Safety", navProfile:"Profile",
+    likedToastTpl:"Liked {name}", passedToastTpl:"Passed on {name}",
+    holdConfirmed:"Hold confirmed — sending alert…",
+  },
+  es: {
+    splashTitle:"TheGrongSugar", splashTag:"Condiciones claras. Gente verificada. Una forma más segura de conocer a tu match.", splashBtn:"Empezar",
+    stepOf:"Paso {n} de {total}",
+    roleTitle:"¿Qué te trae por aquí?", roleSub:"Esto define a quién verás primero. Puedes cambiarlo cuando quieras.",
+    roleSugarTitle:"Ser el Sugar", roleSugarDesc:"Ofreces apoyo, tú pones las condiciones",
+    roleBabyTitle:"Encontrar un Sugar", roleBabyDesc:"Buscas apoyo",
+    roleSwitchTitle:"Abierto a ambos", roleSwitchDesc:"Flexible en cualquier caso",
+    continueBtn:"Continuar", back:"Atrás",
+    profileTitle:"Crea tu perfil", profileSub:"No necesitas tu nombre real — un nombre o apodo está bien.",
+    addPhoto:"Agrega una foto", photoHint:"Fotos reales y recientes consiguen más matches",
+    labelName:"Nombre para mostrar", labelAge:"Edad", labelLocation:"Ubicación",
+    labelPhone:"Número de teléfono", phPhone:"+52 55 5555 0100", phonePrivacyNote:"Nunca se muestra públicamente — solo se comparte en el chat si tú lo apruebas.",
+    labelInstagram:"Instagram (opcional)", phInsta:"@tuusuario", instaPrivacyNote:"Nunca se muestra públicamente — solo se comparte en el chat si tú lo apruebas.",
+    labelBio:"Sobre ti", phBio:"Una intro corta — pasatiempos, qué estás buscando...",
+    labelInterests:"Intereses", interestTravel:"Viajar", interestFitness:"Fitness", interestFoodie:"Foodie", interestArt:"Arte", interestMusic:"Música", interestBusiness:"Negocios", interestOutdoors:"Aire libre",
+    completeness:"Perfil", completenessTip:"Agrega foto y bio para destacar",
+    quizTitle:"Define tus expectativas", quizSub:"Se muestra a tus matches desde el inicio — sin hablar de dinero incómodamente en la primera cita.",
+    labelBudget:"Rango de mesada mensual", labelCovers:"Qué cubre",
+    coverDinners:"Cenas", coverTravel:"Viajes", coverTuition:"Colegiatura", coverRent:"Renta", coverShopping:"Compras",
+    labelMeet:"Estilo de encuentro", meetLocal:"Solo local", meetTravelOpen:"Abierto a viajar", meetLongDistance:"Distancia larga ok",
+    labelAvailability:"Disponibilidad", availWeekdays:"Entre semana", availWeekends:"Fines de semana", availFlexible:"Flexible",
+    verifyTitle:"Verifiquemos que sí eres tú", verifySub:"ID y prueba de vida son obligatorias para todos. La videollamada de intro es recomendada, no obligatoria.",
+    idScanTitle:"Escaneo de identificación oficial", idScanSub:"Verificado automáticamente",
+    livenessTitle:"Prueba de vida (selfie)", livenessSub:"Coincide con tu ID",
+    videoTitle:"Video de introducción grabado", videoSubRecommended:"Recomendado — mejora tu confianza y matches", recommendedPill:"Recomendado",
+    videoBoxText:"30 segundos, solo saluda. Opcional — pero recomendado antes de conocerse en persona. Encriptado, se borra en 30 días, solo se revisa si alguien reporta.",
+    startRecording:"Iniciar grabación", recording:"Grabando…", videoVerifiedBtn:"Video agregado",
+    skipForNow:"Omitir por ahora", continueToDiscover:"Continuar a Descubrir",
+    discoverTitle:"Descubrir", discoverSub:"Desliza o usa los botones — arrastra una tarjeta para moverla.",
+    likeStamp:"ME GUSTA", passStamp:"PASO", matchSuffix:"% compatibilidad", verifiedLabel:"Verificado",
+    matchModalEyebrow:"Es un match", matchModalNameTpl:"¡Tú y {name}!",
+    matchModalBody:"A ambos les gustó el otro. Saluda — y recuerda, compartir tu Instagram o teléfono siempre es tu decisión.",
+    sendMessageBtn:"Enviar un mensaje", keepBrowsingBtn:"Seguir viendo",
+    matchesTitle:"Tus matches", matchesSub:"Toca un match para abrir la conversación.", noMatchesYet:"Aún no tienes matches — ve a Descubrir y empieza a deslizar.", sayHello:"Saluda",
+    verifiedMember:"Miembro verificado",
+    safetyBannerTitle:"¿Van a verse en persona?", safetyBannerBodyRecommended:"Un video de introducción grabado es recomendado antes de conocerse en persona — no obligatorio.",
+    shareTitle:"Datos de contacto — siempre tu decisión", shareInstaBtn:"Compartir mi Instagram", sharePhoneBtn:"Compartir mi teléfono", askInfoBtn:"Pedir sus datos",
+    addInfoFirstToast:"Agrega esto en tu perfil primero", waitingApproval:"Esperando aprobación…",
+    approvedInstaTpl:"{name} aprobó compartir su Instagram: {value}", approvedPhoneTpl:"{name} aprobó compartir su teléfono: {value}",
+    declinedShareTpl:"{name} todavía no quiere compartir eso.", youSharedInstaTpl:"Compartiste tu Instagram: {value}", youSharedPhoneTpl:"Compartiste tu teléfono: {value}",
+    reportedToast:"Reportado — nuestro equipo de confianza y seguridad lo revisará",
+    iceBreaker1:"Pregunta por su semana", iceBreaker1Text:"¿Cómo va tu semana?",
+    iceBreaker2:"Elogia su perfil", iceBreaker2Text:"Me encantó tu perfil, ¡buena vibra!",
+    iceBreaker3:"Propón un café", iceBreaker3Text:"¿Te gustaría tomar un café esta semana?",
+    chatPlaceholder:"Escribe un mensaje…", sendBtn:"Enviar",
+    theyGreeting:"¡Hola! Gracias por el match. Me encantó tu perfil.",
+    theyFollowup:"Suena bien — ¿quieres planear algo para este fin de semana?",
+    safetyTitle:"Centro de seguridad", safetySub:"Todo lo que hace los encuentros de bajo riesgo.",
+    idVerifiedTitle:"ID y prueba de vida verificadas", idVerifiedSub:"Completado al registrarte",
+    videoCallTitle:"Videollamada de intro (recomendada)", videoNotDone:"No completada — opcional", videoDoneJust:"Completada — ¡gracias por agregarla!",
+    checkinTitle:"Check-in en vivo en tus citas", checkinSub:"Comparte tu ubicación con un contacto de confianza",
+    reportBlockTitle:"Reportar o bloquear", reportBlockSub:"Equipo de confianza y seguridad de respuesta rápida",
+    panicBtnLabel:"Mantén presionado", panicNote:"Envía tu ubicación en vivo y una alerta silenciosa a tu contacto de confianza y a nuestro equipo de seguridad.", panicSentMsg:"Alerta enviada a tu contacto de confianza",
+    checkinOnToast:"Check-in en vivo activado para tu próxima cita", checkinOffToast:"Check-in en vivo desactivado",
+    profileTitleScreen:"Perfil", restartBtn:"Reiniciar demo",
+    idVerifiedBadge:"ID verificado", videoPendingBadge:"Video opcional", videoAddedBadge:"Video agregado",
+    roleBadgeSugar:"Siendo el Sugar", roleBadgeBaby:"Buscando un Sugar", roleBadgeSwitch:"Abierto a ambos",
+    navDiscover:"Descubrir", navMatches:"Matches", navSafety:"Seguridad", navProfile:"Perfil",
+    likedToastTpl:"Te gustó {name}", passedToastTpl:"Pasaste de {name}",
+    holdConfirmed:"Presión confirmada — enviando alerta…",
+  }
+};
+
+let LANG = (function(){ try { return localStorage.getItem('grongsugar-lang') || 'en'; } catch(e){ return 'en'; } })();
+function t(k){ return STR[LANG][k] || k; }
+function fmt(str, vars){ return str.replace(/\{(\w+)\}/g, (m,k)=> vars[k] !== undefined ? vars[k] : m); }
+
 const state = {
-  persona: 'baby',
-  name: 'Jordan', age: 27, city: 'Miami, FL',
-  budget: 2500, covers: [], meet: [],
+  role: 'baby',
+  name: 'Jordan', age: 27, city: 'Miami, FL', phone:'', insta:'', bio:'', interests:[],
+  photoData: null,
+  budget: 2500, covers: [], meet: [], availability: [],
   videoDone: false,
   checkin: false,
   matches: [],
@@ -494,17 +735,17 @@ const state = {
 const PALETTE = ['#FF6A4D','#1FAE8A','#4EA8DE','#B98CF2','#F2A93B'];
 
 const PROFILES = [
-  { name:'Alexa', age:29, city:'Miami, FL', color:'#FF6A4D', compat:92, tags:['$3k–5k/mo','Travel','Weekends'] },
-  { name:'Michael', age:41, city:'Coral Gables, FL', color:'#4EA8DE', compat:87, tags:['$5k+/mo','Tuition','Flexible'] },
-  { name:'Victoria', age:33, city:'Miami Beach, FL', color:'#F2A93B', compat:81, tags:['$2k–3k/mo','Dinners','Local only'] },
-  { name:'Daniel', age:38, city:'Brickell, FL', color:'#1FAE8A', compat:95, tags:['$4k/mo','Rent help','Open to travel'] },
-  { name:'Sofia', age:26, city:'Fort Lauderdale, FL', color:'#B98CF2', compat:78, tags:['$1.5k/mo','Shopping','Weekends'] },
+  { name:'Alexa', age:29, city:'Miami, FL', color:'#FF6A4D', compat:92, tags:['$3k–5k/mo','Travel','Weekends'], vibe:'Weekends in Miami, always up for sushi.', insta:'@alexa.mia', phone:'+1 305 555 0142' },
+  { name:'Michael', age:41, city:'Coral Gables, FL', color:'#4EA8DE', compat:87, tags:['$5k+/mo','Tuition','Flexible'], vibe:'Low-key, good wine, better conversation.', insta:'@mike.cg', phone:'+1 305 555 0199' },
+  { name:'Victoria', age:33, city:'Miami Beach, FL', color:'#F2A93B', compat:81, tags:['$2k–3k/mo','Dinners','Local only'], vibe:'Beach mornings, spreadsheets by day.', insta:'@victoria.mb', phone:'+1 786 555 0110' },
+  { name:'Daniel', age:38, city:'Brickell, FL', color:'#1FAE8A', compat:95, tags:['$4k/mo','Rent help','Open to travel'], vibe:'Downtown dinners and long walks.', insta:'@daniel.brickell', phone:'+1 305 555 0176' },
+  { name:'Sofia', age:26, city:'Fort Lauderdale, FL', color:'#B98CF2', compat:78, tags:['$1.5k/mo','Shopping','Weekends'], vibe:'Sunday markets and iced coffee.', insta:'@sofia.ftl', phone:'+1 954 555 0133' },
 ];
 
 function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2200);
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._h); el._h = setTimeout(()=>el.classList.remove('show'), 2400);
 }
 
 function go(name){
@@ -512,36 +753,55 @@ function go(name){
   document.getElementById('screen-'+name).classList.add('active');
 }
 
-function enterApp(){
-  document.body.classList.add('app-mode');
-  document.getElementById('profName').textContent = state.name + ', ' + state.age;
-  document.getElementById('profCity').textContent = state.city;
-  document.getElementById('profAvatar').textContent = state.name.charAt(0).toUpperCase();
-  const tagWrap = document.getElementById('profTags');
-  const tags = ['$'+state.budget.toLocaleString()+'/mo', ...state.covers.slice(0,2), ...state.meet.slice(0,1)];
-  tagWrap.innerHTML = tags.map(t=>`<div class="tag">${t}</div>`).join('');
+function stepLabel(n){ return fmt(t('stepOf'), {n:n, total:4}); }
+
+function applyTexts(){
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const k = el.getAttribute('data-t');
+    if(STR[LANG][k] !== undefined) el.textContent = STR[LANG][k];
+  });
+  document.querySelectorAll('[data-t-ph]').forEach(el=>{
+    const k = el.getAttribute('data-t-ph');
+    if(STR[LANG][k] !== undefined) el.placeholder = STR[LANG][k];
+  });
+  document.getElementById('langToggle').textContent = LANG === 'en' ? 'ES' : 'EN';
+  document.getElementById('stepLabel1').textContent = stepLabel(1);
+  document.getElementById('stepLabel2').textContent = stepLabel(2);
+  document.getElementById('stepLabel3').textContent = stepLabel(3);
+  document.getElementById('stepLabel4').textContent = stepLabel(4);
+  updateCompleteness();
   renderStack();
+  renderMatchesList();
+  updateProfileScreen();
 }
 
-// --- persona picker ---
-document.getElementById('personaGrid').addEventListener('click', (e)=>{
-  const card = e.target.closest('.persona-card');
-  if(!card) return;
-  document.querySelectorAll('.persona-card').forEach(c=>c.classList.remove('selected'));
-  card.classList.add('selected');
-  state.persona = card.dataset.v;
-});
-document.querySelector('.persona-card[data-v="baby"]').classList.add('selected');
+function toggleLang(){
+  LANG = LANG === 'en' ? 'es' : 'en';
+  try{ localStorage.setItem('grongsugar-lang', LANG); }catch(e){}
+  applyTexts();
+}
 
-['covers','meetstyle'].forEach(id=>{
+// --- role picker ---
+document.getElementById('roleList').addEventListener('click', (e)=>{
+  const card = e.target.closest('.role-card');
+  if(!card) return;
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  state.role = card.dataset.v;
+});
+document.querySelector('.role-card[data-v="baby"]').classList.add('selected');
+
+['covers','meetstyle','availability','interests'].forEach(id=>{
   document.getElementById(id).addEventListener('click',(e)=>{
     const chip = e.target.closest('.chip');
     if(!chip) return;
     chip.classList.toggle('selected');
-    const arr = id === 'covers' ? state.covers : state.meet;
+    const map = { covers: state.covers, meetstyle: state.meet, availability: state.availability, interests: state.interests };
+    const arr = map[id];
     const v = chip.dataset.v;
     const i = arr.indexOf(v);
     if(i>-1) arr.splice(i,1); else arr.push(v);
+    if(id === 'interests') updateCompleteness();
   });
 });
 
@@ -549,6 +809,35 @@ document.getElementById('inpName').addEventListener('input', e=> state.name = e.
 document.getElementById('inpAge').addEventListener('input', e=> state.age = e.target.value || 27);
 document.getElementById('inpCity').addEventListener('input', e=> state.city = e.target.value || 'Miami, FL');
 document.getElementById('inpBudget').addEventListener('input', e=> state.budget = Number(e.target.value));
+document.getElementById('inpPhone').addEventListener('input', e=> { state.phone = e.target.value; onFieldChange(); });
+document.getElementById('inpInsta').addEventListener('input', e=> { state.insta = e.target.value; onFieldChange(); });
+document.getElementById('inpBio').addEventListener('input', e=> { state.bio = e.target.value; onFieldChange(); });
+
+function onFieldChange(){ updateCompleteness(); }
+
+function handlePhotoUpload(evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    state.photoData = e.target.result;
+    const circle = document.getElementById('photoCircle');
+    circle.style.backgroundImage = `url(${state.photoData})`;
+    document.getElementById('photoIcon').style.display = 'none';
+    updateCompleteness();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateCompleteness(){
+  const fields = [!!state.photoData, !!state.bio, !!state.phone, !!state.insta, state.interests.length>0];
+  const filled = fields.filter(Boolean).length;
+  const pct = Math.round((filled/fields.length)*100);
+  const txt = document.getElementById('completenessText');
+  const fill = document.getElementById('completenessFill');
+  if(txt) txt.innerHTML = '<strong>'+t('completeness')+': '+pct+'%</strong> · '+t('completenessTip');
+  if(fill) fill.style.width = pct+'%';
+}
 
 // --- verification ---
 function recordVideo(){
@@ -556,35 +845,56 @@ function recordVideo(){
   const btn = document.getElementById('videoBtn');
   const text = document.getElementById('videoText');
   box.classList.add('recording');
-  btn.disabled = true; btn.textContent = 'Recording…';
-  text.innerHTML = '<span class="rec-dot"></span>Recording your 30-second intro…';
+  btn.disabled = true; btn.textContent = t('recording');
+  text.innerHTML = '<span class="rec-dot"></span>'+t('recording');
   let n = 3;
   const iv = setInterval(()=>{
-    if(n>0){ text.innerHTML = '<span class="rec-dot"></span>Recording… '+n+'s'; n--; }
+    if(n>0){ text.innerHTML = '<span class="rec-dot"></span>'+t('recording')+' '+n+'s'; n--; }
     else{
       clearInterval(iv);
       box.classList.remove('recording');
-      text.textContent = 'Verified — encrypted and stored securely.';
-      btn.textContent = 'Video verified';
+      text.textContent = t('videoDoneJust');
+      btn.textContent = t('videoVerifiedBtn');
       document.getElementById('stepVideo').classList.add('done');
-      document.getElementById('verifyContinue').disabled = false;
-      document.getElementById('verifyContinue').textContent = 'Continue to Discover';
       state.videoDone = true;
-      document.getElementById('safetyVideoStatus').textContent = 'Completed just now';
+      document.getElementById('safetyVideoStatus').setAttribute('data-t','videoDoneJust');
+      document.getElementById('safetyVideoStatus').textContent = t('videoDoneJust');
       document.getElementById('safetyVideoToggle').classList.add('on');
-      document.getElementById('profVideoBadge').innerHTML = '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Video verified';
-      document.getElementById('profVideoBadge').classList.add('on');
+      const badge = document.getElementById('profVideoBadge');
+      badge.innerHTML = '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span>'+t('videoAddedBadge')+'</span>';
+      badge.classList.add('on');
     }
   }, 700);
+}
+
+function enterApp(){
+  document.body.classList.add('app-mode');
+  updateProfileScreen();
+  renderStack();
+}
+
+function updateProfileScreen(){
+  document.getElementById('profName').textContent = state.name + ', ' + state.age;
+  document.getElementById('profCity').textContent = state.city;
+  const av = document.getElementById('profAvatar');
+  if(state.photoData){ av.style.backgroundImage = `url(${state.photoData})`; av.textContent=''; }
+  else { av.textContent = state.name.charAt(0).toUpperCase(); }
+  const roleKey = state.role === 'sugar' ? 'roleBadgeSugar' : (state.role === 'switch' ? 'roleBadgeSwitch' : 'roleBadgeBaby');
+  document.getElementById('profRoleBadgeRow').innerHTML = '<div class="mini-badge">'+t(roleKey)+'</div>';
+  document.getElementById('profBio').textContent = state.bio || '';
+  const tagWrap = document.getElementById('profTags');
+  const tags = ['$'+state.budget.toLocaleString()+'/mo', ...state.covers.slice(0,2), ...state.interests.slice(0,2)];
+  tagWrap.innerHTML = tags.map(x=>`<div class="tag">${x}</div>`).join('');
 }
 
 // --- discover deck ---
 function renderStack(){
   const wrap = document.getElementById('stackWrap');
+  if(!wrap) return;
   wrap.innerHTML = '';
   const visible = PROFILES.slice(state.deckIndex, state.deckIndex+3);
   if(visible.length === 0){
-    wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;text-align:center;padding:20px;">You\'ve seen everyone nearby.<br>Check back soon for new members.</div>';
+    wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;text-align:center;padding:20px;"></div>';
     return;
   }
   visible.forEach((p, i)=>{
@@ -596,15 +906,16 @@ function renderStack(){
     el.innerHTML = `
       <div class="card-photo" style="background:${p.color};">
         <div class="initials">${p.name.charAt(0)}</div>
-        <div class="verified-badge"><svg class="ic" viewBox="0 0 24 24" style="stroke:var(--mint);"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Verified</div>
-        <div class="compat-badge">${p.compat}% match</div>
-        <div class="stamp like"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M20 6L9 17l-5-5"/></svg>LIKE</div>
-        <div class="stamp pass"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>PASS</div>
+        <div class="verified-badge"><svg class="ic" viewBox="0 0 24 24" style="stroke:var(--mint);"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>${t('verifiedLabel')}</div>
+        <div class="compat-badge">${p.compat}${t('matchSuffix')}</div>
+        <div class="stamp like"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M20 6L9 17l-5-5"/></svg>${t('likeStamp')}</div>
+        <div class="stamp pass"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>${t('passStamp')}</div>
       </div>
       <div class="card-body">
         <h3>${p.name}, ${p.age}</h3>
-        <div class="loc">${p.city}</div>
-        <div class="tag-row">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="loc"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M12 22s7-6.8 7-12.5a7 7 0 10-14 0C5 15.2 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.4"/></svg>${p.city}</div>
+        <div class="vibe">${p.vibe}</div>
+        <div class="tag-row">${p.tags.map(x=>`<span class="tag">${x}</span>`).join('')}</div>
       </div>`;
     wrap.appendChild(el);
     if(idxFromTop === 0) attachDrag(el, p);
@@ -655,15 +966,17 @@ function swipeAway(el, dir, profile){
     renderStack();
     if(dir > 0 && profile){
       if(profile.compat >= 80){ showMatch(profile); }
-      else { toast('Liked ' + profile.name); }
+      else { toast(fmt(t('likedToastTpl'), {name:profile.name})); }
     } else if(profile){
-      toast('Passed on ' + profile.name);
+      toast(fmt(t('passedToastTpl'), {name:profile.name}));
     }
   }, 320);
 }
 
 function showMatch(profile){
-  document.getElementById('matchName').textContent = 'You and ' + profile.name + '!';
+  document.getElementById('matchName').textContent = fmt(t('matchModalNameTpl'), {name:profile.name});
+  const av1 = document.getElementById('matchAvatar1');
+  if(state.photoData){ av1.style.backgroundImage = `url(${state.photoData})`; av1.textContent=''; } else { av1.textContent = state.name.charAt(0); }
   const av2 = document.getElementById('matchAvatar2');
   av2.textContent = profile.name.charAt(0);
   av2.style.background = profile.color;
@@ -686,26 +999,75 @@ function goToMatchChat(){
 // --- matches / chat ---
 function renderMatchesList(){
   const list = document.getElementById('matchesList');
+  if(!list) return;
   if(state.matches.length === 0){
-    list.innerHTML = '<p style="color:var(--muted); font-size:13px;">No matches yet — head to Discover and start swiping.</p>';
+    list.innerHTML = '<p style="color:var(--muted); font-size:13px;">'+t('noMatchesYet')+'</p>';
     return;
   }
   list.innerHTML = state.matches.map(m=>`
     <div class="match-row" onclick='openChatByName("${m.name}")'>
       <div class="avatar-sm" style="background:${m.color};">${m.name.charAt(0)}</div>
-      <div class="mtext"><strong>${m.name}, ${m.age}</strong><span>Say hello</span></div>
+      <div class="mtext"><strong>${m.name}, ${m.age}</strong><span>${t('sayHello')}</span></div>
     </div>`).join('');
 }
 function openChatByName(name){ openChat(state.matches.find(m=>m.name===name)); }
 function openChat(profile){
   if(!profile) return;
+  state._chatMatch = profile;
   document.getElementById('chatName').textContent = profile.name;
   const av = document.getElementById('chatAvatar');
   av.textContent = profile.name.charAt(0);
   av.style.background = profile.color;
-  document.getElementById('chatlog').innerHTML = `<div class="bubble them">Hey! Thanks for the match. Loved your profile.</div>`;
+  document.getElementById('chatlog').innerHTML = `<div class="bubble them">${t('theyGreeting')}</div>`;
+  updateContactButtons();
   go('chat');
 }
+
+function updateContactButtons(){
+  document.getElementById('btnShareInsta').disabled = !state.insta;
+  document.getElementById('btnSharePhone').disabled = !state.phone;
+}
+
+function shareContact(kind){
+  const log = document.getElementById('chatlog');
+  if(kind === 'insta'){
+    if(!state.insta){ toast(t('addInfoFirstToast')); return; }
+    log.insertAdjacentHTML('beforeend', `<div class="bubble sys">${fmt(t('youSharedInstaTpl'), {value: state.insta})}</div>`);
+  } else {
+    if(!state.phone){ toast(t('addInfoFirstToast')); return; }
+    log.insertAdjacentHTML('beforeend', `<div class="bubble sys">${fmt(t('youSharedPhoneTpl'), {value: state.phone})}</div>`);
+  }
+  log.scrollTop = log.scrollHeight;
+}
+
+function requestContact(){
+  const log = document.getElementById('chatlog');
+  const profile = state._chatMatch;
+  if(!profile) return;
+  log.insertAdjacentHTML('beforeend', `<div class="bubble sys">${t('waitingApproval')}</div>`);
+  log.scrollTop = log.scrollHeight;
+  setTimeout(()=>{
+    const approved = Math.random() > 0.3;
+    if(approved){
+      const useInsta = Math.random() > 0.5;
+      const msg = useInsta ? fmt(t('approvedInstaTpl'), {name:profile.name, value:profile.insta}) : fmt(t('approvedPhoneTpl'), {name:profile.name, value:profile.phone});
+      log.insertAdjacentHTML('beforeend', `<div class="bubble sys">${msg}</div>`);
+    } else {
+      log.insertAdjacentHTML('beforeend', `<div class="bubble sys">${fmt(t('declinedShareTpl'), {name:profile.name})}</div>`);
+    }
+    log.scrollTop = log.scrollHeight;
+  }, 1400);
+}
+
+function useIcebreaker(idx){
+  const keys = ['iceBreaker1Text','iceBreaker2Text','iceBreaker3Text'];
+  document.getElementById('chatInput').value = t(keys[idx]);
+}
+
+function reportUser(){
+  toast(t('reportedToast'));
+}
+
 function sendChat(){
   const inp = document.getElementById('chatInput');
   if(!inp.value.trim()) return;
@@ -714,7 +1076,7 @@ function sendChat(){
   inp.value = '';
   log.scrollTop = log.scrollHeight;
   setTimeout(()=>{
-    log.insertAdjacentHTML('beforeend', `<div class="bubble them">Sounds great — want to plan something for this weekend? Once we've done our video intro, of course.</div>`);
+    log.insertAdjacentHTML('beforeend', `<div class="bubble them">${t('theyFollowup')}</div>`);
     log.scrollTop = log.scrollHeight;
   }, 900);
 }
@@ -724,19 +1086,20 @@ function tab(name){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===name));
   go(name);
   if(name==='matches') renderMatchesList();
+  if(name==='profile') updateProfileScreen();
 }
 
 // --- safety center ---
 function toggleCheckin(){
   state.checkin = !state.checkin;
   document.getElementById('checkinToggle').classList.toggle('on', state.checkin);
-  toast(state.checkin ? 'Live check-in enabled for your next date' : 'Live check-in turned off');
+  toast(state.checkin ? t('checkinOnToast') : t('checkinOffToast'));
 }
 let panicTimer;
 function pressPanic(){
   const btn = document.getElementById('panicBtn');
   btn.classList.add('armed');
-  toast('Hold confirmed — sending alert…');
+  toast(t('holdConfirmed'));
   clearTimeout(panicTimer);
   panicTimer = setTimeout(()=>{
     btn.classList.remove('armed');
@@ -747,7 +1110,7 @@ function pressPanic(){
 
 function restart(){ location.reload(); }
 
-renderMatchesList();
+applyTexts();
 </script>
 </body>
 </html>
