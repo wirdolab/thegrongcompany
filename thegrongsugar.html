@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TheGrongSugar — Not wrong. Grong.™</title>
+<meta name="description" content="Sugar dating with more paperwork than a visa application: ID verification, a mandatory recorded video intro call before meeting in person, and a panic button. imagined by TheGrongCo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+<style>
+  :root{
+    --plum:#5C2A3D;
+    --plum-deep:#3A1A26;
+    --gold:#C9A24B;
+    --gold-light:#EAD6A0;
+    --cream:#FBF6EF;
+    --blush:#F4E0D8;
+    --ink:#2C2420;
+    --muted:#8A7F73;
+    --success:#3E8F63;
+    --danger:#C1483A;
+    --card-shadow: 0 18px 40px rgba(58,26,38,0.16);
+    --radius-lg: 26px;
+    --radius-md: 16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Poppins', sans-serif;
+    background: linear-gradient(160deg, var(--cream) 0%, var(--blush) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+  }
+  h1,h2,h3,.serif{ font-family:'Playfair Display', serif; }
+
+  #phone{
+    position: relative;
+    width: 390px;
+    height: 780px;
+    background: var(--cream);
+    border-radius: 42px;
+    box-shadow: 0 30px 70px rgba(58,26,38,0.35), 0 0 0 10px #221019;
+    overflow: hidden;
+    display:flex;
+    flex-direction: column;
+  }
+  #notch{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:120px; height:22px; background:#221019; border-radius: 14px; z-index:50;
+  }
+
+  #screens{
+    position:relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    opacity:0; pointer-events:none;
+    transform: translateX(24px);
+    transition: opacity .38s ease, transform .38s ease;
+    padding: 46px 22px 18px;
+    overflow-y:auto;
+  }
+  .screen::-webkit-scrollbar{ display:none; }
+  .screen.active{ opacity:1; pointer-events:auto; transform: translateX(0); }
+
+  .eyebrow{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:600; margin:0 0 6px; }
+  .title{ font-size:26px; font-weight:700; color:var(--plum-deep); margin:0 0 6px; }
+  .subtitle{ font-size:14px; color:var(--muted); margin:0 0 22px; line-height:1.5; }
+
+  .btn{
+    border:none; border-radius: 100px; padding: 15px 22px; font-family:'Poppins';
+    font-weight:600; font-size:15px; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+  }
+  .btn:active{ transform: scale(.96); }
+  .btn-primary{ background: linear-gradient(120deg, var(--plum), var(--plum-deep)); color:#fff; box-shadow: 0 10px 24px rgba(92,42,61,.35); }
+  .btn-primary:hover{ box-shadow: 0 14px 30px rgba(92,42,61,.45); }
+  .btn-gold{ background: linear-gradient(120deg, var(--gold), #b3872f); color:#3A2404; box-shadow: 0 10px 22px rgba(201,162,75,.4); }
+  .btn-ghost{ background: transparent; color: var(--plum); border: 1.5px solid var(--plum); }
+  .btn-block{ width:100%; display:block; text-align:center; }
+  .btn-sm{ padding: 9px 16px; font-size: 13px; }
+
+  .logo-mark{
+    width:74px; height:74px; border-radius: 22px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display'; font-weight:700; font-size:30px; color:#3A2404;
+    box-shadow: 0 14px 30px rgba(201,162,75,.5);
+  }
+
+  /* ---------- Splash ---------- */
+  #screen-splash{ align-items:center; justify-content:center; text-align:center; padding-top:0; }
+  #screen-splash .logo-mark{ margin-bottom:22px; animation: popIn .7s cubic-bezier(.2,1.4,.4,1) both; }
+  #screen-splash h1{ font-size:34px; color:var(--plum-deep); margin:0 0 10px; animation: fadeUp .6s .15s ease both; }
+  #screen-splash p{ color:var(--muted); font-size:14.5px; max-width:270px; margin:0 auto 34px; animation: fadeUp .6s .28s ease both; }
+  #screen-splash .btn{ animation: fadeUp .6s .4s ease both; }
+  @keyframes popIn{ 0%{ opacity:0; transform: scale(.5) rotate(-8deg);} 100%{ opacity:1; transform: scale(1) rotate(0);} }
+  @keyframes fadeUp{ 0%{ opacity:0; transform: translateY(14px);} 100%{ opacity:1; transform:translateY(0);} }
+
+  /* ---------- Persona picker ---------- */
+  .persona-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom: 20px;}
+  .persona-card{
+    border: 1.5px solid rgba(92,42,61,.14); background:#fff; border-radius: var(--radius-md);
+    padding: 18px 14px; text-align:center; cursor:pointer; transition: all .2s ease;
+  }
+  .persona-card .emoji-badge{ width:40px;height:40px;border-radius:50%; margin:0 auto 10px; background:var(--blush); display:flex;align-items:center;justify-content:center; font-size:18px;}
+  .persona-card span{ display:block; font-weight:600; font-size:13.5px; color:var(--ink); }
+  .persona-card small{ color:var(--muted); font-size:11px; }
+  .persona-card.selected{ border-color: var(--gold); background: linear-gradient(160deg,#fff, var(--blush)); box-shadow: 0 10px 24px rgba(201,162,75,.28); transform: translateY(-3px); }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; color:var(--plum); margin-bottom:6px; }
+  .field input[type=text], .field input[type=number], .field select{
+    width:100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid rgba(92,42,61,.16);
+    font-family:'Poppins'; font-size:14px; background:#fff; color:var(--ink); outline:none; transition: border .2s ease;
+  }
+  .field input:focus, .field select:focus{ border-color: var(--gold); }
+  .range-row{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;}
+  input[type=range]{ width:100%; accent-color: var(--gold); }
+
+  .chip-group{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ padding:9px 14px; border-radius:100px; border:1.5px solid rgba(92,42,61,.16); background:#fff; font-size:12.5px; font-weight:500; cursor:pointer; transition: all .18s ease; }
+  .chip.selected{ background: var(--plum); color:#fff; border-color:var(--plum); }
+
+  .progress-track{ height:6px; background: rgba(92,42,61,.1); border-radius:100px; overflow:hidden; margin-bottom:24px; }
+  .progress-fill{ height:100%; background: linear-gradient(90deg, var(--gold), var(--plum)); border-radius:100px; transition: width .5s ease; }
+
+  .footer-nav{ margin-top:auto; display:flex; gap:10px; padding-top: 12px; }
+
+  /* ---------- Verification ---------- */
+  .verify-step{ display:flex; align-items:center; gap:12px; padding:14px; border-radius: var(--radius-md); background:#fff; border:1.5px solid rgba(92,42,61,.1); margin-bottom:12px; }
+  .verify-icon{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; background: var(--blush); }
+  .verify-step.done .verify-icon{ background: var(--success); color:#fff; }
+  .verify-step .vtext strong{ display:block; font-size:13.5px; }
+  .verify-step .vtext span{ font-size:11.5px; color:var(--muted); }
+  .verify-step.done{ border-color: rgba(62,143,99,.35); }
+
+  .video-box{
+    border-radius: var(--radius-md); background: var(--plum-deep); color:#fff; padding:26px 18px; text-align:center; margin: 6px 0 18px;
+    position:relative; overflow:hidden;
+  }
+  .video-box.recording{ box-shadow: 0 0 0 3px var(--danger) inset; }
+  .rec-dot{ width:10px;height:10px;border-radius:50%; background:var(--danger); display:inline-block; margin-right:6px; animation: pulseDot 1s infinite; }
+  @keyframes pulseDot{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+  .cam-circle{ width:64px; height:64px; border-radius:50%; background: rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:26px; }
+
+  /* ---------- Bottom Nav ---------- */
+  #bottomnav{ display:none; padding: 10px 14px 16px; background: #fff; border-top:1px solid rgba(92,42,61,.08); }
+  body.app-mode #bottomnav{ display:flex; justify-content:space-around; }
+  .nav-btn{ background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color: var(--muted); font-size:10.5px; font-weight:600; cursor:pointer; padding:4px 8px; border-radius:12px; transition: color .2s ease; position:relative; }
+  .nav-btn .nicon{ font-size:19px; transition: transform .2s ease; }
+  .nav-btn.active{ color: var(--plum); }
+  .nav-btn.active .nicon{ transform: translateY(-2px) scale(1.1); }
+  .nav-dot{ position:absolute; top:-2px; right:2px; width:8px; height:8px; border-radius:50%; background:var(--danger); border:2px solid #fff; }
+
+  /* ---------- Discover / Cards ---------- */
+  #screen-discover{ padding-top: 20px; }
+  .stack-wrap{ position:relative; height: 430px; margin: 6px 0 16px; }
+  .swipe-card{
+    position:absolute; inset:0; border-radius: var(--radius-lg); background:#fff; box-shadow: var(--card-shadow);
+    overflow:hidden; display:flex; flex-direction:column; touch-action:none; cursor:grab;
+    transition: transform .32s cubic-bezier(.2,.8,.3,1), opacity .32s ease;
+  }
+  .swipe-card:active{ cursor:grabbing; }
+  .card-photo{ height: 58%; background: linear-gradient(135deg, var(--gold-light), var(--plum)); display:flex; align-items:center; justify-content:center; position:relative; }
+  .card-photo .initials{ font-family:'Playfair Display'; font-size:56px; color:#fff; opacity:.9; }
+  .verified-badge{ position:absolute; top:12px; right:12px; background:rgba(255,255,255,.94); color:var(--plum); font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:100px; display:flex; align-items:center; gap:4px; }
+  .verified-badge .dot{ width:7px;height:7px;border-radius:50%; background:var(--success); }
+  .compat-badge{ position:absolute; bottom:12px; left:12px; background: rgba(58,26,38,.55); color:#fff; font-size:11px; font-weight:600; padding:5px 10px; border-radius:100px; backdrop-filter: blur(2px);}
+  .card-body{ padding: 14px 16px; flex:1; display:flex; flex-direction:column; }
+  .card-body h3{ margin:0 0 2px; font-size:19px; color:var(--plum-deep); }
+  .card-body .loc{ font-size:12px; color:var(--muted); margin-bottom:10px; }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag-row .tag{ font-size:10.5px; font-weight:600; background: var(--blush); color: var(--plum); padding:5px 9px; border-radius:100px; }
+
+  .stamp{ position:absolute; top:26px; font-family:'Playfair Display'; font-weight:700; font-size:26px; padding:6px 14px; border:4px solid; border-radius:10px; opacity:0; transform: rotate(-18deg); pointer-events:none; }
+  .stamp.like{ left:20px; color:var(--success); border-color:var(--success); }
+  .stamp.pass{ right:20px; color:var(--danger); border-color:var(--danger); transform: rotate(18deg); }
+
+  .swipe-actions{ display:flex; justify-content:center; gap:22px; margin-bottom:6px; }
+  .round-btn{ width:56px; height:56px; border-radius:50%; border:none; background:#fff; box-shadow: 0 10px 24px rgba(58,26,38,.18); font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: transform .15s ease; }
+  .round-btn:active{ transform: scale(.9); }
+  .round-btn.pass{ color: var(--danger); }
+  .round-btn.like{ color: var(--success); }
+  .round-btn.big{ width:64px; height:64px; font-size:26px; }
+
+  /* ---------- Match modal ---------- */
+  #matchModal{ position:absolute; inset:0; background: rgba(58,26,38,.86); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:100; text-align:center; padding: 30px; color:#fff; }
+  #matchModal.show{ display:flex; animation: fadeUp .3s ease both; }
+  #matchModal h2{ font-size:32px; margin: 6px 0 6px; color: var(--gold-light); }
+  #matchModal p{ font-size:13.5px; color: rgba(255,255,255,.8); margin-bottom:24px; }
+  .match-avatars{ display:flex; margin-bottom:10px; }
+  .match-avatars .mav{ width:70px;height:70px;border-radius:50%; border:3px solid #fff; display:flex;align-items:center;justify-content:center; font-family:'Playfair Display'; font-size:26px; color:#fff; margin-left:-16px; }
+
+  /* ---------- Matches list / chat ---------- */
+  .match-row{ display:flex; align-items:center; gap:12px; padding:12px 8px; border-bottom:1px solid rgba(92,42,61,.08); cursor:pointer; }
+  .avatar-sm{ width:48px;height:48px;border-radius:50%; display:flex;align-items:center;justify-content:center; color:#fff; font-family:'Playfair Display'; font-size:18px; flex-shrink:0; }
+  .match-row .mtext{ flex:1; min-width:0; }
+  .match-row .mtext strong{ font-size:13.5px; display:block; }
+  .match-row .mtext span{ font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
+
+  .safety-banner{ background: linear-gradient(120deg, var(--gold-light), #F6E6C2); border-radius: var(--radius-md); padding:12px 14px; display:flex; gap:10px; align-items:center; margin-bottom:14px; }
+  .safety-banner .sicon{ font-size:20px; }
+  .safety-banner .stext{ flex:1; font-size:11.5px; color:#5C4211; line-height:1.4; }
+  .safety-banner .stext strong{ display:block; font-size:12.5px; }
+
+  #chatscreen .chat-header{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  #chatscreen .bubble{ max-width:78%; padding:10px 14px; border-radius:16px; font-size:13px; margin-bottom:8px; line-height:1.4; }
+  #chatscreen .them{ background:#fff; border:1px solid rgba(92,42,61,.1); align-self:flex-start; border-bottom-left-radius:4px; }
+  #chatscreen .me{ background: var(--plum); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+  #chatscreen .chatlog{ display:flex; flex-direction:column; flex:1; }
+
+  /* ---------- Safety screen ---------- */
+  .safety-item{ display:flex; align-items:center; gap:12px; background:#fff; border-radius: var(--radius-md); padding:14px; margin-bottom:10px; border:1.5px solid rgba(92,42,61,.08); }
+  .safety-item .sicon2{ width:38px;height:38px;border-radius:50%; background: var(--blush); display:flex;align-items:center;justify-content:center; font-size:17px; flex-shrink:0; }
+  .safety-item strong{ font-size:13px; display:block; }
+  .safety-item span{ font-size:11px; color:var(--muted); }
+  .toggle{ margin-left:auto; width:42px; height:24px; border-radius:100px; background: rgba(92,42,61,.18); position:relative; cursor:pointer; transition: background .2s ease; flex-shrink:0;}
+  .toggle::after{ content:''; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#fff; transition: transform .2s ease; box-shadow: 0 2px 4px rgba(0,0,0,.2);}
+  .toggle.on{ background: var(--success); }
+  .toggle.on::after{ transform: translateX(18px); }
+
+  .panic-wrap{ text-align:center; margin: 10px 0 22px; }
+  #panicBtn{ width:120px; height:120px; border-radius:50%; border:none; background: linear-gradient(150deg,#e85a4a, var(--danger)); color:#fff; font-weight:700; font-size:14px; box-shadow: 0 16px 34px rgba(193,72,58,.45); cursor:pointer; transition: transform .15s ease; }
+  #panicBtn:active{ transform: scale(.94); }
+  #panicBtn.armed{ animation: panicPulse 1s infinite; }
+  @keyframes panicPulse{ 0%{ box-shadow: 0 0 0 0 rgba(193,72,58,.5);} 70%{ box-shadow: 0 0 0 22px rgba(193,72,58,0);} 100%{ box-shadow: 0 0 0 0 rgba(193,72,58,0);} }
+  .panic-note{ font-size:11.5px; color:var(--muted); margin-top:10px; max-width:230px; margin-inline:auto; }
+  #panicSent{ font-size:12.5px; color:var(--success); font-weight:600; margin-top:10px; display:none; }
+  #panicSent.show{ display:block; animation: fadeUp .4s ease both; }
+
+  /* ---------- Profile screen ---------- */
+  .profile-card{ background:#fff; border-radius: var(--radius-lg); padding:22px; text-align:center; box-shadow: var(--card-shadow); margin-bottom:16px; }
+  .profile-avatar{ width:84px; height:84px; border-radius:50%; margin: 0 auto 12px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display'; font-size:32px; color:#fff; background: linear-gradient(135deg, var(--gold), var(--plum)); }
+  .badge-row{ display:flex; justify-content:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .mini-badge{ font-size:10.5px; font-weight:700; background: var(--blush); color:var(--plum); padding:5px 10px; border-radius:100px; display:flex; align-items:center; gap:4px; }
+  .mini-badge.on{ background: rgba(62,143,99,.15); color: var(--success); }
+
+  .toast{ position:absolute; bottom: 96px; left:50%; transform: translateX(-50%) translateY(20px); background: var(--plum-deep); color:#fff; padding:10px 18px; border-radius:100px; font-size:12.5px; opacity:0; transition: all .3s ease; z-index:200; pointer-events:none; white-space:nowrap;}
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="phone">
+  <div id="notch"></div>
+  <div id="screens">
+
+    <!-- SPLASH -->
+    <section class="screen active" id="screen-splash">
+      <div class="logo-mark">G</div>
+      <h1 class="serif">TheGrongSugar</h1>
+      <p>Clear terms. Verified people. A safer way to meet your match.</p>
+      <button class="btn btn-primary" onclick="go('persona')">Get started</button>
+    </section>
+
+    <!-- PERSONA -->
+    <section class="screen" id="screen-persona">
+      <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
+      <div class="eyebrow">Step 1 of 5</div>
+      <h2 class="title">Who are you here as?</h2>
+      <p class="subtitle">This shapes your profile and who you'll see first. You can adjust it anytime.</p>
+      <div class="persona-grid" id="personaGrid">
+        <div class="persona-card" data-v="baby"><div class="emoji-badge">💎</div><span>Sugar Baby</span><small>Seeking support</small></div>
+        <div class="persona-card" data-v="daddy"><div class="emoji-badge">🥂</div><span>Sugar Daddy</span><small>Offering support</small></div>
+        <div class="persona-card" data-v="mommy"><div class="emoji-badge">🌹</div><span>Sugar Mommy</span><small>Offering support</small></div>
+        <div class="persona-card" data-v="switch"><div class="emoji-badge">✨</div><span>Switch</span><small>Open either way</small></div>
+      </div>
+      <div class="footer-nav"><button class="btn btn-primary btn-block" onclick="go('basics')">Continue</button></div>
+    </section>
+
+    <!-- BASICS -->
+    <section class="screen" id="screen-basics">
+      <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+      <div class="eyebrow">Step 2 of 5</div>
+      <h2 class="title">The basics</h2>
+      <p class="subtitle">Real name not required — a first name or nickname is fine.</p>
+      <div class="field"><label>Display name</label><input type="text" id="inpName" placeholder="e.g. Jordan" value="Jordan"></div>
+      <div class="field"><label>Age</label><input type="number" id="inpAge" placeholder="e.g. 27" value="27"></div>
+      <div class="field"><label>City</label><input type="text" id="inpCity" placeholder="e.g. Miami, FL" value="Miami, FL"></div>
+      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('persona')">Back</button><button class="btn btn-primary btn-block" onclick="go('quiz')">Continue</button></div>
+    </section>
+
+    <!-- EXPECTATIONS QUIZ -->
+    <section class="screen" id="screen-quiz">
+      <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+      <div class="eyebrow">Step 3 of 5</div>
+      <h2 class="title">Set your expectations</h2>
+      <p class="subtitle">Shown to matches up front — no awkward money talk on date one.</p>
+      <div class="field">
+        <label>Monthly allowance range</label>
+        <input type="range" id="inpBudget" min="500" max="10000" step="100" value="2500" oninput="document.getElementById('budgetOut').textContent = '$'+Number(this.value).toLocaleString()">
+        <div class="range-row"><span>$500</span><span id="budgetOut">$2,500</span><span>$10,000+</span></div>
+      </div>
+      <div class="field">
+        <label>What it covers</label>
+        <div class="chip-group" id="covers">
+          <div class="chip" data-v="Dinners">Dinners</div>
+          <div class="chip" data-v="Travel">Travel</div>
+          <div class="chip" data-v="Tuition">Tuition</div>
+          <div class="chip" data-v="Rent">Rent</div>
+          <div class="chip" data-v="Shopping">Shopping</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Meeting style</label>
+        <div class="chip-group" id="meetstyle">
+          <div class="chip" data-v="Local only">Local only</div>
+          <div class="chip" data-v="Open to travel">Open to travel</div>
+          <div class="chip" data-v="Long-distance ok">Long-distance ok</div>
+        </div>
+      </div>
+      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('basics')">Back</button><button class="btn btn-primary btn-block" onclick="go('verify')">Continue</button></div>
+    </section>
+
+    <!-- VERIFICATION -->
+    <section class="screen" id="screen-verify">
+      <div class="progress-track"><div class="progress-fill" style="width:85%"></div></div>
+      <div class="eyebrow">Step 4 of 5 · Trust & safety</div>
+      <h2 class="title">Let's verify it's really you</h2>
+      <p class="subtitle">Every member completes this. It's what keeps the community safe.</p>
+
+      <div class="verify-step done" id="stepId">
+        <div class="verify-icon">🪪</div>
+        <div class="vtext"><strong>Government ID scan</strong><span>Verified automatically</span></div>
+      </div>
+      <div class="verify-step done" id="stepLive">
+        <div class="verify-icon">🙂</div>
+        <div class="vtext"><strong>Liveness selfie check</strong><span>Matched to your ID</span></div>
+      </div>
+      <div class="verify-step" id="stepVideo">
+        <div class="verify-icon">🎥</div>
+        <div class="vtext"><strong>Recorded video intro</strong><span>Required before meeting in person</span></div>
+      </div>
+
+      <div class="video-box" id="videoBox">
+        <div class="cam-circle">🎥</div>
+        <div style="font-size:13px; margin-bottom:14px; line-height:1.5;" id="videoText">30 seconds, just say hi. It's encrypted, auto-deleted in 30 days, and only reviewed if someone files a report.</div>
+        <button class="btn btn-gold" id="videoBtn" onclick="recordVideo()">Start recording</button>
+      </div>
+
+      <div class="footer-nav"><button class="btn btn-primary btn-block" id="verifyContinue" onclick="go('discover'); enterApp();" disabled>Complete video to continue</button></div>
+    </section>
+
+    <!-- DISCOVER -->
+    <section class="screen" id="screen-discover">
+      <h2 class="title" style="margin-bottom:2px;">Discover</h2>
+      <p class="subtitle" style="margin-bottom:10px;">Swipe or use the buttons — drag a card to see it move.</p>
+      <div class="stack-wrap" id="stackWrap"></div>
+      <div class="swipe-actions">
+        <button class="round-btn pass" onclick="programmaticSwipe(-1)">✕</button>
+        <button class="round-btn big like" onclick="programmaticSwipe(1)">♥</button>
+      </div>
+
+      <div id="matchModal">
+        <div class="match-avatars">
+          <div class="mav" style="background:linear-gradient(135deg,var(--gold),var(--plum));">J</div>
+          <div class="mav" id="matchAvatar2" style="background:linear-gradient(135deg,var(--plum),var(--gold));">?</div>
+        </div>
+        <div class="eyebrow" style="color:var(--gold-light)">It's a match</div>
+        <h2 class="serif" id="matchName">You matched!</h2>
+        <p>You both liked each other. Say hello — and remember, a recorded video call happens before you meet up in person.</p>
+        <button class="btn btn-gold" onclick="goToMatchChat()">Send a message</button>
+        <button class="btn btn-ghost" style="margin-top:10px; color:#fff; border-color:rgba(255,255,255,.5);" onclick="closeMatch()">Keep browsing</button>
+      </div>
+    </section>
+
+    <!-- MATCHES LIST -->
+    <section class="screen" id="screen-matches">
+      <h2 class="title">Your matches</h2>
+      <p class="subtitle">Tap a match to open the conversation.</p>
+      <div id="matchesList"></div>
+    </section>
+
+    <!-- CHAT -->
+    <section class="screen" id="screen-chat" style="display:flex;">
+      <div id="chatscreen" style="display:flex; flex-direction:column; height:100%;">
+        <div class="chat-header">
+          <button class="btn-ghost btn btn-sm" style="border:none; padding:4px;" onclick="go('matches')">←</button>
+          <div class="avatar-sm" id="chatAvatar" style="background:var(--plum);">?</div>
+          <div><strong id="chatName" style="font-size:14px;">Match</strong><div style="font-size:11px;color:var(--success);">● Verified member</div></div>
+        </div>
+        <div class="safety-banner">
+          <div class="sicon">🔒</div>
+          <div class="stext"><strong>Meeting up?</strong>Complete a recorded video intro call first — it's how we keep in-person meetings safer.</div>
+        </div>
+        <div class="chatlog" id="chatlog"></div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <input type="text" id="chatInput" placeholder="Type a message…" style="flex:1; padding:11px 14px; border-radius:100px; border:1.5px solid rgba(92,42,61,.16); font-family:'Poppins'; font-size:13px;">
+          <button class="btn btn-primary btn-sm" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SAFETY CENTER -->
+    <section class="screen" id="screen-safety">
+      <h2 class="title">Safety center</h2>
+      <p class="subtitle">Everything that keeps meetups low-risk.</p>
+
+      <div class="safety-item"><div class="sicon2">🪪</div><div><strong>ID & liveness verified</strong><span>Completed at signup</span></div><div class="toggle on" style="pointer-events:none;"></div></div>
+      <div class="safety-item"><div class="sicon2">🎥</div><div><strong>Video intro call</strong><span id="safetyVideoStatus">Not completed yet</span></div><div class="toggle" id="safetyVideoToggle" style="pointer-events:none;"></div></div>
+      <div class="safety-item"><div class="sicon2">📍</div><div><strong>Live check-in on dates</strong><span>Share location with a trusted contact</span></div><div class="toggle" id="checkinToggle" onclick="toggleCheckin()"></div></div>
+      <div class="safety-item"><div class="sicon2">🚩</div><div><strong>Report or block</strong><span>Fast-response trust & safety team</span></div><div class="toggle" style="pointer-events:none; opacity:0;"></div></div>
+
+      <div class="panic-wrap">
+        <button id="panicBtn" onclick="pressPanic()">Hold for<br>emergency alert</button>
+        <div class="panic-note">Sends your live location and a silent alert to your trusted contact and our safety team.</div>
+        <div id="panicSent">✓ Alert sent to your trusted contact</div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="screen" id="screen-profile">
+      <h2 class="title">Profile</h2>
+      <div class="profile-card">
+        <div class="profile-avatar" id="profAvatar">J</div>
+        <h3 class="serif" id="profName" style="margin:0;">Jordan, 27</h3>
+        <div style="font-size:12px;color:var(--muted);" id="profCity">Miami, FL</div>
+        <div class="badge-row">
+          <div class="mini-badge on">✓ ID verified</div>
+          <div class="mini-badge on" id="profVideoBadge" style="background:var(--blush); color:var(--plum);">○ Video pending</div>
+        </div>
+        <div class="tag-row" id="profTags" style="justify-content:center; margin-top:14px;"></div>
+      </div>
+      <button class="btn btn-ghost btn-block" onclick="restart()">Restart demo</button>
+    </section>
+
+  </div>
+
+  <div id="bottomnav">
+    <button class="nav-btn active" data-s="discover" onclick="tab('discover')"><span class="nicon">♥</span>Discover</button>
+    <button class="nav-btn" data-s="matches" onclick="tab('matches')"><span class="nicon">💬</span>Matches</button>
+    <button class="nav-btn" data-s="safety" onclick="tab('safety')"><span class="nicon">🛡️</span>Safety</button>
+    <button class="nav-btn" data-s="profile" onclick="tab('profile')"><span class="nicon">◐</span>Profile</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<div style="text-align:center; font-size:11px; color:var(--muted); margin-top:16px; font-family:'Poppins',sans-serif;">
+  imagined by <a href="index.html" style="color:var(--plum); font-weight:600; text-decoration:none;">TheGrongCo.</a> — GRONG-005 · <a href="index.html" style="color:var(--plum); text-decoration:underline;">back to registry</a>
+</div>
+
+<script>
+const state = {
+  persona: 'baby',
+  name: 'Jordan', age: 27, city: 'Miami, FL',
+  budget: 2500, covers: [], meet: [],
+  videoDone: false,
+  checkin: false,
+  matches: [],
+  deckIndex: 0,
+};
+
+const PROFILES = [
+  { name:'Alexa', age:29, city:'Miami, FL', color1:'#C9A24B', color2:'#5C2A3D', compat:92, tags:['$3k–5k/mo','Travel','Weekends'] },
+  { name:'Michael', age:41, city:'Coral Gables, FL', color1:'#5C2A3D', color2:'#8A5A73', compat:87, tags:['$5k+/mo','Tuition','Flexible'] },
+  { name:'Victoria', age:33, city:'Miami Beach, FL', color1:'#C9A24B', color2:'#3A1A26', compat:81, tags:['$2k–3k/mo','Dinners','Local only'] },
+  { name:'Daniel', age:38, city:'Brickell, FL', color1:'#8A5A73', color2:'#C9A24B', compat:95, tags:['$4k/mo','Rent help','Open to travel'] },
+  { name:'Sofia', age:26, city:'Fort Lauderdale, FL', color1:'#C9A24B', color2:'#5C2A3D', compat:78, tags:['$1.5k/mo','Shopping','Weekends'] },
+];
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+function enterApp(){
+  document.body.classList.add('app-mode');
+  document.getElementById('profName').textContent = state.name + ', ' + state.age;
+  document.getElementById('profCity').textContent = state.city;
+  document.getElementById('profAvatar').textContent = state.name.charAt(0).toUpperCase();
+  const tagWrap = document.getElementById('profTags');
+  const tags = ['$'+state.budget.toLocaleString()+'/mo', ...state.covers.slice(0,2), ...state.meet.slice(0,1)];
+  tagWrap.innerHTML = tags.map(t=>`<div class="tag">${t}</div>`).join('');
+  renderStack();
+}
+
+// --- persona picker ---
+document.getElementById('personaGrid').addEventListener('click', (e)=>{
+  const card = e.target.closest('.persona-card');
+  if(!card) return;
+  document.querySelectorAll('.persona-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  state.persona = card.dataset.v;
+});
+document.querySelector('.persona-card[data-v="baby"]').classList.add('selected');
+
+['covers','meetstyle'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',(e)=>{
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    chip.classList.toggle('selected');
+    const arr = id === 'covers' ? state.covers : state.meet;
+    const v = chip.dataset.v;
+    const i = arr.indexOf(v);
+    if(i>-1) arr.splice(i,1); else arr.push(v);
+  });
+});
+
+document.getElementById('inpName').addEventListener('input', e=> state.name = e.target.value || 'Jordan');
+document.getElementById('inpAge').addEventListener('input', e=> state.age = e.target.value || 27);
+document.getElementById('inpCity').addEventListener('input', e=> state.city = e.target.value || 'Miami, FL');
+document.getElementById('inpBudget').addEventListener('input', e=> state.budget = Number(e.target.value));
+
+// --- verification ---
+function recordVideo(){
+  const box = document.getElementById('videoBox');
+  const btn = document.getElementById('videoBtn');
+  const text = document.getElementById('videoText');
+  box.classList.add('recording');
+  btn.disabled = true; btn.textContent = 'Recording…';
+  text.innerHTML = '<span class="rec-dot"></span>Recording your 30-second intro…';
+  let n = 3;
+  const iv = setInterval(()=>{
+    if(n>0){ text.innerHTML = '<span class="rec-dot"></span>Recording… '+n+'s'; n--; }
+    else{
+      clearInterval(iv);
+      box.classList.remove('recording');
+      box.style.background = 'linear-gradient(135deg, var(--plum), #245c3f)';
+      text.textContent = 'Verified — encrypted and stored securely.';
+      btn.textContent = '✓ Video verified';
+      document.getElementById('stepVideo').classList.add('done');
+      document.getElementById('verifyContinue').disabled = false;
+      document.getElementById('verifyContinue').textContent = 'Continue to Discover';
+      state.videoDone = true;
+      document.getElementById('safetyVideoStatus').textContent = 'Completed just now';
+      document.getElementById('safetyVideoToggle').classList.add('on');
+      document.getElementById('profVideoBadge').textContent = '✓ Video verified';
+      document.getElementById('profVideoBadge').classList.add('on');
+    }
+  }, 700);
+}
+
+// --- discover deck ---
+function renderStack(){
+  const wrap = document.getElementById('stackWrap');
+  wrap.innerHTML = '';
+  const visible = PROFILES.slice(state.deckIndex, state.deckIndex+3);
+  if(visible.length === 0){
+    wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;text-align:center;padding:20px;">You\'ve seen everyone nearby.<br>Check back soon for new members.</div>';
+    return;
+  }
+  visible.forEach((p, i)=>{
+    const idxFromTop = visible.length - 1 - i;
+    const el = document.createElement('div');
+    el.className = 'swipe-card';
+    el.style.zIndex = 10 - idxFromTop;
+    el.style.transform = `translateY(${idxFromTop*8}px) scale(${1 - idxFromTop*0.04})`;
+    el.innerHTML = `
+      <div class="card-photo" style="background:linear-gradient(135deg, ${p.color1}, ${p.color2});">
+        <div class="initials">${p.name.charAt(0)}</div>
+        <div class="verified-badge"><span class="dot"></span>Verified</div>
+        <div class="compat-badge">${p.compat}% match</div>
+        <div class="stamp like">LIKE</div>
+        <div class="stamp pass">PASS</div>
+      </div>
+      <div class="card-body">
+        <h3>${p.name}, ${p.age}</h3>
+        <div class="loc">${p.city}</div>
+        <div class="tag-row">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>`;
+    wrap.appendChild(el);
+    if(idxFromTop === 0) attachDrag(el, p);
+  });
+}
+
+function attachDrag(el, profile){
+  let startX=0, startY=0, dx=0, dy=0, dragging=false;
+  const like = el.querySelector('.stamp.like');
+  const pass = el.querySelector('.stamp.pass');
+
+  const onDown = (x,y)=>{ dragging = true; startX=x; startY=y; el.style.transition='none'; };
+  const onMove = (x,y)=>{
+    if(!dragging) return;
+    dx = x-startX; dy = y-startY;
+    const rot = dx/16;
+    el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    like.style.opacity = Math.max(0, Math.min(1, dx/80));
+    pass.style.opacity = Math.max(0, Math.min(1, -dx/80));
+  };
+  const onUp = ()=>{
+    if(!dragging) return;
+    dragging = false;
+    el.style.transition = '';
+    if(dx > 100){ swipeAway(el, 1, profile); }
+    else if(dx < -100){ swipeAway(el, -1, profile); }
+    else{ el.style.transform = ''; like.style.opacity=0; pass.style.opacity=0; }
+  };
+
+  el.addEventListener('pointerdown', e=>{ el.setPointerCapture(e.pointerId); onDown(e.clientX, e.clientY); });
+  el.addEventListener('pointermove', e=> onMove(e.clientX, e.clientY));
+  el.addEventListener('pointerup', onUp);
+  el.addEventListener('pointercancel', onUp);
+}
+
+function programmaticSwipe(dir){
+  const top = document.querySelector('#stackWrap .swipe-card:last-child');
+  if(!top) return;
+  const profile = PROFILES[state.deckIndex];
+  swipeAway(top, dir, profile);
+}
+
+function swipeAway(el, dir, profile){
+  el.style.transform = `translate(${dir*520}px, -40px) rotate(${dir*30}deg)`;
+  el.style.opacity = '0';
+  state.deckIndex++;
+  setTimeout(()=>{
+    renderStack();
+    if(dir > 0 && profile){
+      if(profile.compat >= 80){ showMatch(profile); }
+      else { toast('Liked ' + profile.name); }
+    } else if(profile){
+      toast('Passed on ' + profile.name);
+    }
+  }, 320);
+}
+
+function showMatch(profile){
+  document.getElementById('matchName').textContent = 'You and ' + profile.name + '!';
+  const av2 = document.getElementById('matchAvatar2');
+  av2.textContent = profile.name.charAt(0);
+  av2.style.background = `linear-gradient(135deg, ${profile.color1}, ${profile.color2})`;
+  document.getElementById('matchModal').classList.add('show');
+  state._activeMatch = profile;
+  if(!state.matches.find(m=>m.name===profile.name)){
+    state.matches.push(profile);
+    renderMatchesList();
+  }
+  if(window.confetti){
+    confetti({ particleCount: 90, spread: 75, origin:{ y:0.4 }, colors:['#C9A24B','#EAD6A0','#5C2A3D','#ffffff'] });
+  }
+}
+function closeMatch(){ document.getElementById('matchModal').classList.remove('show'); }
+function goToMatchChat(){
+  closeMatch();
+  openChat(state._activeMatch);
+}
+
+// --- matches / chat ---
+function renderMatchesList(){
+  const list = document.getElementById('matchesList');
+  if(state.matches.length === 0){
+    list.innerHTML = '<p style="color:var(--muted); font-size:13px;">No matches yet — head to Discover and start swiping.</p>';
+    return;
+  }
+  list.innerHTML = state.matches.map(m=>`
+    <div class="match-row" onclick='openChatByName("${m.name}")'>
+      <div class="avatar-sm" style="background:linear-gradient(135deg, ${m.color1}, ${m.color2});">${m.name.charAt(0)}</div>
+      <div class="mtext"><strong>${m.name}, ${m.age}</strong><span>Say hello 👋</span></div>
+    </div>`).join('');
+}
+function openChatByName(name){ openChat(state.matches.find(m=>m.name===name)); }
+function openChat(profile){
+  if(!profile) return;
+  document.getElementById('chatName').textContent = profile.name;
+  const av = document.getElementById('chatAvatar');
+  av.textContent = profile.name.charAt(0);
+  av.style.background = `linear-gradient(135deg, ${profile.color1}, ${profile.color2})`;
+  document.getElementById('chatlog').innerHTML = `<div class="bubble them">Hey! Thanks for the match 😊 Loved your profile.</div>`;
+  go('chat');
+}
+function sendChat(){
+  const inp = document.getElementById('chatInput');
+  if(!inp.value.trim()) return;
+  const log = document.getElementById('chatlog');
+  log.insertAdjacentHTML('beforeend', `<div class="bubble me">${inp.value}</div>`);
+  inp.value = '';
+  log.scrollTop = log.scrollHeight;
+  setTimeout(()=>{
+    log.insertAdjacentHTML('beforeend', `<div class="bubble them">Sounds great — want to plan something for this weekend? Once we've done our video intro, of course 🎥</div>`);
+    log.scrollTop = log.scrollHeight;
+  }, 900);
+}
+
+// --- bottom nav tabs ---
+function tab(name){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===name));
+  go(name);
+  if(name==='matches') renderMatchesList();
+}
+
+// --- safety center ---
+function toggleCheckin(){
+  state.checkin = !state.checkin;
+  document.getElementById('checkinToggle').classList.toggle('on', state.checkin);
+  toast(state.checkin ? 'Live check-in enabled for your next date' : 'Live check-in turned off');
+}
+let panicTimer;
+function pressPanic(){
+  const btn = document.getElementById('panicBtn');
+  btn.classList.add('armed');
+  toast('Hold confirmed — sending alert…');
+  clearTimeout(panicTimer);
+  panicTimer = setTimeout(()=>{
+    btn.classList.remove('armed');
+    document.getElementById('panicSent').classList.add('show');
+    setTimeout(()=> document.getElementById('panicSent').classList.remove('show'), 3500);
+  }, 900);
+}
+
+function restart(){ location.reload(); }
+
+renderMatchesList();
+</script>
+</body>
+</html>
