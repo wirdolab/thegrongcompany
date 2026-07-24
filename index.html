@@ -63,12 +63,12 @@
   .heroLogo img, .heroLogo svg{width:100%; height:100%; object-fit:contain;}
   .heroLogo .drop{transform-origin:center; animation:drip 3.2s ease-in infinite;}
   @keyframes drip{0%,60%{transform:translateY(0); opacity:1}80%{transform:translateY(6px); opacity:.7}100%{transform:translateY(0); opacity:1}}
-  .proto-label{font-size:.74rem; color:var(--dim); text-transform:uppercase; letter-spacing:.14em;}
-  h1{font-size:clamp(2.5rem,7.5vw,4rem); font-weight:600; letter-spacing:-.03em; line-height:1.05; margin:16px 0 0;}
-  h1 .flip{display:inline-block; min-width:2.6em; text-align:left; color:var(--mint-deep); position:relative;}
-  .tag{font-size:1.12rem; color:#545956; max-width:540px; margin:22px auto 0; line-height:1.6;}
-  .tag em{font-style:normal; color:var(--ink); font-weight:500;}
-  .cursor{display:inline-block; width:2px; height:1.05em; background:var(--mint-deep); vertical-align:text-bottom; animation:blink 1.2s steps(1) infinite;}
+  .kicker{font-size:.78rem; color:var(--mint-deep); text-transform:uppercase; letter-spacing:.2em; font-weight:600;}
+  h1{font-size:clamp(2.6rem,8vw,4.4rem); font-weight:600; letter-spacing:-.035em; line-height:1.02; margin:14px 0 0;}
+  h1 .hl{color:var(--mint-deep);}
+  .rotline{font-size:clamp(1rem,2.6vw,1.25rem); color:#545956; max-width:600px; margin:24px auto 0; line-height:1.5; min-height:1.6em;}
+  .rot{color:var(--ink); font-weight:600;}
+  .caret{display:inline-block; width:2px; height:1.05em; background:var(--mint-deep); vertical-align:text-bottom; margin-left:1px; animation:blink 1.05s steps(1) infinite;}
   @keyframes blink{50%{opacity:0;}}
   .wrongnote{font-size:.78rem; color:var(--dim); margin:30px auto 0; max-width:500px; line-height:1.7;}
   .wrongnote s{color:var(--mint-deep); text-decoration-thickness:1px;}
@@ -162,9 +162,9 @@
 
   <header class="hero">
     <div class="heroLogo" id="heroLogo"></div>
-    <div class="proto-label reveal" data-t="protoLabel"></div>
-    <h1 class="reveal">not <span class="flip" id="flip">grong</span></h1>
-    <p class="tag reveal" data-t="tag"></p>
+    <div class="kicker reveal" data-t="kicker"></div>
+    <h1 class="reveal" data-t="h1big"></h1>
+    <p class="rotline reveal"><span data-t="rotPrefix"></span><span class="rot" id="rot"></span><span class="caret"></span></p>
     <p class="wrongnote reveal" data-t="wrongnote"></p>
   </header>
 </div>
@@ -255,6 +255,10 @@ mountLogo("navLogo"); mountLogo("heroLogo");
 const T = {
   es: {
     sys: 'estado: <span class="ok">wrong</span>',
+    kicker: 'not wrong. grong.™',
+    h1big: 'cosas que <span class="hl">nadie pidió</span>.',
+    rotPrefix: 'las construimos igual — ',
+    rotWords: ["una app que finge tus emergencias","un test de tus red flags","el recap anual de tus ex","un sitio web para tu negocio"],
     protoLabel: 'sistema central',
     tag: '<em>Not wrong. Grong.™</em> Cada semana, la IA fabrica, publica y promociona una idea que nadie pidió. Este es el registro oficial de the grong co.<span class="cursor"></span>',
     wrongnote: 'nota: todo en este sitio está <s>mal</s> correcto. si algo parece un error, es una feature.',
@@ -290,6 +294,10 @@ const T = {
   },
   en: {
     sys: 'status: <span class="ok">wrong</span>',
+    kicker: 'not wrong. grong.™',
+    h1big: 'ideas <span class="hl">nobody asked for</span>.',
+    rotPrefix: 'we build them anyway — ',
+    rotWords: ["an app that fakes your emergencies","a test of your red flags","your exes’ yearly recap","a website for your business"],
     protoLabel: 'central system',
     tag: '<em>Not wrong. Grong.™</em> Every week, AI builds, ships and markets an idea nobody asked for. This is the official registry of the grong co.<span class="cursor"></span>',
     wrongnote: 'note: everything on this site is <s>wrong</s> correct. if something looks like a bug, it\'s a feature.',
@@ -397,7 +405,7 @@ function renderStats(){
 function setLang(l){
   LANG = l;
   try { localStorage.setItem("grong-lang", l); } catch(e){}
-  applyTexts(); renderRegistry(); renderStats(); observeReveals();
+  applyTexts(); renderRegistry(); renderStats(); observeReveals(); startTypewriter();
 }
 function toggleLang(){ setLang(LANG === "es" ? "en" : "es"); }
 
@@ -447,6 +455,28 @@ function observeReveals(){
   document.querySelectorAll(".stat b[data-count]").forEach(el=>io.observe(el));
 }
 
+// typewriter rotator — cicla los productos
+let twTimer;
+function startTypewriter(){
+  clearTimeout(twTimer);
+  const el = document.getElementById("rot");
+  if(!el) return;
+  const words = T[LANG].rotWords;
+  let wi=0, ci=0, deleting=false;
+  (function tick(){
+    const w = words[wi];
+    if(!deleting){
+      ci++; el.textContent = w.slice(0,ci);
+      if(ci===w.length){ deleting=true; twTimer=setTimeout(tick,1700); return; }
+      twTimer=setTimeout(tick, 42);
+    } else {
+      ci--; el.textContent = w.slice(0,ci);
+      if(ci<=0){ deleting=false; wi=(wi+1)%words.length; twTimer=setTimeout(tick,320); return; }
+      twTimer=setTimeout(tick, 22);
+    }
+  })();
+}
+
 window.addEventListener("scroll", ()=>{
   const h = document.documentElement;
   const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
@@ -456,11 +486,6 @@ window.addEventListener("scroll", ()=>{
 
 setLang(LANG);
 observeReveals();
-
-const flip = document.getElementById("flip");
-const seq = ["grong","wrong","grong"];
-let i = 0;
-setInterval(()=>{ i = (i+1) % seq.length; flip.textContent = seq[i]; }, 2200);
 </script>
 </body>
 </html>
