@@ -34,30 +34,26 @@
     color: var(--ink);
     min-height: 100vh;
     display:flex;
+    flex-direction: column;
     align-items:center;
-    justify-content:center;
-    padding: 24px;
   }
   h1,h2,h3,.playful{ font-family:'Fredoka', sans-serif; font-weight:600; }
   svg.ic{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; display:block; }
 
   #phone{
     position: relative;
-    width: 390px;
-    height: 780px;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
     background: var(--bg);
-    border-radius: 40px;
-    box-shadow: 0 24px 60px rgba(28,27,26,0.16), 0 0 0 9px #1C1B1A;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
     overflow: hidden;
     display:flex;
     flex-direction: column;
   }
-  #notch{
-    position:absolute; top:9px; left:50%; transform:translateX(-50%);
-    width:110px; height:20px; background:#1C1B1A; border-radius: 12px; z-index:50;
-  }
   #langToggle{
-    position:absolute; top:34px; right:16px; z-index:60;
+    position:absolute; top:16px; right:16px; z-index:60;
     background:var(--card); border:1.5px solid var(--line); border-radius:100px;
     padding:5px 11px; font-size:11px; font-weight:700; cursor:pointer; color:var(--ink);
     font-family:'Inter';
@@ -70,7 +66,7 @@
     opacity:0; pointer-events:none;
     transform: translateX(18px);
     transition: opacity .32s ease, transform .32s ease;
-    padding: 44px 22px 18px;
+    padding: 62px 22px 18px;
     overflow-y:auto;
   }
   .screen::-webkit-scrollbar{ display:none; }
@@ -292,7 +288,6 @@
 <body>
 
 <div id="phone">
-  <div id="notch"></div>
   <button id="langToggle" onclick="toggleLang()">ES</button>
   <div id="screens">
 
@@ -585,10 +580,10 @@
   </div>
 
   <div class="toast" id="toast"></div>
-</div>
 
-<div style="text-align:center; font-size:11px; color:var(--muted); margin-top:16px; font-family:'Inter',sans-serif;">
-  imagined by <a href="index.html" style="color:var(--ink); font-weight:600; text-decoration:none;">TheGrongCo.</a> — GRONG-005 · <a href="index.html" style="color:var(--ink); text-decoration:underline;">back to registry</a>
+  <div style="text-align:center; font-size:11px; color:var(--muted); padding:14px 16px 20px; font-family:'Inter',sans-serif; border-top:1px solid var(--line);">
+    imagined by <a href="index.html" style="color:var(--ink); font-weight:600; text-decoration:none;">TheGrongCo.</a> — GRONG-005 · <a href="index.html" style="color:var(--ink); text-decoration:underline;">back to registry</a>
+  </div>
 </div>
 
 <script>
