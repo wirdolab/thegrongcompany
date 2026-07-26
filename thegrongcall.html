@@ -698,6 +698,7 @@
     en: {
       quickStart:'Quick start', quickStartSub:'1-tap with smart defaults', quickStartBtn:'Call now',
       ringsInMin:function(m){return 'Rings in ' + m + (m===1 ? ' min' : ' min');},
+      ringsInSec:'Rings in 5 sec',
       testCall:'Test call in 5 sec',
       orCustomize:'or customize',
       step1:'1. Pick your excuse', proHint:'PRO', callerPlaceholder:'e.g. Mom, Boss, Dr. Grong',
@@ -723,6 +724,7 @@
     es: {
       quickStart:'Inicio rápido', quickStartSub:'1 toque con opciones inteligentes', quickStartBtn:'Llamar ahora',
       ringsInMin:function(m){return 'Suena en ' + m + ' min';},
+      ringsInSec:'Suena en 5 seg',
       testCall:'Llamada de prueba en 5 seg',
       orCustomize:'o personaliza',
       step1:'1. Elige tu excusa', proHint:'PRO', callerPlaceholder:'ej. Mamá, Jefe, Dr. Grong',
@@ -923,7 +925,7 @@
   const timerWrap = document.getElementById('timer-options');
   const customInput = document.getElementById('custom-timer-input');
   function updateQuickSub(){
-    document.getElementById('quick-sub').textContent = t('ringsInMin')(state.timerMinutes || 5);
+    document.getElementById('quick-sub').textContent = t('ringsInSec');
   }
 
   function renderTimers(){
@@ -1026,22 +1028,22 @@
   document.getElementById('btn-start').addEventListener('click', startExit);
 
   document.getElementById('btn-quick-start').addEventListener('click', () => {
-    // Quick Start only fills in whatever the user hasn't already chosen —
-    // it never overrides an excuse or timer you picked yourself.
+    // Quick Start = fastest possible exit: fills in a default excuse if none
+    // picked yet, then rings in 5 seconds flat — it doesn't wait on whatever
+    // timer chip is selected below (that timer is only for the custom flow).
     const callerInput = document.getElementById('caller-name');
     if(!state.selectedExcuseId){
       const defaultExcuse = EXCUSES.find(e => !e.pro) || EXCUSES[0];
       state.selectedExcuseId = defaultExcuse.id;
       if(!callerInput.value) callerInput.value = defaultExcuse.caller[state.lang];
     }
-    if(!state.userTouchedTimer){
-      state.isCustomTimer = false;
-      state.timerMinutes = 5;
-    }
     renderExcuses();
-    renderTimers();
     updateStartBtn();
-    startExit();
+    const excuse = EXCUSES.find(e => e.id === state.selectedExcuseId);
+    state.callerName = callerInput.value.trim() || excuse.caller[state.lang];
+    document.getElementById('waiting-sub').innerHTML = t('waitingSub')(state.callerName);
+    showScreen('waiting');
+    startCountdown(5);
   });
 
   document.getElementById('btn-test-call').addEventListener('click', () => {
