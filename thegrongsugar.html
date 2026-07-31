@@ -129,6 +129,20 @@
     font-family:'Inter'; font-size:14px; background:var(--card); color:var(--ink); outline:none; transition: border .2s ease; resize:none;
   }
   .field input:focus, .field select:focus, .field textarea:focus{ border-color: var(--accent); }
+  .req-mark{ color: var(--accent-deep); }
+  .char-counter{ text-align:right; margin-top:4px; }
+  .input-with-action{ position:relative; }
+  .input-with-action input{ padding-right:44px; }
+  .input-action-btn{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:32px; height:32px; border-radius:50%; border:none; background:var(--bg); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
+  }
+  .input-action-btn:hover{ background:var(--accent-soft); color:var(--accent-deep); }
+  .input-action-btn:disabled{ opacity:.6; cursor:not-allowed; }
+  .input-action-btn svg{ width:16px; height:16px; }
+  .spin-icon{ animation: spin .8s linear infinite; transform-origin:center; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
   .range-row{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;}
   input[type=range]{ width:100%; accent-color: var(--accent); }
 
@@ -186,6 +200,8 @@
   /* ---------- Discover / Cards ---------- */
   #screen-discover{ padding-top: 20px; }
   .stack-wrap{ position:relative; height: 430px; margin: 6px 0 16px; }
+  .empty-deck{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); font-size:13px; text-align:center; padding:20px; gap:12px; border:1.5px dashed var(--line); border-radius: var(--radius-lg); }
+  .empty-deck strong{ display:block; color:var(--ink); font-size:14px; margin-bottom:4px; }
   .swipe-card{
     position:absolute; inset:0; border-radius: var(--radius-lg); background:var(--card); box-shadow: 0 8px 24px rgba(28,27,26,.08); border:1px solid var(--line);
     overflow:hidden; display:flex; flex-direction:column; touch-action:none; cursor:grab;
@@ -330,7 +346,7 @@
       <p class="subtitle" data-t="profileSub">Real name not required — a first name or nickname is fine.</p>
 
       <div class="photo-row">
-        <div class="photo-circle" id="photoCircle" onclick="document.getElementById('photoInput').click()">
+        <div class="photo-circle" id="photoCircle" role="button" tabindex="0" aria-label="Add a profile photo" onclick="document.getElementById('photoInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('photoInput').click();}">
           <svg class="ic" viewBox="0 0 24 24" id="photoIcon"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>
           <div class="cam-badge"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3"/></svg></div>
         </div>
@@ -338,11 +354,18 @@
         <div class="ptext"><strong data-t="addPhoto">Add a photo</strong><span data-t="photoHint">Real, recent photos get more matches</span></div>
       </div>
 
-      <div class="field"><label data-t="labelName">Display name</label><input type="text" id="inpName" value="Jordan" oninput="onFieldChange()"></div>
-      <div class="field"><label data-t="labelAge">Age</label><input type="number" id="inpAge" value="27" oninput="onFieldChange()"></div>
+      <div class="field"><label><span data-t="labelName">Display name</span><span class="req-mark"> *</span></label><input type="text" id="inpName" value="Jordan" maxlength="30" oninput="onFieldChange()"></div>
+      <div class="field"><label><span data-t="labelAge">Age</span><span class="req-mark"> *</span></label><input type="number" id="inpAge" value="27" min="18" max="99" oninput="onFieldChange()"></div>
       <div class="field">
-        <label><svg class="ic" viewBox="0 0 24 24"><path d="M12 22s7-6.8 7-12.5a7 7 0 10-14 0C5 15.2 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span data-t="labelLocation">Location</span></label>
-        <input type="text" id="inpCity" value="Miami, FL" oninput="onFieldChange()">
+        <label><svg class="ic" viewBox="0 0 24 24"><path d="M12 22s7-6.8 7-12.5a7 7 0 10-14 0C5 15.2 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span data-t="labelLocation">Location</span><span class="req-mark"> *</span></label>
+        <div class="input-with-action">
+          <input type="text" id="inpCity" value="Miami, FL" data-t-ph="cityPh" placeholder="City, State" oninput="onFieldChange()">
+          <button type="button" class="input-action-btn" id="btnLocate" onclick="detectLocation()" aria-label="Use my current location">
+            <svg class="ic" id="locateIconDefault" viewBox="0 0 24 24"><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/><circle cx="12" cy="12" r="4"/></svg>
+            <svg class="ic spin-icon" id="locateIconLoading" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="8" stroke-dasharray="38" stroke-dashoffset="12"/></svg>
+          </button>
+        </div>
+        <div class="hint" data-t="locateHint">Tap the target icon to use your real location — more accurate matches, fewer mix-ups.</div>
       </div>
       <div class="field">
         <label><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 005 5L15 12l5 2v3a2 2 0 01-2 2A15 15 0 016 6a2 2 0 012-2z"/></svg><span data-t="labelPhone">Phone number</span></label>
@@ -356,7 +379,8 @@
       </div>
       <div class="field">
         <label data-t="labelBio">About you</label>
-        <textarea id="inpBio" rows="3" data-t-ph="phBio" placeholder="A short intro — hobbies, what you're looking for..." oninput="onFieldChange()"></textarea>
+        <textarea id="inpBio" rows="3" maxlength="200" data-t-ph="phBio" placeholder="A short intro — hobbies, what you're looking for..."></textarea>
+        <div class="hint char-counter" id="bioCounter">0/200</div>
       </div>
       <div class="field">
         <label data-t="labelInterests">Interests</label>
@@ -376,7 +400,7 @@
         <div class="progress-track" style="margin-bottom:0;"><div class="progress-fill" id="completenessFill" style="width:0%; background:var(--mint);"></div></div>
       </div>
 
-      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('persona')" data-t="back">Back</button><button class="btn btn-primary btn-block" onclick="go('quiz')" data-t="continueBtn">Continue</button></div>
+      <div class="footer-nav"><button class="btn btn-ghost" onclick="go('persona')" data-t="back">Back</button><button class="btn btn-primary btn-block" onclick="continueFromBasics()" data-t="continueBtn">Continue</button></div>
     </section>
 
     <!-- EXPECTATIONS QUIZ -->
@@ -456,8 +480,8 @@
       <p class="subtitle" style="margin-bottom:10px;" data-t="discoverSub">Swipe or use the buttons — drag a card to see it move.</p>
       <div class="stack-wrap" id="stackWrap"></div>
       <div class="swipe-actions">
-        <button class="round-btn pass" onclick="programmaticSwipe(-1)"><svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
-        <button class="round-btn big like" onclick="programmaticSwipe(1)"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20.5s-7-4.4-9.4-8.6C1 9 2 5.6 5.5 4.6 8 3.9 10 5 12 7c2-2 4-3.1 6.5-2.4C22 5.6 23 9 21.4 11.9 19 16.1 12 20.5 12 20.5z"/></svg></button>
+        <button class="round-btn pass" onclick="programmaticSwipe(-1)" aria-label="Pass"><svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
+        <button class="round-btn big like" onclick="programmaticSwipe(1)" aria-label="Like"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20.5s-7-4.4-9.4-8.6C1 9 2 5.6 5.5 4.6 8 3.9 10 5 12 7c2-2 4-3.1 6.5-2.4C22 5.6 23 9 21.4 11.9 19 16.1 12 20.5 12 20.5z"/></svg></button>
       </div>
 
       <div id="matchModal">
@@ -484,10 +508,10 @@
     <section class="screen" id="screen-chat" style="display:flex;">
       <div id="chatscreen" style="display:flex; flex-direction:column; height:100%;">
         <div class="chat-header">
-          <button class="btn-ghost btn btn-sm" style="border:none; padding:4px;" onclick="go('matches')"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg></button>
+          <button class="btn-ghost btn btn-sm" style="border:none; padding:4px;" onclick="go('matches')" aria-label="Back to matches"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg></button>
           <div class="avatar-sm" id="chatAvatar" style="background:var(--ink);">?</div>
           <div class="grow"><strong id="chatName" style="font-size:14px;">Match</strong><div style="font-size:11px;color:var(--mint); display:flex; align-items:center; gap:4px;"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span data-t="verifiedMember">Verified member</span></div></div>
-          <button class="report-btn" onclick="reportUser()" title="Report"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></button>
+          <button class="report-btn" onclick="reportUser()" aria-label="Report" title="Report"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></button>
         </div>
         <div class="safety-banner">
           <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
@@ -598,10 +622,15 @@ const STR = {
     continueBtn:"Continue", back:"Back",
     profileTitle:"Create your profile", profileSub:"Real name not required — a first name or nickname is fine.",
     addPhoto:"Add a photo", photoHint:"Real, recent photos get more matches",
-    labelName:"Display name", labelAge:"Age", labelLocation:"Location",
+    labelName:"Display name", labelAge:"Age", labelLocation:"Location", cityPh:"City, State",
+    locateHint:"Tap the target icon to use your real location — more accurate matches, fewer mix-ups.",
+    locateSuccess:"Location updated", locateFailed:"Couldn't find that location — try typing it in",
+    locateDenied:"Location access denied — you can type it in instead", locateUnsupported:"Your browser doesn't support location detection",
+    needNameToast:"Add a display name to continue", need18Toast:"You must be 18 or older to continue",
     labelPhone:"Phone number", phPhone:"+1 305 555 0100", phonePrivacyNote:"Never shown publicly — only shared in chat if you approve.",
     labelInstagram:"Instagram (optional)", phInsta:"@yourhandle", instaPrivacyNote:"Never shown publicly — only shared in chat if you approve.",
     labelBio:"About you", phBio:"A short intro — hobbies, what you're looking for...",
+    emptyDeckTitle:"You're all caught up", emptyDeckBody:"No more profiles right now — check back later or start over.", emptyDeckBtn:"Start over",
     labelInterests:"Interests", interestTravel:"Travel", interestFitness:"Fitness", interestFoodie:"Foodie", interestArt:"Art", interestMusic:"Music", interestBusiness:"Business", interestOutdoors:"Outdoors",
     completeness:"Profile", completenessTip:"Add a photo and bio to stand out",
     quizTitle:"Set your expectations", quizSub:"Shown to matches up front — no awkward money talk on date one.",
@@ -659,10 +688,15 @@ const STR = {
     continueBtn:"Continuar", back:"Atrás",
     profileTitle:"Crea tu perfil", profileSub:"No necesitas tu nombre real — un nombre o apodo está bien.",
     addPhoto:"Agrega una foto", photoHint:"Fotos reales y recientes consiguen más matches",
-    labelName:"Nombre para mostrar", labelAge:"Edad", labelLocation:"Ubicación",
+    labelName:"Nombre para mostrar", labelAge:"Edad", labelLocation:"Ubicación", cityPh:"Ciudad, Estado",
+    locateHint:"Toca el ícono para usar tu ubicación real — matches más precisos, menos confusiones.",
+    locateSuccess:"Ubicación actualizada", locateFailed:"No encontramos esa ubicación — intenta escribirla",
+    locateDenied:"Acceso a ubicación denegado — puedes escribirla tú mismo/a", locateUnsupported:"Tu navegador no soporta detección de ubicación",
+    needNameToast:"Agrega un nombre para continuar", need18Toast:"Debes tener 18 años o más para continuar",
     labelPhone:"Número de teléfono", phPhone:"+52 55 5555 0100", phonePrivacyNote:"Nunca se muestra públicamente — solo se comparte en el chat si tú lo apruebas.",
     labelInstagram:"Instagram (opcional)", phInsta:"@tuusuario", instaPrivacyNote:"Nunca se muestra públicamente — solo se comparte en el chat si tú lo apruebas.",
     labelBio:"Sobre ti", phBio:"Una intro corta — pasatiempos, qué estás buscando...",
+    emptyDeckTitle:"Ya viste a todos por ahora", emptyDeckBody:"No hay más perfiles por el momento — vuelve más tarde o empieza de nuevo.", emptyDeckBtn:"Empezar de nuevo",
     labelInterests:"Intereses", interestTravel:"Viajar", interestFitness:"Fitness", interestFoodie:"Foodie", interestArt:"Arte", interestMusic:"Música", interestBusiness:"Negocios", interestOutdoors:"Aire libre",
     completeness:"Perfil", completenessTip:"Agrega foto y bio para destacar",
     quizTitle:"Define tus expectativas", quizSub:"Se muestra a tus matches desde el inicio — sin hablar de dinero incómodamente en la primera cita.",
@@ -808,7 +842,71 @@ document.getElementById('inpPhone').addEventListener('input', e=> { state.phone 
 document.getElementById('inpInsta').addEventListener('input', e=> { state.insta = e.target.value; onFieldChange(); });
 document.getElementById('inpBio').addEventListener('input', e=> { state.bio = e.target.value; onFieldChange(); });
 
-function onFieldChange(){ updateCompleteness(); }
+function onFieldChange(){
+  updateCompleteness();
+  const bio = document.getElementById('inpBio');
+  const counter = document.getElementById('bioCounter');
+  if(bio && counter) counter.textContent = bio.value.length + '/200';
+}
+
+function continueFromBasics(){
+  const name = document.getElementById('inpName').value.trim();
+  const age = parseInt(document.getElementById('inpAge').value, 10);
+  if(!name){
+    toast(t('needNameToast'));
+    document.getElementById('inpName').focus();
+    return;
+  }
+  if(!age || age < 18){
+    toast(t('need18Toast'));
+    document.getElementById('inpAge').focus();
+    return;
+  }
+  go('quiz');
+}
+
+function detectLocation(){
+  if(!navigator.geolocation){
+    toast(t('locateUnsupported'));
+    return;
+  }
+  setLocateLoading(true);
+  navigator.geolocation.getCurrentPosition(async (pos)=>{
+    try{
+      const { latitude, longitude } = pos.coords;
+      const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=${LANG}`);
+      const data = await res.json();
+      const city = data.city || data.locality || '';
+      const region = data.principalSubdivisionCode ? data.principalSubdivisionCode.split('-').pop() : (data.principalSubdivision || '');
+      const label = [city, region].filter(Boolean).join(', ') || data.countryName || '';
+      if(label){
+        const inp = document.getElementById('inpCity');
+        inp.value = label;
+        state.city = label;
+        toast(t('locateSuccess'));
+      } else {
+        toast(t('locateFailed'));
+      }
+    } catch(e){
+      toast(t('locateFailed'));
+    } finally {
+      setLocateLoading(false);
+    }
+  }, ()=>{
+    setLocateLoading(false);
+    toast(t('locateDenied'));
+  }, { enableHighAccuracy:false, timeout:8000 });
+}
+
+function setLocateLoading(isLoading){
+  const btn = document.getElementById('btnLocate');
+  const def = document.getElementById('locateIconDefault');
+  const load = document.getElementById('locateIconLoading');
+  if(!btn) return;
+  def.style.display = isLoading ? 'none' : 'block';
+  load.style.display = isLoading ? 'block' : 'none';
+  btn.disabled = isLoading;
+}
 
 function handlePhotoUpload(evt){
   const file = evt.target.files && evt.target.files[0];
@@ -889,7 +987,11 @@ function renderStack(){
   wrap.innerHTML = '';
   const visible = PROFILES.slice(state.deckIndex, state.deckIndex+3);
   if(visible.length === 0){
-    wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;text-align:center;padding:20px;"></div>';
+    wrap.innerHTML = `<div class="empty-deck">
+      <svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px;"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div><strong>${t('emptyDeckTitle')}</strong>${t('emptyDeckBody')}</div>
+      <button class="btn btn-ghost btn-sm" onclick="resetDeck()">${t('emptyDeckBtn')}</button>
+    </div>`;
     return;
   }
   visible.forEach((p, i)=>{
@@ -944,6 +1046,11 @@ function attachDrag(el, profile){
   el.addEventListener('pointermove', e=> onMove(e.clientX, e.clientY));
   el.addEventListener('pointerup', onUp);
   el.addEventListener('pointercancel', onUp);
+}
+
+function resetDeck(){
+  state.deckIndex = 0;
+  renderStack();
 }
 
 function programmaticSwipe(dir){
